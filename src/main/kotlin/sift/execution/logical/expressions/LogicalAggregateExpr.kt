@@ -12,7 +12,7 @@ import sift.types.Type
  * @property input
  * @constructor Create empty Logical agg expr
  */
-sealed class LogicalAggExpr(
+sealed class LogicalAggregateExpr(
     val op: AggOp,
     val input: LogicalExpr,
 ) : LogicalExpr {
@@ -20,14 +20,14 @@ sealed class LogicalAggExpr(
     override fun toField(input: LogicalPlan): Field = Field(op.name, this.input.toField(input).type)
 }
 
-class LogicalMinExpr(input: LogicalExpr) : LogicalAggExpr(AggOp.MIN, input)
+class LogicalMinExpr(input: LogicalExpr) : LogicalAggregateExpr(AggOp.MIN, input)
 
-class LogicalMaxExpr(input: LogicalExpr) : LogicalAggExpr(AggOp.MAX, input)
+class LogicalMaxExpr(input: LogicalExpr) : LogicalAggregateExpr(AggOp.MAX, input)
 
-class LogicalSumExpr(input: LogicalExpr) : LogicalAggExpr(AggOp.SUM, input)
+class LogicalSumExpr(input: LogicalExpr) : LogicalAggregateExpr(AggOp.SUM, input)
 
-class LogicalCountExpr(input: LogicalExpr) : LogicalAggExpr(AggOp.COUNT, input) {
+class LogicalCountExpr(input: LogicalExpr) : LogicalAggregateExpr(AggOp.COUNT, input) {
     override fun toField(input: LogicalPlan): Field = Field(op.name, Type.Num)
 }
 
-class LogicalAvgExpr(input: LogicalExpr) : LogicalAggExpr(AggOp.AVG, input)
+class LogicalAvgExpr(input: LogicalExpr) : LogicalAggregateExpr(AggOp.AVG, input)

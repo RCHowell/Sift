@@ -1,7 +1,7 @@
 package sift.execution.logical.plans
 
 import sift.execution.logical.LogicalPlan
-import sift.execution.logical.expressions.LogicalAggExpr
+import sift.execution.logical.expressions.LogicalAggregateExpr
 import sift.types.Schema
 
 /**
@@ -17,7 +17,7 @@ import sift.types.Schema
  */
 class LogicalAggregation(
     private val input: LogicalPlan,
-    private val aggs: List<LogicalAggExpr>,
+    private val aggs: List<LogicalAggregateExpr>,
     private val groups: List<String>,
 ) : LogicalPlan {
 
