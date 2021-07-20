@@ -123,11 +123,11 @@ Examples
 ### Expressions
 
 ```bash
-<EXPR>    ::= <EXPR> <OP> <LITERAL>
-           | ( <EXPR> )
-           | <ID>(<ID>)
-           | <ID>
-           | <LITERAL>
+<EXPR>    ::= <FACTOR> <OP> <EXPR>
+           |  ( <EXPR> )
+<FACTOR>  ::= <ID>(<ID>)
+           |  <ID>
+           |  <LITERAL>
 <LITERAL> ::= (<STRING>|<NUM>|<BOOL>|<NULL>)
 <OP>      ::= ()
 ```
@@ -143,4 +143,21 @@ Examples
 'Movies'
   |> SELECT year = 1979 && studioName = 'Paramount'
   |> PROJECT title
+```
+
+### What's Missing?
+
+#### Join, Union, Intersect, Diff as a transformation
+
+```bash
+# Not supported!
+'A'
+  |> PROJECT x * 2 -> xTwo
+  |> JOIN 'B' on xTwo = foo # where's foo coming from without a projection?
+  
+# Supported
+('A' |> PROJECT x * 2 -> xTwo)
+  JOIN
+('B' |> PROJECT foo)
+  ON xTwo = foo
 ```

@@ -3,6 +3,8 @@ package sift.source
 import sift.types.Batch
 import sift.types.Schema
 
+class InvalidSourceException(id: String) : Exception("Invalid source $id")
+
 /**
  * Provides an interface for loading structured data from various sources
  *

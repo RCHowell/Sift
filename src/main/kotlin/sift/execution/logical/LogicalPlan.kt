@@ -30,18 +30,19 @@ interface LogicalPlan {
 
 /**
  * Format returns the series of transformations nested.
- * This is taken directly from KQuery.
- *
- * I may change this to use pipe redirects `|>` like Elixir to represent a series of transformations
  *
  * @param plan
  * @param indent
  * @return
  */
-fun format(plan: LogicalPlan, indent: Int = 0): String {
-    val b = StringBuilder()
-    repeat(0.until(indent).count()) { b.append("\t") }
-    b.append(plan.toString()).append("\n")
-    plan.inputs().forEach { b.append(format(it, indent + 1)) }
-    return b.toString()
+fun format(plan: LogicalPlan, indent: Int = 0): String = buildString {
+    val prefix = "  ".repeat(indent)
+    append(prefix).append(plan)
+    if (plan.inputs().isNotEmpty()) {
+        append(" {").append("\n")
+        plan.inputs().forEach { append(format(it, indent + 1)).append("\n") }
+        append(prefix).append("}")
+    } else {
+        append(" {}")
+    }
 }
