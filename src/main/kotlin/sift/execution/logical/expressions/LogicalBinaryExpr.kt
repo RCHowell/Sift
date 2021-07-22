@@ -2,6 +2,7 @@ package sift.execution.logical.expressions
 
 import sift.execution.logical.LogicalExpr
 import sift.execution.logical.LogicalPlan
+import sift.execution.logical.expressions.BinaryOp.*
 import sift.types.Field
 import sift.types.Type
 
@@ -22,6 +23,25 @@ abstract class LogicalBinaryExpr(
     val rhs: LogicalExpr,
 ) : LogicalExpr {
     override fun toString(): String = "$lhs $op $rhs"
+
+    companion object {
+
+        fun get(op: BinaryOp, lhs: LogicalExpr, rhs: LogicalExpr): LogicalExpr = when (op) {
+            EQ -> LogicalEqExpr(lhs, rhs)
+            NEQ -> LogicalNeqExpr(lhs, rhs)
+            LT -> LogicalLtExpr(lhs, rhs)
+            LTE -> LogicalLteExpr(lhs, rhs)
+            GT -> LogicalGtExpr(lhs, rhs)
+            GTE -> LogicalGteExpr(lhs, rhs)
+            AND -> LogicalAndExpr(lhs, rhs)
+            OR -> LogicalOrExpr(lhs, rhs)
+            ADD -> LogicalAddExpr(lhs, rhs)
+            SUB -> LogicalSubExpr(lhs, rhs)
+            MULT -> LogicalMultExpr(lhs, rhs)
+            DIV -> LogicalDivExpr(lhs, rhs)
+            MOD -> LogicalModExpr(lhs, rhs)
+        }
+    }
 }
 
 /**

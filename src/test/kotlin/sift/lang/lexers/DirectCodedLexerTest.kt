@@ -1,10 +1,10 @@
-package sift.lang
+package sift.lang.lexers
 
-internal class SiftLexerTest {
+internal class DirectCodedLexerTest {
 
     @org.junit.jupiter.api.Test
     fun tokenizeMostLanguageConstructs() {
-        val lexer = SiftLexer()
+        val lexer = DirectCodedLexer()
         val query = """
             ('A' X 'B') U ('C' & 'D')
             |> PROJECT x, y, z

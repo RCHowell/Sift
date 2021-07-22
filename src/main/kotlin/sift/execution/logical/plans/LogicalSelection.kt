@@ -21,5 +21,5 @@ class LogicalSelection(
 
     override fun inputs(): List<LogicalPlan> = listOf(input)
 
-    override fun pretty(): String = "SELECT $expr"
+    override fun toString(): String = "SELECT $expr"
 }

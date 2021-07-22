@@ -12,7 +12,7 @@ import sift.source.Source
  */
 class LogicalScan(
     private val source: Source,
-    private val identifiers: List<String>,
+    private val identifiers: List<String> = listOf(),
 ) : LogicalPlan {
 
     /**
@@ -29,6 +29,6 @@ class LogicalScan(
 
     override fun toString(): String {
         val f = if (identifiers.isEmpty()) "*" else identifiers.joinToString()
-        return "SCAN $f"
+        return "SCAN $f FROM $source"
     }
 }
