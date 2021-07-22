@@ -8,6 +8,7 @@ enum class TokenType {
     PIPE,
     LEFT_PAREN,
     RIGHT_PAREN,
+    MAPSTO,
     COMMA;
 }
 
@@ -47,7 +48,6 @@ class Token<T : Any>(val type: TokenType, val value: T? = null) {
             "AS",
             "BY",
             "ON",
-            "->", // Not an operator, just shorthand for MAPS TO,
             "OUTER",
             "LEFT",
             "RIGHT",

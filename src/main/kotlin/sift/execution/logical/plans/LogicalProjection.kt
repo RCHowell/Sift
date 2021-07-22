@@ -15,16 +15,19 @@ import sift.types.Schema
  */
 class LogicalProjection(
     private val input: LogicalPlan,
-    private val exprs: List<LogicalExpr>,
+    private val projs: Map<String, LogicalExpr>,
 ) : LogicalPlan {
 
     /**
      * From Andy Grove's KQuery. Each expression describes its output field, so the Schema produced by this
      * projection is just the combination of all field types when evaluated on the given input plan.
      */
-    override val schema: Schema = Schema(exprs.map { it.toField(input) })
+    override val schema: Schema = Schema(projs.entries.map { (k, v) -> v.toField(input) })
 
     override fun inputs(): List<LogicalPlan> = listOf(input)
 
-    override fun pretty(): String = "PROJECT ${exprs.joinToString()}"
+    override fun toString(): String = buildString {
+        append("PROJECT")
+        projs.entries.forEach { (k, v) -> append(" (").append(v).append(" AS ").append(k).append(") ") }
+    }
 }

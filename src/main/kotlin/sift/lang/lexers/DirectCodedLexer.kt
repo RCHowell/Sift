@@ -83,9 +83,9 @@ class DirectCodedLexer : SiftLexer {
                     State.OP -> {
                         val v = buffer.toString()
                         if (v == "->") {
-                            add(Token(KEYWORD, "MAPSTO"))
+                            add(Token(MAPSTO, v))
                         } else {
-                            add(Token(OPERATOR, buffer.toString()))
+                            add(Token(OPERATOR, v))
                         }
                         continue
                     }

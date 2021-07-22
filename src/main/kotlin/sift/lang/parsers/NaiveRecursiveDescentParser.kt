@@ -8,6 +8,7 @@ import sift.execution.logical.expressions.LogicalBinaryExpr
 import sift.execution.logical.expressions.LogicalIdentifierExpr
 import sift.execution.logical.expressions.LogicalLiteralExpr
 import sift.execution.logical.functions.LogicalFunction
+import sift.execution.logical.plans.LogicalProjection
 import sift.execution.logical.plans.LogicalScan
 import sift.execution.logical.plans.LogicalSelection
 import sift.lang.SiftParser
@@ -16,7 +17,7 @@ import sift.lang.TokenType
 
 class InvalidSyntaxException(t: String) : Exception("syntax error: $t")
 
-class RecursiveDescentParser(
+class NaiveRecursiveDescentParser(
     private val env: Environment,
 ) : SiftParser {
 
@@ -60,6 +61,7 @@ class RecursiveDescentParser(
         if (word.type != TokenType.KEYWORD) throw InvalidSyntaxException("Expected keyword")
         return when (word.value.toString()) {
             "SELECT" -> select(input)
+            "PROJECT" -> project(input)
             else -> throw InvalidSyntaxException("Unknown transformation $word")
         }
     }
@@ -114,12 +116,33 @@ class RecursiveDescentParser(
                 val arg = expression()
                 val closeParen = words[pointer++]
                 if (closeParen.type != TokenType.RIGHT_PAREN) {
-                    throw InvalidSyntaxException("invalid ")
+                    throw InvalidSyntaxException("expected closing paren at $word")
                 }
                 val funcName = word.value as String
                 LogicalFunction.get(funcName, arg)
             }
             else -> throw InvalidSyntaxException("invalid factor in expression at $word")
         }
+    }
+
+    private fun project(input: LogicalPlan): LogicalPlan {
+        val projections = mutableMapOf<String, LogicalExpr>()
+        while (true) {
+            val (fExpr, fProj) = func()
+            projections[fProj] = fExpr
+            if (pointer >= words.size || words[pointer].type != TokenType.COMMA) {
+                return LogicalProjection(input, projections)
+            }
+            pointer++
+        }
+    }
+
+    private fun func(): Pair<LogicalExpr, String> {
+        val expr = expression()
+        if (words[pointer].type != TokenType.MAPSTO) throw InvalidSyntaxException("expected ->")
+        pointer++
+        val alias = words[pointer++]
+        if (alias.type != TokenType.IDENTIFIER) throw InvalidSyntaxException("projection key must be an identifier")
+        return Pair(expr, alias.value as String)
     }
 }
