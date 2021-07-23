@@ -2,6 +2,8 @@ package sift.execution.logical.plans
 
 import sift.execution.logical.LogicalExpr
 import sift.execution.logical.LogicalPlan
+import sift.execution.logical.expressions.LogicalIdentifierExpr
+import sift.types.Field
 import sift.types.Schema
 
 /**
@@ -15,19 +17,19 @@ import sift.types.Schema
  */
 class LogicalProjection(
     private val input: LogicalPlan,
-    private val projs: Map<String, LogicalExpr>,
+    private val projs: Map<LogicalIdentifierExpr, LogicalExpr>,
 ) : LogicalPlan {
 
     /**
-     * From Andy Grove's KQuery. Each expression describes its output field, so the Schema produced by this
+     * Each expression describes its output field, so the Schema produced by this
      * projection is just the combination of all field types when evaluated on the given input plan.
      */
-    override val schema: Schema = Schema(projs.entries.map { (k, v) -> v.toField(input) })
+    override val schema: Schema = Schema(projs.entries.map { (k, v) -> Field(k.identifier, v.toField(input).type) })
 
     override fun inputs(): List<LogicalPlan> = listOf(input)
 
     override fun toString(): String = buildString {
-        append("PROJECT")
-        projs.entries.forEach { (k, v) -> append(" (").append(v).append(" AS ").append(k).append(") ") }
+        append("PROJECT ")
+        append(projs.entries.joinToString { (alias, expr) -> "$expr -> $alias" })
     }
 }

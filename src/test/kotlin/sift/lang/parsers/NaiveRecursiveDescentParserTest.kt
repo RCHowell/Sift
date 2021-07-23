@@ -3,19 +3,36 @@ package sift.lang.parsers
 import sift.execution.Environment
 import sift.lang.lexers.DirectCodedLexer
 import sift.source.EmptySource
+import sift.types.Field
+import sift.types.Schema
+import sift.types.Type
 
 internal class NaiveRecursiveDescentParserTest {
 
     @org.junit.jupiter.api.Test
     fun simple() {
+        val src = EmptySource(
+            "Families",
+            Schema(
+                listOf(
+                    Field("firstName", Type.String),
+                    Field("lastName", Type.String),
+                    Field("gender", Type.String),
+                    Field("age", Type.Num)
+                )
+            )
+        )
         val env = Environment()
-        env.registerSource("A", EmptySource("A"))
+        env.registerSource(src)
         val lexer = DirectCodedLexer()
         val parser = NaiveRecursiveDescentParser(env)
         val query = """
-            A
-            |> SELECT firstName = 'John' && age > 21.0
-            |> PROJECT x / 10 -> x, y * 2 -> yeven, z + 3 -> zeee
+          'Families'
+            |> SELECT gender = 'Male'
+            |> GROUP MIN(age) -> youngest, MAX(age) -> oldest BY lastName
+            |> PROJECT oldest - youngest -> gap
+            |> SORT BY gap DESC
+            |> LIMIT 5
         """.trimIndent()
         val tokens = lexer.tokenize(query)
         val plan = parser.parse(tokens)

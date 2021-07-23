@@ -1,5 +1,7 @@
 package sift.execution.physical
 
+import sift.types.Batch
+
 /**
  * Iterator from The Volcano Model. Called Sifterator to avoid naming confusion.
  */
@@ -12,7 +14,7 @@ interface Sifterator {
      */
     fun open()
 
-    fun next()
+    fun next(): Batch
 
     fun close()
 }

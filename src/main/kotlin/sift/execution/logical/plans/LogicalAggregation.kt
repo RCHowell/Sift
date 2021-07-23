@@ -2,6 +2,8 @@ package sift.execution.logical.plans
 
 import sift.execution.logical.LogicalPlan
 import sift.execution.logical.expressions.LogicalAggregateExpr
+import sift.execution.logical.expressions.LogicalIdentifierExpr
+import sift.types.Field
 import sift.types.Schema
 
 /**
@@ -17,13 +19,24 @@ import sift.types.Schema
  */
 class LogicalAggregation(
     private val input: LogicalPlan,
-    private val aggs: List<LogicalAggregateExpr>,
-    private val groups: List<String>,
+    private val aggs: Map<LogicalIdentifierExpr, LogicalAggregateExpr>,
+    private val groups: List<LogicalIdentifierExpr>,
 ) : LogicalPlan {
 
-    override val schema: Schema = Schema(aggs.map { it.toField(input) })
+    override val schema: Schema = Schema(
+        aggs.entries.map { (alias, expr) ->
+            Field(alias.identifier, expr.toField(input).type)
+        }
+    )
 
     override fun inputs(): List<LogicalPlan> = listOf(input)
 
-    override fun pretty(): String = "AGGREGATE ${aggs.joinToString()} BY ${groups.joinToString()}"
+    override fun toString(): String = buildString {
+        append("AGGREGATE ")
+        append(aggs.entries.joinToString { (alias, expr) -> "$expr -> $alias" })
+        if (groups.isNotEmpty()) {
+            append(" BY ")
+            append(groups.joinToString())
+        }
+    }
 }

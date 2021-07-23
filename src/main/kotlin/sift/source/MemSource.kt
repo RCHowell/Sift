@@ -4,9 +4,14 @@ import sift.types.Batch
 import sift.types.Schema
 
 class MemSource(
+    override val identifier: String,
     override val schema: Schema,
     private val data: List<Batch>
 ) : Source {
+
+    override fun init() {}
+
+    override fun close() {}
 
     /**
      * Scan finds the column indices for the given field identifiers

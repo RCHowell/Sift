@@ -23,7 +23,7 @@ sealed class LogicalAggregateExpr(
 
     companion object {
 
-        fun get(name: String, vararg args: LogicalExpr): LogicalExpr = when (name) {
+        fun get(name: String, vararg args: LogicalExpr): LogicalAggregateExpr = when (name) {
             "MIN" -> LogicalMinExpr(args[0])
             "MAX" -> LogicalMaxExpr(args[0])
             "SUM" -> LogicalSumExpr(args[0])

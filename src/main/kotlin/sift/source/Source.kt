@@ -13,9 +13,24 @@ class InvalidSourceException(id: String) : Exception("Invalid source $id")
 interface Source {
 
     /**
+     * Identifier for this source
+     */
+    val identifier: String
+
+    /**
      * Schema for the source
      */
     val schema: Schema
+
+    /**
+     * For any initialization work such as opening files or establishing connections
+     */
+    fun init()
+
+    /**
+     * Resource cleanup
+     */
+    fun close()
 
     /**
      * Given a list of identifiers, a [Source] will return a sequence of [Batch]s

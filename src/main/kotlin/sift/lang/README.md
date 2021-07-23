@@ -110,7 +110,7 @@ Let *R(A, B, C)* and *S(B, C, D)* be two relations. Here are some example relati
 #### Group
 ```bash
 <GROUP> ::= GROUP <AGGS> (BY <IDS>)?
-<AGG>   ::= <ID>(<ID>) (AS <ID>)?
+<AGG>   ::= <ID>(<ID>) -> <ID>
 ```
 
 Examples

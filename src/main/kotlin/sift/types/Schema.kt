@@ -1,7 +1,5 @@
 package sift.types
 
-import java.sql.SQLException
-
 /**
  * Holding object for identifier to [Type] mappings
  *
@@ -61,5 +59,5 @@ data class Schema(val fields: List<Field>) {
      * @param identifier
      * @return
      */
-    fun find(identifier: String): Field = fieldMap[identifier] ?: throw SQLException("Unknown identifier `$identifier`")
+    fun find(identifier: String): Field = fieldMap[identifier] ?: throw Exception("unknown identifier `$identifier`")
 }
