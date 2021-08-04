@@ -1,14 +1,14 @@
-package sift.execution.physical.plans.scan
+package sift.execution.physical.sifterators
 
 import org.apache.arrow.memory.RootAllocator
 import org.apache.arrow.vector.BitVector
 import org.junit.jupiter.api.Test
 import sift.source.MemSource
-import sift.types.ArrowColumn
 import sift.types.Batch
+import sift.types.BoolColumn
 import sift.types.Schema
 
-internal class PhysicalScanTest {
+internal class ScanTest {
 
     @Test
     fun simple() {
@@ -27,12 +27,12 @@ internal class PhysicalScanTest {
             data = listOf(
                 Batch(
                     listOf(
-                        ArrowColumn(bv)
+                        BoolColumn(bv)
                     )
                 )
             )
         )
-        val physicalScan = PhysicalScan(source, listOf("foo"))
+        val physicalScan = Scan(source, listOf("foo"))
         physicalScan.open()
         val b = physicalScan.next()
         println(b)

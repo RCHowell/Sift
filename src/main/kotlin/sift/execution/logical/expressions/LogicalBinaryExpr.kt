@@ -2,7 +2,19 @@ package sift.execution.logical.expressions
 
 import sift.execution.logical.LogicalExpr
 import sift.execution.logical.LogicalPlan
-import sift.execution.logical.expressions.BinaryOp.*
+import sift.execution.logical.expressions.BinaryOp.ADD
+import sift.execution.logical.expressions.BinaryOp.AND
+import sift.execution.logical.expressions.BinaryOp.DIV
+import sift.execution.logical.expressions.BinaryOp.EQ
+import sift.execution.logical.expressions.BinaryOp.GT
+import sift.execution.logical.expressions.BinaryOp.GTE
+import sift.execution.logical.expressions.BinaryOp.LT
+import sift.execution.logical.expressions.BinaryOp.LTE
+import sift.execution.logical.expressions.BinaryOp.MOD
+import sift.execution.logical.expressions.BinaryOp.MULT
+import sift.execution.logical.expressions.BinaryOp.NEQ
+import sift.execution.logical.expressions.BinaryOp.OR
+import sift.execution.logical.expressions.BinaryOp.SUB
 import sift.types.Field
 import sift.types.Type
 
@@ -37,7 +49,7 @@ abstract class LogicalBinaryExpr(
             OR -> LogicalOrExpr(lhs, rhs)
             ADD -> LogicalAddExpr(lhs, rhs)
             SUB -> LogicalSubExpr(lhs, rhs)
-            MULT -> LogicalMultExpr(lhs, rhs)
+            MULT -> LogicalMulExpr(lhs, rhs)
             DIV -> LogicalDivExpr(lhs, rhs)
             MOD -> LogicalModExpr(lhs, rhs)
         }
@@ -55,21 +67,21 @@ sealed class LogicalBooleanBinaryExpr(
     override fun toField(input: LogicalPlan): Field = Field(op.name, Type.Bool)
 }
 
-class LogicalEqExpr(lhs: LogicalExpr, rhs: LogicalExpr) : LogicalBooleanBinaryExpr(BinaryOp.EQ, lhs, rhs)
+class LogicalEqExpr(lhs: LogicalExpr, rhs: LogicalExpr) : LogicalBooleanBinaryExpr(EQ, lhs, rhs)
 
-class LogicalNeqExpr(lhs: LogicalExpr, rhs: LogicalExpr) : LogicalBooleanBinaryExpr(BinaryOp.NEQ, lhs, rhs)
+class LogicalNeqExpr(lhs: LogicalExpr, rhs: LogicalExpr) : LogicalBooleanBinaryExpr(NEQ, lhs, rhs)
 
-class LogicalLtExpr(lhs: LogicalExpr, rhs: LogicalExpr) : LogicalBooleanBinaryExpr(BinaryOp.LT, lhs, rhs)
+class LogicalLtExpr(lhs: LogicalExpr, rhs: LogicalExpr) : LogicalBooleanBinaryExpr(LT, lhs, rhs)
 
-class LogicalLteExpr(lhs: LogicalExpr, rhs: LogicalExpr) : LogicalBooleanBinaryExpr(BinaryOp.LTE, lhs, rhs)
+class LogicalLteExpr(lhs: LogicalExpr, rhs: LogicalExpr) : LogicalBooleanBinaryExpr(LTE, lhs, rhs)
 
-class LogicalGtExpr(lhs: LogicalExpr, rhs: LogicalExpr) : LogicalBooleanBinaryExpr(BinaryOp.GT, lhs, rhs)
+class LogicalGtExpr(lhs: LogicalExpr, rhs: LogicalExpr) : LogicalBooleanBinaryExpr(GT, lhs, rhs)
 
-class LogicalGteExpr(lhs: LogicalExpr, rhs: LogicalExpr) : LogicalBooleanBinaryExpr(BinaryOp.GTE, lhs, rhs)
+class LogicalGteExpr(lhs: LogicalExpr, rhs: LogicalExpr) : LogicalBooleanBinaryExpr(GTE, lhs, rhs)
 
-class LogicalAndExpr(lhs: LogicalExpr, rhs: LogicalExpr) : LogicalBooleanBinaryExpr(BinaryOp.AND, lhs, rhs)
+class LogicalAndExpr(lhs: LogicalExpr, rhs: LogicalExpr) : LogicalBooleanBinaryExpr(AND, lhs, rhs)
 
-class LogicalOrExpr(lhs: LogicalExpr, rhs: LogicalExpr) : LogicalBooleanBinaryExpr(BinaryOp.OR, lhs, rhs)
+class LogicalOrExpr(lhs: LogicalExpr, rhs: LogicalExpr) : LogicalBooleanBinaryExpr(OR, lhs, rhs)
 
 /**
  * Binary expressions that return a Num
@@ -82,12 +94,12 @@ sealed class LogicalMathBinaryExpr(
     override fun toField(input: LogicalPlan): Field = Field(op.name, Type.Num)
 }
 
-class LogicalAddExpr(lhs: LogicalExpr, rhs: LogicalExpr) : LogicalBooleanBinaryExpr(BinaryOp.ADD, lhs, rhs)
+class LogicalAddExpr(lhs: LogicalExpr, rhs: LogicalExpr) : LogicalBooleanBinaryExpr(ADD, lhs, rhs)
 
-class LogicalSubExpr(lhs: LogicalExpr, rhs: LogicalExpr) : LogicalBooleanBinaryExpr(BinaryOp.SUB, lhs, rhs)
+class LogicalSubExpr(lhs: LogicalExpr, rhs: LogicalExpr) : LogicalBooleanBinaryExpr(SUB, lhs, rhs)
 
-class LogicalMultExpr(lhs: LogicalExpr, rhs: LogicalExpr) : LogicalBooleanBinaryExpr(BinaryOp.MULT, lhs, rhs)
+class LogicalMulExpr(lhs: LogicalExpr, rhs: LogicalExpr) : LogicalBooleanBinaryExpr(MULT, lhs, rhs)
 
-class LogicalDivExpr(lhs: LogicalExpr, rhs: LogicalExpr) : LogicalBooleanBinaryExpr(BinaryOp.DIV, lhs, rhs)
+class LogicalDivExpr(lhs: LogicalExpr, rhs: LogicalExpr) : LogicalBooleanBinaryExpr(DIV, lhs, rhs)
 
-class LogicalModExpr(lhs: LogicalExpr, rhs: LogicalExpr) : LogicalBooleanBinaryExpr(BinaryOp.MOD, lhs, rhs)
+class LogicalModExpr(lhs: LogicalExpr, rhs: LogicalExpr) : LogicalBooleanBinaryExpr(MOD, lhs, rhs)

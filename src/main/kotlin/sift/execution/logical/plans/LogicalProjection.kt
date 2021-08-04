@@ -17,19 +17,19 @@ import sift.types.Schema
  */
 class LogicalProjection(
     private val input: LogicalPlan,
-    private val projs: Map<LogicalIdentifierExpr, LogicalExpr>,
+    val projections: Map<LogicalIdentifierExpr, LogicalExpr>,
 ) : LogicalPlan {
 
     /**
      * Each expression describes its output field, so the Schema produced by this
      * projection is just the combination of all field types when evaluated on the given input plan.
      */
-    override val schema: Schema = Schema(projs.entries.map { (k, v) -> Field(k.identifier, v.toField(input).type) })
+    override val schema: Schema = Schema(projections.entries.map { (k, v) -> Field(k.identifier, v.toField(input).type) })
 
     override fun inputs(): List<LogicalPlan> = listOf(input)
 
     override fun toString(): String = buildString {
         append("PROJECT ")
-        append(projs.entries.joinToString { (alias, expr) -> "$expr -> $alias" })
+        append(projections.entries.joinToString { (alias, expr) -> "$expr -> $alias" })
     }
 }

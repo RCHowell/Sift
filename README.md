@@ -2,6 +2,10 @@
 
 ---
 
+## TODO
+
+Cannot compare literals to fields because of the different column types. 
+
 ## Types
 - Bool
 - Varchar
@@ -42,3 +46,7 @@
 - Natural and Theta Outer Joins (Left/Right)
 
 ---
+
+## Problems
+
+- Type inference is hard. It's difficult for me to dynamically create and use generic operations in a statically typed language.

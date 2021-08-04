@@ -10,20 +10,33 @@ package sift.types
  * @property cols is the list of columns
  * @constructor Create empty Batch
  */
-class Batch(
-    private val cols: List<Column>
-) {
+class Batch(val columns: List<Column>) {
     /**
      * The number of records in the batch
      */
     val records: Int
-        get() = cols.first().size
+        get() = columns.first().size
+
+    override fun toString(): String = buildString {
+        for (i in 0 until records) {
+            val sb = buildString {
+                append("| ")
+                append(columns.map { it[i] }.joinToString(" | "))
+                append(" |")
+            }
+            append('\n')
+            append(sb)
+        }
+    }
 
     /**
-     * The number of columns in the batch
+     * This function returns the column as strings paired with the
+     * maximum length (width) to this column.
      */
-    val columns: Int
-        get() = cols.size
-
-    fun column(i: Int): Column = cols[i]
+    private fun maxWidthStrings(col: Column): Pair<Int, List<String>> {
+        val max = 0
+        val strings = mutableListOf<String>()
+        // TODO for pretty printing, I don't care yet
+        return Pair(0, listOf())
+    }
 }

@@ -1,6 +1,5 @@
-package sift.execution.physical.plans.scan
+package sift.execution.physical.sifterators
 
-import sift.execution.physical.Sifterator
 import sift.source.Source
 import sift.types.Batch
 
@@ -11,7 +10,7 @@ import sift.types.Batch
  * @property fields
  * @constructor Create empty Physical scan
  */
-class PhysicalScan(
+class Scan(
     val source: Source,
     val fields: List<String>
 ) : Sifterator {

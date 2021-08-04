@@ -1,9 +1,11 @@
-package sift.execution.physical
+package sift.execution.physical.sifterators
 
 import sift.types.Batch
 
 /**
  * Iterator from The Volcano Model. Called Sifterator to avoid naming confusion.
+ *
+ * Things might get interesting/weird because `next()` returns a [Batch] rather than a row.
  */
 interface Sifterator {
 
@@ -14,7 +16,12 @@ interface Sifterator {
      */
     fun open()
 
-    fun next(): Batch
+    /**
+     * Returns the next
+     *
+     * @return
+     */
+    fun next(): Batch?
 
     fun close()
 }
