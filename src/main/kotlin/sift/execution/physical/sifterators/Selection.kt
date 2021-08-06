@@ -20,7 +20,7 @@ class Selection(val input: Sifterator, val predicate: PredicateExpr) : Sifterato
     override fun next(): Batch? {
         val batch = input.next() ?: return null
         val mask = predicate.eval(batch)
-        val cols = batch.columns.map { it.filter(mask.vector) }
+        val cols = batch.columns.map { it.filter(mask) }
         return Batch(cols)
     }
 

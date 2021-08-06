@@ -8,7 +8,7 @@ import sift.source.MemSource
 import sift.types.Batch
 import sift.types.Column
 import sift.types.Field
-import sift.types.NumColumn
+import sift.types.NumVectorColumn
 import sift.types.Schema
 import sift.types.Type
 
@@ -31,9 +31,9 @@ class ProjectionTest {
             data = listOf(
                 Batch(
                     listOf(
-                        NumColumn(xs),
-                        NumColumn(ys),
-                        NumColumn(zs)
+                        NumVectorColumn(xs),
+                        NumVectorColumn(ys),
+                        NumVectorColumn(zs)
                     )
                 )
             )

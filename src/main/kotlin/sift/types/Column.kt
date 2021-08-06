@@ -15,15 +15,11 @@ import kotlin.math.max
  */
 sealed class Column {
 
-    abstract val vector: FieldVector
-
     abstract operator fun get(row: Int): Any?
 
-    abstract fun filter(mask: BitVector): Column
+    abstract fun filter(mask: BoolColumn): Column
 
     abstract val size: Int
-
-    override fun toString(): String = vector.toString()
 
     /**
      * Factory for concise [FieldVector] creation
@@ -73,90 +69,98 @@ sealed class Column {
     }
 }
 
-class BoolColumn(override val vector: BitVector) : Column() {
+abstract class BoolColumn : Column() {
 
-    override fun get(row: Int): Boolean = vector[row] == 1
+    abstract override fun get(row: Int): Int
+}
+
+class BoolVectorColumn(val vector: BitVector) : BoolColumn() {
+
+    override fun get(row: Int): Int = vector[row]
 
     override val size: Int
         get() = vector.valueCount
 
-    override fun filter(mask: BitVector): BoolColumn {
+    override fun filter(mask: BoolColumn): BoolColumn {
         var vals = 0
         val dupe = Factory.boolean(vector.valueCapacity)
         for (i in 0 until vector.valueCount) {
             if (mask[i] == 1) dupe[vals++] = vector[i]
         }
         dupe.valueCount = vals
-        return BoolColumn(dupe)
+        return BoolVectorColumn(dupe)
     }
 }
 
-class BoolLiteralColumn(val value: Boolean, override val size: Int) : Column() {
+class BoolLiteralColumn(val value: Boolean, override val size: Int) : BoolColumn() {
 
-    override val vector: FieldVector
-        get() = TODO("Not yet implemented")
+    override fun get(row: Int): Int = if (value) 1 else 0
 
-    override fun get(row: Int): Any? = value
-
-    override fun filter(mask: BitVector): Column {
+    override fun filter(mask: BoolColumn): Column {
         TODO("Not yet implemented")
     }
 }
 
-class NumColumn(override val vector: Float8Vector) : Column() {
+abstract class NumColumn : Column() {
+
+    abstract override fun get(row: Int): Double
+}
+
+class NumVectorColumn(val vector: Float8Vector) : NumColumn() {
 
     override val size: Int
         get() = vector.valueCount
 
     override fun get(row: Int): Double = vector[row]
 
-    override fun filter(mask: BitVector): NumColumn {
+    override fun filter(mask: BoolColumn): NumColumn {
         var vals = 0
         val dupe = Factory.numeric(vector.valueCapacity)
         for (i in 0 until vector.valueCount) {
             if (mask[i] == 1) dupe[vals++] = vector[i]
         }
         dupe.valueCount = vals
-        return NumColumn(dupe)
+        return NumVectorColumn(dupe)
     }
 }
 
-class NumLiteralColumn(val value: Double, override val size: Int) : Column() {
-    override val vector: FieldVector
-        get() = TODO("Not yet implemented")
+class NumLiteralColumn(val value: Double, override val size: Int) : NumColumn() {
 
-    override fun get(row: Int): Any? = value
+    override fun get(row: Int): Double = value
 
-    override fun filter(mask: BitVector): Column {
+    override fun filter(mask: BoolColumn): Column {
         TODO("Not yet implemented")
     }
 }
 
-class VarCharColumn(override val vector: VarCharVector) : Column() {
+abstract class VarCharColumn() : Column() {
+
+    abstract override fun get(row: Int): ByteArray
+}
+
+class VarCharVectorColumn(val vector: VarCharVector) : VarCharColumn() {
 
     override val size: Int
         get() = vector.valueCount
 
-    override fun get(row: Int): String = String(vector.get(row))
+    override fun get(row: Int): ByteArray = vector.get(row)
 
-    override fun filter(mask: BitVector): VarCharColumn {
+    override fun filter(mask: BoolColumn): VarCharColumn {
         var vals = 0
         val dupe = Factory.varchar(vector.valueCapacity)
         for (i in 0 until vector.valueCount) {
             if (mask[i] == 1) dupe[vals++] = vector[i]
         }
         dupe.valueCount = vals
-        return VarCharColumn(dupe)
+        return VarCharVectorColumn(dupe)
     }
 }
 
-class VarCharLiteralColumn(val value: String, override val size: Int) : Column() {
-    override val vector: FieldVector
-        get() = TODO("Not yet implemented")
+class VarCharLiteralColumn(val value: ByteArray, override val size: Int) : VarCharColumn() {
 
-    override fun get(row: Int): Any? = value
+    override fun get(row: Int): ByteArray = value
 
-    override fun filter(mask: BitVector): Column {
+    override fun filter(mask: BoolColumn): Column {
         TODO("Not yet implemented")
     }
 }

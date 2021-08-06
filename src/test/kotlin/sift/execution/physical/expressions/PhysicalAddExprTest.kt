@@ -3,7 +3,7 @@ package sift.execution.physical.expressions
 import org.junit.jupiter.api.Test
 import sift.types.Batch
 import sift.types.Column
-import sift.types.NumColumn
+import sift.types.NumVectorColumn
 
 internal class PhysicalAddExprTest {
 
@@ -19,7 +19,7 @@ internal class PhysicalAddExprTest {
         ys[1] = 5.0
         ys[2] = 6.0
         ys.valueCount = 3
-        val batch = Batch(listOf(NumColumn(xs), NumColumn(ys)))
+        val batch = Batch(listOf(NumVectorColumn(xs), NumVectorColumn(ys)))
         val lhs = ColumnExpr(0)
         val rhs = ColumnExpr(1)
         val expr = AddExpr(lhs, rhs)

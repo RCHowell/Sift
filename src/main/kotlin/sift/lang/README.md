@@ -4,6 +4,14 @@ The purpose of the Sift language is to provide a super simple query language tha
 
 ## Usage
 
+Given a dataset Foo with columns X and Y, return the product of X and Y where X >= Y
+
+```
+SCAN 'Foo'
+ |> SELECT X >= Y
+ |> PROJECT X * Y -> Z
+```
+
 TODO
 
 ## Grammar

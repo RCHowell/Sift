@@ -2,9 +2,12 @@ package sift.execution.physical.expressions
 
 import sift.types.Batch
 import sift.types.BoolColumn
+import sift.types.BoolVectorColumn
 import sift.types.Column
 import sift.types.NumColumn
+import sift.types.NumVectorColumn
 import sift.types.VarCharColumn
+import sift.types.VarCharVectorColumn
 
 abstract class BinaryExpr(val lhs: Expression, val rhs: Expression) : Expression {
 
@@ -12,33 +15,33 @@ abstract class BinaryExpr(val lhs: Expression, val rhs: Expression) : Expression
         val lc = lhs.eval(batch)
         val rc = rhs.eval(batch)
         assert(lc.size == rc.size)
-        assert(lc.vector.javaClass == rc.vector.javaClass)
+        assert(lc.javaClass == rc.javaClass)
         return when {
             (lc is NumColumn && rc is NumColumn) -> {
                 val result = Column.Factory.numeric(lc.size)
                 for (i in 0 until lc.size) {
-                    result[i] = eval(lc.vector[i], rc.vector[i])
+                    result[i] = eval(lc[i], rc[i])
                 }
                 result.valueCount = lc.size
-                NumColumn(result)
+                NumVectorColumn(result)
             }
             (lc is BoolColumn && rc is BoolColumn) -> {
                 val result = Column.Factory.boolean(lc.size)
                 for (i in 0 until lc.size) {
-                    result[i] = eval(lc.vector[i], rc.vector[i])
+                    result[i] = eval(lc[i] , rc[i])
                 }
                 result.valueCount = lc.size
-                BoolColumn(result)
+                BoolVectorColumn(result)
             }
             (lc is VarCharColumn && rc is VarCharColumn) -> {
                 val result = Column.Factory.varchar(lc.size)
                 for (i in 0 until lc.size) {
-                    result[i] = eval(lc.vector[i], rc.vector[i])
+                    result[i] = eval(lc[i], rc[i])
                 }
                 result.valueCount = lc.size
-                VarCharColumn(result)
+                VarCharVectorColumn(result)
             }
-            else -> throw Exception("unsupported vector type ${lc.vector::class.java}")
+            else -> throw Exception("unsupported column type ${lc::class.java}")
         }
     }
 
@@ -100,22 +103,21 @@ abstract class PredicateExpr(val lhs: Expression, val rhs: Expression) : Express
         val lc = lhs.eval(batch)
         val rc = rhs.eval(batch)
         assert(lc.size == rc.size)
-        assert(lc.javaClass == rc.javaClass)
         val result = Column.Factory.boolean(lc.size)
         when {
             (lc is NumColumn && rc is NumColumn) -> {
-                for (i in 0 until lc.size) result[i] = if (eval(lc.vector[i], rc.vector[i])) 1 else 0
+                for (i in 0 until lc.size) result[i] = if (eval(lc[i], rc[i])) 1 else 0
             }
             (lc is BoolColumn && rc is BoolColumn) -> {
-                for (i in 0 until lc.size) result[i] = if (eval(lc.vector[i], rc.vector[i])) 1 else 0
+                for (i in 0 until lc.size) result[i] = if (eval(lc[i], rc[i])) 1 else 0
             }
             (lc is VarCharColumn && rc is VarCharColumn) -> {
-                for (i in 0 until lc.size) result[i] = if (eval(lc.vector[i], rc.vector[i])) 1 else 0
+                for (i in 0 until lc.size) result[i] = if (eval(lc[i], rc[i])) 1 else 0
             }
-            else -> throw Exception("unsupported vector type ${lc.vector::class.java}")
+            else -> throw Exception("unsupported vector type ${lc::class.java}")
         }
         result.valueCount = lc.size
-        return BoolColumn(result)
+        return BoolVectorColumn(result)
     }
 
     open fun eval(l: Double, r: Double): Boolean = throw Exception("not implemented for ${this.javaClass}")

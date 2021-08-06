@@ -5,7 +5,7 @@ import org.apache.arrow.vector.BitVector
 import org.junit.jupiter.api.Test
 import sift.source.MemSource
 import sift.types.Batch
-import sift.types.BoolColumn
+import sift.types.BoolVectorColumn
 import sift.types.Schema
 
 internal class ScanTest {
@@ -27,7 +27,7 @@ internal class ScanTest {
             data = listOf(
                 Batch(
                     listOf(
-                        BoolColumn(bv)
+                        BoolVectorColumn(bv)
                     )
                 )
             )
