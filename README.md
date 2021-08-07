@@ -7,8 +7,8 @@
 Cannot compare literals to fields because of the different column types. 
 
 ## Types
-- Bool
-- Varchar
+- Boolean
+- String
 - Numeric
 
 ## SQL Subset

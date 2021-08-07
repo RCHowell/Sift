@@ -1,6 +1,6 @@
 package sift.execution.physical.sifterators
 
-import sift.execution.physical.expressions.PredicateExpr
+import sift.execution.physical.expressions.PredicateBinaryExpr
 import sift.types.Batch
 
 /**
@@ -8,10 +8,10 @@ import sift.types.Batch
  * Seems expensive to filter with columns versus rows.
  *
  * @property input
- * @property predicate
+ * @property predicateBinary
  * @constructor Create empty Selection
  */
-class Selection(val input: Sifterator, val predicate: PredicateExpr) : Sifterator {
+class Selection(val input: Sifterator, val predicateBinary: PredicateBinaryExpr) : Sifterator {
 
     override fun open() {
         input.open()
@@ -19,7 +19,7 @@ class Selection(val input: Sifterator, val predicate: PredicateExpr) : Sifterato
 
     override fun next(): Batch? {
         val batch = input.next() ?: return null
-        val mask = predicate.eval(batch)
+        val mask = predicateBinary.eval(batch)
         val cols = batch.columns.map { it.filter(mask) }
         return Batch(cols)
     }

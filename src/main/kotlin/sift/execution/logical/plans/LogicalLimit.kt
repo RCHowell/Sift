@@ -17,7 +17,7 @@ import sift.types.Schema
 class LogicalLimit(
     private val input: LogicalPlan,
     private val n: Int,
-) : LogicalPlan {
+) : LogicalPlan() {
 
     override val schema: Schema = input.schema
 

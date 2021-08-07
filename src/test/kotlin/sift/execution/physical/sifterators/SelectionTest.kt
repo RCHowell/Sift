@@ -2,8 +2,8 @@ package sift.execution.physical.sifterators
 
 import org.junit.jupiter.api.Test
 import sift.execution.physical.expressions.ColumnExpr
-import sift.execution.physical.expressions.GtExpr
-import sift.execution.physical.expressions.GteExpr
+import sift.execution.physical.expressions.GtBinaryExpr
+import sift.execution.physical.expressions.GteBinaryExpr
 import sift.execution.physical.expressions.LiteralExpr
 import sift.execution.physical.expressions.MulExpr
 import sift.source.MemSource
@@ -42,13 +42,13 @@ internal class SelectionTest {
             input = Projection(
                 input = Selection(
                     input = Scan(source, listOf("a", "b")),
-                    GteExpr(ColumnExpr(0), ColumnExpr(1)),
+                    GteBinaryExpr(ColumnExpr(0), ColumnExpr(1)),
                 ),
                 projections = mapOf(
                     0 to MulExpr(ColumnExpr(0), ColumnExpr(1))
                 )
             ),
-            predicate = GtExpr(
+            predicateBinary = GtBinaryExpr(
                 lhs = ColumnExpr(0),
                 rhs = LiteralExpr(NumLiteralColumn(5.0, 3))
             )

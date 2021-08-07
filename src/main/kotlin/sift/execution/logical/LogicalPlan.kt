@@ -9,21 +9,24 @@ import sift.types.Schema
  * AFAIK a logical plan represents a transformation between the incoming transformations.
  * I'm thinking of logical plans as a chain of mapping functions.
  *
+ * Change to `sealed interface` when the project migrates from kotlin 1.4 to 1.5
+ *
  * @constructor Create empty Logical plan
  */
-interface LogicalPlan {
+abstract class LogicalPlan {
 
     /**
      * Output schema of this transformation
      */
-    val schema: Schema
+    abstract val schema: Schema
 
     /**
      * Inputs of this logical plan. Grove says this will be useful for the visitor pattern, but I'm not there yet.
+     * Why not a value?
      */
-    fun inputs(): List<LogicalPlan>
+    abstract fun inputs(): List<LogicalPlan>
 
-    fun pretty(): String {
+    open fun pretty(): String {
         return format(this)
     }
 }

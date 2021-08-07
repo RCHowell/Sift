@@ -2,8 +2,15 @@ package sift.lang.lexers
 
 import sift.lang.SiftLexer
 import sift.lang.Token
-import sift.lang.TokenType.*
-import java.lang.StringBuilder
+import sift.lang.TokenType.COMMA
+import sift.lang.TokenType.IDENTIFIER
+import sift.lang.TokenType.KEYWORD
+import sift.lang.TokenType.LEFT_PAREN
+import sift.lang.TokenType.LITERAL
+import sift.lang.TokenType.MAPSTO
+import sift.lang.TokenType.OPERATOR
+import sift.lang.TokenType.PIPE
+import sift.lang.TokenType.RIGHT_PAREN
 
 class InvalidTokenException(t: String) : Exception("invalid token $t")
 
@@ -66,7 +73,11 @@ class DirectCodedLexer : SiftLexer {
                         if (v in Token.KEYWORDS) {
                             add(Token(KEYWORD, v))
                         } else {
-                            add(Token(IDENTIFIER, v))
+                            when (v) {
+                                "TRUE" -> add(Token(LITERAL, true))
+                                "FALSE" -> add(Token(LITERAL, false))
+                                else -> add(Token(IDENTIFIER, v))
+                            }
                         }
                         continue
                     }

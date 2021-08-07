@@ -21,7 +21,14 @@ class Batch(val columns: List<Column>) {
         for (i in 0 until records) {
             val sb = buildString {
                 append("| ")
-                append(columns.map { it[i] }.joinToString(" | "))
+                append(columns.map {
+                    val v = it[i]
+                    val r = when (v) {
+                        is ByteArray -> v.toString(Charsets.UTF_8)
+                        else -> v.toString()
+                    }
+                    r
+                }.joinToString(" | "))
                 append(" |")
             }
             append('\n')

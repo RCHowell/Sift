@@ -54,11 +54,11 @@ sealed class Column {
             return vector
         }
 
-        fun varchar(values: List<String>): VarCharVector = varchar(values.size, values)
+        fun string(values: List<String>): VarCharVector = string(values.size, values)
 
-        fun varchar(capacity: Int = 0, values: List<String> = listOf()): VarCharVector {
+        fun string(capacity: Int = 0, values: List<String> = listOf()): VarCharVector {
             val vector = VarCharVector("v", RootAllocator(Long.MAX_VALUE))
-            vector.setInitialCapacity(max(capacity, values.size))
+            //            vector.setInitialCapacity(max(capacity, values.size))
             vector.allocateNew()
             for (i in values.indices) {
                 vector[i] = values[i].toByteArray() // UTF-8
@@ -90,6 +90,8 @@ class BoolVectorColumn(val vector: BitVector) : BoolColumn() {
         dupe.valueCount = vals
         return BoolVectorColumn(dupe)
     }
+
+    override fun toString(): String = vector.toString()
 }
 
 class BoolLiteralColumn(val value: Boolean, override val size: Int) : BoolColumn() {
@@ -122,6 +124,8 @@ class NumVectorColumn(val vector: Float8Vector) : NumColumn() {
         dupe.valueCount = vals
         return NumVectorColumn(dupe)
     }
+
+    override fun toString(): String = vector.toString()
 }
 
 class NumLiteralColumn(val value: Double, override val size: Int) : NumColumn() {
@@ -133,30 +137,32 @@ class NumLiteralColumn(val value: Double, override val size: Int) : NumColumn() 
     }
 }
 
-abstract class VarCharColumn() : Column() {
+abstract class StringColumn() : Column() {
 
     abstract override fun get(row: Int): ByteArray
 }
 
-class VarCharVectorColumn(val vector: VarCharVector) : VarCharColumn() {
+class StringVectorColumn(val vector: VarCharVector) : StringColumn() {
 
     override val size: Int
         get() = vector.valueCount
 
     override fun get(row: Int): ByteArray = vector.get(row)
 
-    override fun filter(mask: BoolColumn): VarCharColumn {
+    override fun filter(mask: BoolColumn): StringColumn {
         var vals = 0
-        val dupe = Factory.varchar(vector.valueCapacity)
+        val dupe = Factory.string(vector.valueCapacity)
         for (i in 0 until vector.valueCount) {
             if (mask[i] == 1) dupe[vals++] = vector[i]
         }
         dupe.valueCount = vals
-        return VarCharVectorColumn(dupe)
+        return StringVectorColumn(dupe)
     }
+
+    override fun toString(): String = vector.toString()
 }
 
-class VarCharLiteralColumn(val value: ByteArray, override val size: Int) : VarCharColumn() {
+class StringLiteralColumn(val value: ByteArray, override val size: Int) : StringColumn() {
 
     override fun get(row: Int): ByteArray = value
 

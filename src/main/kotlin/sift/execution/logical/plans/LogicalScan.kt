@@ -11,9 +11,9 @@ import sift.source.Source
  * @constructor Create empty Logical scan
  */
 class LogicalScan(
-    private val source: Source,
-    private val identifiers: List<String> = listOf(),
-) : LogicalPlan {
+    val source: Source,
+    val identifiers: List<String> = listOf(),
+) : LogicalPlan() {
 
     /**
      * Schema is derived from the source

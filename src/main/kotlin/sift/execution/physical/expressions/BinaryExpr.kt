@@ -6,8 +6,8 @@ import sift.types.BoolVectorColumn
 import sift.types.Column
 import sift.types.NumColumn
 import sift.types.NumVectorColumn
-import sift.types.VarCharColumn
-import sift.types.VarCharVectorColumn
+import sift.types.StringColumn
+import sift.types.StringVectorColumn
 
 abstract class BinaryExpr(val lhs: Expression, val rhs: Expression) : Expression {
 
@@ -15,7 +15,6 @@ abstract class BinaryExpr(val lhs: Expression, val rhs: Expression) : Expression
         val lc = lhs.eval(batch)
         val rc = rhs.eval(batch)
         assert(lc.size == rc.size)
-        assert(lc.javaClass == rc.javaClass)
         return when {
             (lc is NumColumn && rc is NumColumn) -> {
                 val result = Column.Factory.numeric(lc.size)
@@ -28,18 +27,18 @@ abstract class BinaryExpr(val lhs: Expression, val rhs: Expression) : Expression
             (lc is BoolColumn && rc is BoolColumn) -> {
                 val result = Column.Factory.boolean(lc.size)
                 for (i in 0 until lc.size) {
-                    result[i] = eval(lc[i] , rc[i])
+                    result[i] = eval(lc[i], rc[i])
                 }
                 result.valueCount = lc.size
                 BoolVectorColumn(result)
             }
-            (lc is VarCharColumn && rc is VarCharColumn) -> {
-                val result = Column.Factory.varchar(lc.size)
+            (lc is StringColumn && rc is StringColumn) -> {
+                val result = Column.Factory.string(lc.size)
                 for (i in 0 until lc.size) {
                     result[i] = eval(lc[i], rc[i])
                 }
                 result.valueCount = lc.size
-                VarCharVectorColumn(result)
+                StringVectorColumn(result)
             }
             else -> throw Exception("unsupported column type ${lc::class.java}")
         }
@@ -52,7 +51,7 @@ abstract class BinaryExpr(val lhs: Expression, val rhs: Expression) : Expression
     open fun eval(l: String, r: String): String = throw Exception("not implemented for ${this.javaClass}")
 
     // VarCharVector
-    private fun eval(l: ByteArray, r: ByteArray): ByteArray = eval(l.toString(), r.toString()).toByteArray()
+    private fun eval(l: ByteArray, r: ByteArray): ByteArray = eval(l.toString(Charsets.UTF_8), r.toString(Charsets.UTF_8)).toByteArray()
 
     // BitVector
     private fun eval(l: Int, r: Int): Int = if (eval(l == 1, r == 1)) 1 else 0
@@ -67,6 +66,8 @@ abstract class BinaryExpr(val lhs: Expression, val rhs: Expression) : Expression
 class AddExpr(lhs: Expression, rhs: Expression) : BinaryExpr(lhs, rhs) {
 
     override fun eval(l: Double, r: Double): Double = l + r
+
+    override fun eval(l: String, r: String): String = l + r
 }
 
 class SubExpr(lhs: Expression, rhs: Expression) : BinaryExpr(lhs, rhs) {
@@ -97,7 +98,7 @@ class ModExpr(lhs: Expression, rhs: Expression) : BinaryExpr(lhs, rhs) {
  * ============
  */
 
-abstract class PredicateExpr(val lhs: Expression, val rhs: Expression) : Expression {
+abstract class PredicateBinaryExpr(val lhs: Expression, val rhs: Expression) : Expression {
 
     override fun eval(batch: Batch): BoolColumn {
         val lc = lhs.eval(batch)
@@ -111,7 +112,7 @@ abstract class PredicateExpr(val lhs: Expression, val rhs: Expression) : Express
             (lc is BoolColumn && rc is BoolColumn) -> {
                 for (i in 0 until lc.size) result[i] = if (eval(lc[i], rc[i])) 1 else 0
             }
-            (lc is VarCharColumn && rc is VarCharColumn) -> {
+            (lc is StringColumn && rc is StringColumn) -> {
                 for (i in 0 until lc.size) result[i] = if (eval(lc[i], rc[i])) 1 else 0
             }
             else -> throw Exception("unsupported vector type ${lc::class.java}")
@@ -139,39 +140,39 @@ abstract class PredicateExpr(val lhs: Expression, val rhs: Expression) : Express
  * ============================
  */
 
-class AndExpr(lhs: Expression, rhs: Expression) : PredicateExpr(lhs, rhs) {
+class AndBinaryExpr(lhs: Expression, rhs: Expression) : PredicateBinaryExpr(lhs, rhs) {
     override fun eval(l: Boolean, r: Boolean): Boolean = l && r
 }
 
-class OrExpr(lhs: Expression, rhs: Expression) : PredicateExpr(lhs, rhs) {
+class OrBinaryExpr(lhs: Expression, rhs: Expression) : PredicateBinaryExpr(lhs, rhs) {
     override fun eval(l: Boolean, r: Boolean): Boolean = l || r
 }
 
-class GtExpr(lhs: Expression, rhs: Expression) : PredicateExpr(lhs, rhs) {
+class GtBinaryExpr(lhs: Expression, rhs: Expression) : PredicateBinaryExpr(lhs, rhs) {
     override fun eval(l: Double, r: Double): Boolean = l > r
 
     override fun eval(l: String, r: String): Boolean = l > r
 }
 
-class GteExpr(lhs: Expression, rhs: Expression) : PredicateExpr(lhs, rhs) {
+class GteBinaryExpr(lhs: Expression, rhs: Expression) : PredicateBinaryExpr(lhs, rhs) {
     override fun eval(l: Double, r: Double): Boolean = l >= r
 
     override fun eval(l: String, r: String): Boolean = l >= r
 }
 
-class LtExpr(lhs: Expression, rhs: Expression) : PredicateExpr(lhs, rhs) {
+class LtBinaryExpr(lhs: Expression, rhs: Expression) : PredicateBinaryExpr(lhs, rhs) {
     override fun eval(l: Double, r: Double): Boolean = l < r
 
     override fun eval(l: String, r: String): Boolean = l < r
 }
 
-class LteExpr(lhs: Expression, rhs: Expression) : PredicateExpr(lhs, rhs) {
+class LteBinaryExpr(lhs: Expression, rhs: Expression) : PredicateBinaryExpr(lhs, rhs) {
     override fun eval(l: Double, r: Double): Boolean = l <= r
 
     override fun eval(l: String, r: String): Boolean = l <= r
 }
 
-class EqExpr(lhs: Expression, rhs: Expression) : PredicateExpr(lhs, rhs) {
+class EqBinaryExpr(lhs: Expression, rhs: Expression) : PredicateBinaryExpr(lhs, rhs) {
     override fun eval(l: Double, r: Double): Boolean = l == r
 
     override fun eval(l: Boolean, r: Boolean): Boolean = l == r
@@ -179,7 +180,7 @@ class EqExpr(lhs: Expression, rhs: Expression) : PredicateExpr(lhs, rhs) {
     override fun eval(l: String, r: String): Boolean = l == r
 }
 
-class NeqExpr(lhs: Expression, rhs: Expression) : PredicateExpr(lhs, rhs) {
+class NeqBinaryExpr(lhs: Expression, rhs: Expression) : PredicateBinaryExpr(lhs, rhs) {
     override fun eval(l: Double, r: Double): Boolean = l != r
 
     override fun eval(l: Boolean, r: Boolean): Boolean = l != r

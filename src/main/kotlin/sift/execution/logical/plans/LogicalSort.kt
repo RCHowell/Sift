@@ -16,7 +16,7 @@ class LogicalSort(
     private val input: LogicalPlan,
     private val asc: Boolean,
     private val fields: List<LogicalIdentifierExpr>,
-) : LogicalPlan {
+) : LogicalPlan() {
 
     /**
      * Sorting does not change schema

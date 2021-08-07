@@ -18,10 +18,10 @@ import sift.types.Schema
  *  The grouping operator, gamma, is an operator that combines the effect of grouping and aggregation. p213
  */
 class LogicalAggregation(
-    private val input: LogicalPlan,
+     val input: LogicalPlan,
     private val aggs: Map<LogicalIdentifierExpr, LogicalAggregateExpr>,
     private val groups: List<LogicalIdentifierExpr>,
-) : LogicalPlan {
+) : LogicalPlan() {
 
     override val schema: Schema = Schema(
         aggs.entries.map { (alias, expr) ->

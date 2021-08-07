@@ -4,12 +4,11 @@ import sift.execution.logical.LogicalExpr
 import sift.execution.logical.LogicalPlan
 import sift.types.Field
 import sift.types.Type
-import java.lang.IllegalArgumentException
 
 /**
  * Representation of a literal
  */
-class LogicalLiteralExpr<T : Any>(private val v: T) : LogicalExpr {
+class LogicalLiteralExpr<T : Any>(val v: T) : LogicalExpr {
 
     var type: Type = when (v) {
         is Boolean -> Type.Bool

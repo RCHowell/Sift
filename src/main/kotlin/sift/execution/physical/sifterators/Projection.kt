@@ -13,8 +13,8 @@ import sift.types.Batch
  * @constructor Create empty Projection
  */
 class Projection(
-    val projections: Map<Int, Expression>,
     val input: Sifterator,
+    val projections: Map<Int, Expression>,
 ) : Sifterator {
 
     override fun open() {

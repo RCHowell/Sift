@@ -26,7 +26,7 @@ class LogicalJoin(
     private val rhs: LogicalPlan,
     private val condition: LogicalExpr?,
     private val type: JoinType,
-) : LogicalPlan {
+) : LogicalPlan() {
 
     /**
      * Schema of a join is the combination of the two schemas

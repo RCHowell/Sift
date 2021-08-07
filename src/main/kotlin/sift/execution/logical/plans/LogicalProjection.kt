@@ -18,7 +18,7 @@ import sift.types.Schema
 class LogicalProjection(
     private val input: LogicalPlan,
     val projections: Map<LogicalIdentifierExpr, LogicalExpr>,
-) : LogicalPlan {
+) : LogicalPlan() {
 
     /**
      * Each expression describes its output field, so the Schema produced by this

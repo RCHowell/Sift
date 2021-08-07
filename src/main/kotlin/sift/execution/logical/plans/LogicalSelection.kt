@@ -13,9 +13,9 @@ import sift.types.Schema
  * @constructor Create empty Logical selection
  */
 class LogicalSelection(
-    private val input: LogicalPlan,
-    private val expr: LogicalExpr,
-) : LogicalPlan {
+    val input: LogicalPlan,
+    val expr: LogicalExpr,
+) : LogicalPlan() {
 
     override val schema: Schema = input.schema
 
