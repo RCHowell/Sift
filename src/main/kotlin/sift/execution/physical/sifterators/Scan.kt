@@ -22,7 +22,13 @@ class Scan(
         batches = source.scan(fields).iterator()
     }
 
-    override fun next(): Batch = batches.next()
+    override fun next(): Batch? {
+        return try {
+            batches.next()
+        } catch (ex: NoSuchElementException) {
+            null
+        }
+    }
 
     override fun close() {
         source.close()

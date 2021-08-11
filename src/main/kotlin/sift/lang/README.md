@@ -56,8 +56,6 @@ A query is an initial *relation producing* operation followed by several transfo
 
 #### Relations
 
-Relation nesting and precedence might get out of hand.
-
 ```bash
 <RELATION-PRODUCTION> ::= <RELATION>
                        |  <JOIN>
@@ -67,8 +65,7 @@ Relation nesting and precedence might get out of hand.
                        |  <INTERSECT>
 
 <RELATION>  ::= '<ID>'        # quoted identifier
-             |  (<QUERY>)     # sub-query
-             |  <REL-LITERAL> # relation literal
+             |  ( <QUERY> )     # sub-query
 
 <JOIN>      ::= <RELATION> (AS <ID>)? (OUTER|LEFT|RIGHT)? JOIN <RELATION> (AS <ID>)? (ON <EXPR>)?
 <CROSS>     ::= <RELATION> (X|CROSS) <RELATION>
@@ -117,15 +114,16 @@ Let *R(A, B, C)* and *S(B, C, D)* be two relations. Here are some example relati
 
 #### Group
 ```bash
-<GROUP> ::= GROUP <AGGS> (BY <IDS>)?
-<AGG>   ::= <ID>(<ID>) -> <ID>
+<GROUP>    ::= GROUP <AGGS> (BY <IDS>)?
+<AGG>      ::= <AGG_FUNC> -> <ID>
+<AGG_FUNC> ::= \#<ID>(<ID>)
 ```
 
 Examples
 ```
 'People'
   |> PROJECT height, age
-  |> GROUP AVG(height), MIN(height), MAX(height) BY age
+  |> GROUP #AVG(height), #MIN(height), #MAX(height) BY age
 ```
 
 ### Expressions
@@ -134,11 +132,10 @@ Examples
 <EXPR>    ::= <FACTOR>
            |  <FACTOR> <OP> <EXPR>
            |  ( <EXPR> )
-<FACTOR>  ::= <ID>          # field reference
-           |  <ID>(<EXPR>)  # functions
+<FACTOR>  ::= <ID>            # field reference
+           |  \#<ID>(<EXPR>)  # functions
            |  <LITERAL>
 <LITERAL> ::= (<STRING>|<NUM>|<BOOL>|<NULL>)
-<OP>      ::= ()
 ```
 
 ### Examples
@@ -165,8 +162,7 @@ Examples
   |> JOIN 'B' on xTwo = foo # where's foo coming from without a projection?
   
 # Supported
-('A' |> PROJECT x * 2 -> xTwo)
-  JOIN
-('B' |> PROJECT foo)
-  ON xTwo = foo
+JOIN ('A' |> PROJECT x * 2 -> xTwo)
+     ('B' |> PROJECT foo)
+ON xTwo = foo
 ```

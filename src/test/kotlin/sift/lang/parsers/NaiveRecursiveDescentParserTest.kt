@@ -28,7 +28,7 @@ internal class NaiveRecursiveDescentParserTest {
         val parser = NaiveRecursiveDescentParser(env)
         val query = """
           'Families'
-            |> SELECT gender = 'Male'
+            |> SELECT (gender = 'Male') && (age > 3)
             |> GROUP MIN(age) -> youngest, MAX(age) -> oldest BY lastName
             |> PROJECT oldest - youngest -> gap
             |> SORT BY gap DESC

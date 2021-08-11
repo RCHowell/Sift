@@ -9,7 +9,8 @@ enum class TokenType {
     LEFT_PAREN,
     RIGHT_PAREN,
     MAPSTO,
-    COMMA;
+    COMMA,
+    EOF;
 }
 
 enum class KEYWORDS {
@@ -21,6 +22,14 @@ enum class KEYWORDS {
     DISTINCT,
 }
 
+enum class PRODUCTIONS {
+    JOIN,
+    CROSS,
+    UNION,
+    DIFF,
+    INTERSECT,
+}
+
 class Token<T : Any>(val type: TokenType, val value: T? = null) {
 
     companion object {
@@ -28,11 +37,12 @@ class Token<T : Any>(val type: TokenType, val value: T? = null) {
         /**
          * Bag operators
          */
-        val BAGOPS = setOf(
-            "X", "CROSS",
-            "U", "UNION",
-            "\\", "DIFF",
-            "&", "INTERSECT",
+        val PRODUCTIONS = setOf(
+            "JOIN",
+            "CROSS",
+            "UNION",
+            "DIFF",
+            "INTERSECT",
         )
 
         /**
@@ -51,7 +61,7 @@ class Token<T : Any>(val type: TokenType, val value: T? = null) {
             "OUTER",
             "LEFT",
             "RIGHT",
-        ).union(BAGOPS)
+        ).union(PRODUCTIONS)
 
         /**
          * O p e r a t o r s
@@ -76,4 +86,46 @@ class Token<T : Any>(val type: TokenType, val value: T? = null) {
     }
 
     override fun toString(): String = "TOKEN($type, $value)"
+}
+
+/**
+ * TokenList is a helper class for parsers to abstract processing the list of tokens from a Lexer
+ *
+ * @constructor Create empty Token list
+ */
+class TokenList(val tokens: List<Token<*>>) {
+
+    var pointer = 0
+
+    fun reset() {
+        pointer = 0
+    }
+
+    /**
+     * Returns the latest token without advancing the pointer
+     */
+    fun peek(): Token<*> = tokens[pointer]
+
+    /**
+     * Returns the latest token and advances the pointer
+     */
+    fun next(): Token<*> = tokens[pointer++]
+
+    /**
+     * Returns some context around the current token
+     */
+    fun context(n: Int = 3): String = buildString {
+        for (i in (pointer - n) until (pointer + n)) {
+            if (i == pointer - 1) {
+                append(">> ")
+                append(tokens[i].value)
+                append(" <<")
+                continue
+            }
+            if (i > 0 && i < tokens.size) {
+                append(tokens[i].value)
+            }
+            append(" ")
+        }
+    }
 }

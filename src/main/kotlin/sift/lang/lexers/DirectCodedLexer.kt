@@ -3,6 +3,7 @@ package sift.lang.lexers
 import sift.lang.SiftLexer
 import sift.lang.Token
 import sift.lang.TokenType.COMMA
+import sift.lang.TokenType.EOF
 import sift.lang.TokenType.IDENTIFIER
 import sift.lang.TokenType.KEYWORD
 import sift.lang.TokenType.LEFT_PAREN
@@ -204,6 +205,10 @@ class DirectCodedLexer : SiftLexer {
                 State.INT -> {
                     when {
                         curr == '.' -> state = State.FLOAT
+                        curr == ')' -> {
+                            add(Token(LITERAL, buffer.toString().toInt(10)))
+                            add(Token(RIGHT_PAREN, ")"))
+                        }
                         !curr.isDigit() -> invalid()
                     }
                     buffer.append(curr)
@@ -227,6 +232,7 @@ class DirectCodedLexer : SiftLexer {
                 }
             }
         }
+        tokens.add(Token<String>(EOF))
         return tokens
     }
 }

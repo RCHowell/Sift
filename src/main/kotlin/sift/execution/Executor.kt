@@ -14,10 +14,11 @@ class Executor {
             val logicalPlan = parser.parse(lexer.tokenize(query))
             val physicalPlan = Planner.plan(logicalPlan)
             physicalPlan.open()
-            do {
-                val batch = physicalPlan.next()
+            var batch = physicalPlan.next()
+            while (batch != null) {
                 println(batch)
-            } while (batch != null)
+                batch = physicalPlan.next()
+            }
         }
     }
 }
