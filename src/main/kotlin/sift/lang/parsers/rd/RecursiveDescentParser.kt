@@ -7,6 +7,7 @@ import sift.execution.logical.expressions.BinaryOp
 import sift.execution.logical.expressions.LogicalBinaryExpr
 import sift.execution.logical.expressions.LogicalIdentifierExpr
 import sift.execution.logical.expressions.LogicalLiteralExpr
+import sift.execution.logical.plans.LogicalProjection
 import sift.execution.logical.plans.LogicalScan
 import sift.execution.logical.plans.LogicalSelection
 import sift.lang.SiftParser
@@ -54,6 +55,7 @@ class RecursiveDescentParser(val environment: Environment) : SiftParser {
     private fun production(): LogicalPlan {
         val word = words.next()
         return when (word.type) {
+            // TODO these must be infix
             TokenType.KEYWORD -> {
                 when (word.value) {
                     "JOIN" -> TODO()
@@ -84,7 +86,7 @@ class RecursiveDescentParser(val environment: Environment) : SiftParser {
         if (word.type != TokenType.KEYWORD) throw error("keyword", word.value)
         return when (word.value as String) {
             "SELECT" -> select(input)
-            //            "PROJECT" -> project(input)
+            "PROJECT" -> project(input)
             //            "GROUP" -> group(input)
             //            "SORT" -> sort(input)
             //            "LIMIT" -> limit(input)
@@ -140,6 +142,45 @@ class RecursiveDescentParser(val environment: Environment) : SiftParser {
     private fun operator(op: String, lhs: LogicalExpr, rhs: LogicalExpr): LogicalExpr {
         val binop = BinaryOp.get(op)
         return LogicalBinaryExpr.get(binop, lhs, rhs)
+    }
+
+    private fun project(input: LogicalPlan): LogicalPlan {
+        val projections = mutableMapOf<LogicalIdentifierExpr, LogicalExpr>()
+        while (true) {
+            val (expr, ident) = func()
+            projections[ident] = expr
+            val nextWord = words.peek()
+            if (nextWord.type == TokenType.PIPE || nextWord.type == TokenType.EOF) {
+                return LogicalProjection(input, projections)
+            }
+            consume(TokenType.COMMA)
+        }
+    }
+
+    /**
+     * Returns the [LogicalExpr] -> [LogicalIdentifierExpr] pair. Handles the identity projection as well.
+     *
+     * @return
+     */
+    private fun func(): Pair<LogicalExpr, LogicalIdentifierExpr> {
+        val expr = expression()
+
+        // Shorthand identity projection
+        if (expr is LogicalIdentifierExpr && words.peek().type != TokenType.MAPSTO) {
+            return Pair(expr, expr)
+        }
+
+        // Other than a shorthand identity, functions must use -> symbol
+        var word = words.next()
+        if (word.type != TokenType.MAPSTO) {
+            throw error("->", word.value)
+        }
+
+        word = words.next()
+        if (word.type != TokenType.IDENTIFIER) {
+            throw error("identifier", word)
+        }
+        return Pair(expr, LogicalIdentifierExpr(word.value as String))
     }
 
     /**

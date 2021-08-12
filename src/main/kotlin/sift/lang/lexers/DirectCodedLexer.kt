@@ -141,6 +141,7 @@ class DirectCodedLexer : SiftLexer {
                         '-' -> State.OP
                         '*' -> State.OP
                         '/' -> State.OP
+                        '%' -> State.OP
                         else -> state
                     }
 

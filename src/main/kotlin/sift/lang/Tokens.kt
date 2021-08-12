@@ -68,7 +68,7 @@ class Token<T : Any>(val type: TokenType, val value: T? = null) {
          */
         val OPERATORS = setOf(
             "=", "!=", "<", "<=", ">=", ">", "~",
-            "||", "&&",
+            "||", "&&", "%",
             "+", "-", "*", "/",
         )
 

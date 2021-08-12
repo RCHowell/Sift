@@ -26,7 +26,11 @@ internal class RecursiveDescentParserTest {
         env.registerSource(src)
         val lexer = DirectCodedLexer()
         val parser = RecursiveDescentParser(env)
-        val query = "'Families' |> SELECT (gender = 'Male') && (age > 3)"
+        val query = """
+          'Families'
+            |> SELECT (gender = 'Male') && (age > 3)
+            |> PROJECT gender, height / 12 -> feet, height % 12 -> inches
+        """.trimIndent()
         val tokens = lexer.tokenize(query)
         val plan = parser.parse(tokens)
         println(plan.pretty())
