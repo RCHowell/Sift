@@ -61,6 +61,8 @@ class Token<T : Any>(val type: TokenType, val value: T? = null) {
             "OUTER",
             "LEFT",
             "RIGHT",
+            "ASC",
+            "DESC",
         ).union(PRODUCTIONS)
 
         /**

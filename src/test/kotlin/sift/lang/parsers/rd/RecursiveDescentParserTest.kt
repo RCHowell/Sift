@@ -30,6 +30,8 @@ internal class RecursiveDescentParserTest {
           'Families'
             |> SELECT (gender = 'Male') && (age > 3)
             |> PROJECT gender, height / 12 -> feet, height % 12 -> inches
+            |> GROUP MAX(age) AS OldestAtHeight BY feet
+            |> LIMIT 3
         """.trimIndent()
         val tokens = lexer.tokenize(query)
         val plan = parser.parse(tokens)

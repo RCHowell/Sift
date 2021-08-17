@@ -16,7 +16,7 @@ internal class ExecutorTest {
     @Test
     fun sift() {
         val source = MemSource(
-            identifier = "Dogs",
+            identifier = "Pets",
             schema = Schema(
                 listOf(
                     Field("name", Type.String),
@@ -42,9 +42,9 @@ internal class ExecutorTest {
                         NumVectorColumn(
                             Column.Factory.numeric(
                                 listOf(
-                                    13.0,
+                                    4.0,
                                     11.0,
-                                    3.0,
+                                    9.0,
                                     2.0,
                                     15.0,
                                     2.0,
@@ -54,7 +54,7 @@ internal class ExecutorTest {
                         BoolVectorColumn(
                             Column.Factory.boolean(
                                 listOf(
-                                    false,
+                                    true,
                                     true,
                                     false,
                                     false,
@@ -71,6 +71,13 @@ internal class ExecutorTest {
         env.registerSource(source)
 
         // Execute the query
-        Executor.sift(env, "'Dogs' |> SELECT age < 10 |> PROJECT 'Good gorl, ' + name -> greeting")
+        Executor.sift(
+            env,
+            """
+           'Pets'
+             |> SELECT (isMale = FALSE) && age < 5
+             |> PROJECT 'Good gorl, ' + name -> greeting
+            """.trimIndent()
+        )
     }
 }

@@ -4,12 +4,17 @@ import sift.execution.Environment
 import sift.execution.logical.LogicalExpr
 import sift.execution.logical.LogicalPlan
 import sift.execution.logical.expressions.BinaryOp
+import sift.execution.logical.expressions.LogicalAggregateExpr
 import sift.execution.logical.expressions.LogicalBinaryExpr
 import sift.execution.logical.expressions.LogicalIdentifierExpr
 import sift.execution.logical.expressions.LogicalLiteralExpr
+import sift.execution.logical.plans.LogicalAggregation
+import sift.execution.logical.plans.LogicalDistinct
+import sift.execution.logical.plans.LogicalLimit
 import sift.execution.logical.plans.LogicalProjection
 import sift.execution.logical.plans.LogicalScan
 import sift.execution.logical.plans.LogicalSelection
+import sift.execution.logical.plans.LogicalSort
 import sift.lang.SiftParser
 import sift.lang.Token
 import sift.lang.TokenList
@@ -87,10 +92,10 @@ class RecursiveDescentParser(val environment: Environment) : SiftParser {
         return when (word.value as String) {
             "SELECT" -> select(input)
             "PROJECT" -> project(input)
-            //            "GROUP" -> group(input)
-            //            "SORT" -> sort(input)
-            //            "LIMIT" -> limit(input)
-            //            "DISTINCT" -> distinct(input)
+            "GROUP" -> group(input)
+            "SORT" -> sort(input)
+            "LIMIT" -> limit(input)
+            "DISTINCT" -> LogicalDistinct(input)
             else -> throw InvalidSyntaxException("Unknown transformation $word")
         }
     }
@@ -183,6 +188,80 @@ class RecursiveDescentParser(val environment: Environment) : SiftParser {
         return Pair(expr, LogicalIdentifierExpr(word.value as String))
     }
 
+    private fun limit(input: LogicalPlan): LogicalPlan {
+        val word = words.next()
+        if (word.type != TokenType.LITERAL && word.value !is Int) {
+            throw error("integer limit", word.value)
+        }
+        return LogicalLimit(input, word.value as Int)
+    }
+
+    private fun group(input: LogicalPlan): LogicalPlan {
+        val aggs = mutableMapOf<LogicalIdentifierExpr, LogicalAggregateExpr>()
+        val groups = mutableListOf<LogicalIdentifierExpr>()
+        while (true) {
+            val (agg, alias) = agg()
+            aggs[alias] = agg
+            val nextWord = words.peek()
+            // end of the GROUP transform
+            if (nextWord.type == TokenType.PIPE || nextWord.type == TokenType.EOF) {
+                break
+            }
+            // BY clause
+            if (nextWord.type == TokenType.KEYWORD && nextWord.value == "BY") {
+                groups.addAll(ids())
+                break
+            }
+            consume(TokenType.COMMA)
+        }
+        return LogicalAggregation(input, aggs, groups)
+    }
+
+    private fun agg(): Pair<LogicalAggregateExpr, LogicalIdentifierExpr> {
+        val aggFunc = words.next()
+        if (aggFunc.type != TokenType.IDENTIFIER) throw InvalidSyntaxException("expected identifier at $aggFunc")
+        consume(TokenType.LEFT_PAREN)
+        val expr = expression()
+        consume(TokenType.RIGHT_PAREN)
+        val agg = LogicalAggregateExpr.get(aggFunc.value as String, expr)
+        val alias = alias()
+        return Pair(agg, alias)
+    }
+
+    private fun alias(): LogicalIdentifierExpr {
+        val asKeyword = words.next()
+        if (asKeyword.type != TokenType.MAPSTO) throw error("AS", words)
+        val alias = words.next()
+        if (alias.type != TokenType.IDENTIFIER) throw error("identifier", alias)
+        return LogicalIdentifierExpr(alias.value as String)
+    }
+
+    private fun ids(): Collection<LogicalIdentifierExpr> {
+        val ids = mutableListOf<LogicalIdentifierExpr>()
+        while (true) {
+            val id = words.next()
+            if (id.type != TokenType.IDENTIFIER) throw error(TokenType.IDENTIFIER.toString(), id)
+            ids.add(LogicalIdentifierExpr(id.value as String))
+            val next = words.peek()
+            if (next.type == TokenType.PIPE || next.type == TokenType.EOF) {
+                return ids
+            }
+            consume(TokenType.COMMA)
+        }
+    }
+
+    private fun sort(input: LogicalPlan): LogicalPlan {
+        val order = words.next()
+        if (order.type != TokenType.KEYWORD) throw error("ASC or DESC", order)
+        val asc = when (order.value) {
+            "ASC" -> true
+            "DESC" -> false
+            else -> throw error("ASC or DESC", order)
+        }
+        val ids = ids() as List
+        return LogicalSort(input, asc, ids)
+    }
+
     /**
      * Consumes a Token of the specified type, else throws an error
      */
@@ -190,5 +269,4 @@ class RecursiveDescentParser(val environment: Environment) : SiftParser {
         val word = words.next()
         if (word.type != type) throw error(type.toString(), word.value)
     }
-
 }

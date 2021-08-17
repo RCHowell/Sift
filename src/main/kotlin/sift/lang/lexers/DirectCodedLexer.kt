@@ -192,7 +192,11 @@ class DirectCodedLexer : SiftLexer {
                             add(Token(LEFT_PAREN, "("))
                         }
                         ')' -> {
-                            add(Token(IDENTIFIER, buffer.toString()))
+                            when (val v = buffer.toString()) {
+                                "TRUE" -> add(Token(LITERAL, true))
+                                "FALSE" -> add(Token(LITERAL, false))
+                                else -> add(Token(IDENTIFIER, v))
+                            }
                             add(Token(RIGHT_PAREN, ")"))
                         }
                         else -> {
