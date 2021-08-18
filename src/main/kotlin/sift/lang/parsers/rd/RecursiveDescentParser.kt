@@ -24,6 +24,11 @@ import sift.lang.parsers.InvalidSyntaxException
 /**
  * Some improvement upon what I learned in the [NaiveRecursiveDescentParser].
  * Considering not including the environment with the parser so that a [LogicalScan] only holds an identifier to a source
+ * Future improvements will have better
+ *   - error messages
+ *   - text location highlighting
+ *   - error recovery
+ *   - more expressive code
  *
  * @constructor Create empty Recursive descent parser
  */
@@ -209,6 +214,7 @@ class RecursiveDescentParser(val environment: Environment) : SiftParser {
             }
             // BY clause
             if (nextWord.type == TokenType.KEYWORD && nextWord.value == "BY") {
+                consume(TokenType.KEYWORD) // the BY keyword
                 groups.addAll(ids())
                 break
             }
@@ -230,7 +236,7 @@ class RecursiveDescentParser(val environment: Environment) : SiftParser {
 
     private fun alias(): LogicalIdentifierExpr {
         val asKeyword = words.next()
-        if (asKeyword.type != TokenType.MAPSTO) throw error("AS", words)
+        if (asKeyword.type != TokenType.MAPSTO) throw error("->", words)
         val alias = words.next()
         if (alias.type != TokenType.IDENTIFIER) throw error("identifier", alias)
         return LogicalIdentifierExpr(alias.value as String)
@@ -243,7 +249,7 @@ class RecursiveDescentParser(val environment: Environment) : SiftParser {
             if (id.type != TokenType.IDENTIFIER) throw error(TokenType.IDENTIFIER.toString(), id)
             ids.add(LogicalIdentifierExpr(id.value as String))
             val next = words.peek()
-            if (next.type == TokenType.PIPE || next.type == TokenType.EOF) {
+            if (next.type != TokenType.COMMA) {
                 return ids
             }
             consume(TokenType.COMMA)

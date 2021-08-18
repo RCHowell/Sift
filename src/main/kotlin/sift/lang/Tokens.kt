@@ -119,9 +119,9 @@ class TokenList(val tokens: List<Token<*>>) {
     fun context(n: Int = 3): String = buildString {
         for (i in (pointer - n) until (pointer + n)) {
             if (i == pointer - 1) {
-                append(">> ")
+                append(">>")
                 append(tokens[i].value)
-                append(" <<")
+                append("<< ")
                 continue
             }
             if (i > 0 && i < tokens.size) {
