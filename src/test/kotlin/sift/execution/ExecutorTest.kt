@@ -75,8 +75,7 @@ internal class ExecutorTest {
             env,
             """
            'Pets'
-             |> SELECT (isMale = FALSE) && age < 5
-             |> PROJECT 'Good gorl, ' + name -> greeting
+             |> GROUP MAX(age) -> Oldest, MIN(age) -> Youngest, AVG(age) -> AvgAge BY isMale
             """.trimIndent()
         )
     }

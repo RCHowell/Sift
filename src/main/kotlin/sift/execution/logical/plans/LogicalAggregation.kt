@@ -19,12 +19,12 @@ import sift.types.Schema
  */
 class LogicalAggregation(
     val input: LogicalPlan,
-    private val aggs: Map<LogicalIdentifierExpr, LogicalAggregateExpr>,
-    private val groups: List<LogicalIdentifierExpr>,
+    val aggregations: Map<LogicalIdentifierExpr, LogicalAggregateExpr>,
+    val groups: List<LogicalIdentifierExpr>,
 ) : LogicalPlan() {
 
     override val schema: Schema = Schema(
-        aggs.entries.map { (alias, expr) ->
+        aggregations.entries.map { (alias, expr) ->
             Field(alias.identifier, expr.toField(input).type)
         }
     )
@@ -33,7 +33,7 @@ class LogicalAggregation(
 
     override fun toString(): String = buildString {
         append("AGGREGATE ")
-        append(aggs.entries.joinToString { (alias, expr) -> "$expr -> $alias" })
+        append(aggregations.entries.joinToString { (alias, expr) -> "$expr -> $alias" })
         if (groups.isNotEmpty()) {
             append(" BY ")
             append(groups.joinToString())

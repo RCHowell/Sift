@@ -5,8 +5,10 @@ import sift.execution.logical.LogicalPlan
 import sift.execution.logical.expressions.BinaryOp
 import sift.execution.logical.expressions.LogicalAddExpr
 import sift.execution.logical.expressions.LogicalAndExpr
+import sift.execution.logical.expressions.LogicalAvgExpr
 import sift.execution.logical.expressions.LogicalBinaryExpr
 import sift.execution.logical.expressions.LogicalBooleanBinaryExpr
+import sift.execution.logical.expressions.LogicalCountExpr
 import sift.execution.logical.expressions.LogicalDivExpr
 import sift.execution.logical.expressions.LogicalEqExpr
 import sift.execution.logical.expressions.LogicalGtExpr
@@ -15,11 +17,14 @@ import sift.execution.logical.expressions.LogicalIdentifierExpr
 import sift.execution.logical.expressions.LogicalLiteralExpr
 import sift.execution.logical.expressions.LogicalLtExpr
 import sift.execution.logical.expressions.LogicalLteExpr
+import sift.execution.logical.expressions.LogicalMaxExpr
+import sift.execution.logical.expressions.LogicalMinExpr
 import sift.execution.logical.expressions.LogicalModExpr
 import sift.execution.logical.expressions.LogicalMulExpr
 import sift.execution.logical.expressions.LogicalNeqExpr
 import sift.execution.logical.expressions.LogicalOrExpr
 import sift.execution.logical.expressions.LogicalSubExpr
+import sift.execution.logical.expressions.LogicalSumExpr
 import sift.execution.logical.plans.LogicalAggregation
 import sift.execution.logical.plans.LogicalDistinct
 import sift.execution.logical.plans.LogicalJoin
@@ -28,6 +33,11 @@ import sift.execution.logical.plans.LogicalProjection
 import sift.execution.logical.plans.LogicalScan
 import sift.execution.logical.plans.LogicalSelection
 import sift.execution.logical.plans.LogicalSort
+import sift.execution.physical.aggregations.AvgAccumulator
+import sift.execution.physical.aggregations.CountAccumulator
+import sift.execution.physical.aggregations.MaxAccumulator
+import sift.execution.physical.aggregations.MinAccumulator
+import sift.execution.physical.aggregations.SumAccumulator
 import sift.execution.physical.expressions.AddExpr
 import sift.execution.physical.expressions.AndBinaryExpr
 import sift.execution.physical.expressions.ColumnExpr
@@ -45,6 +55,7 @@ import sift.execution.physical.expressions.NeqBinaryExpr
 import sift.execution.physical.expressions.OrBinaryExpr
 import sift.execution.physical.expressions.PredicateBinaryExpr
 import sift.execution.physical.expressions.SubExpr
+import sift.execution.physical.sifterators.Aggregation
 import sift.execution.physical.sifterators.Projection
 import sift.execution.physical.sifterators.Scan
 import sift.execution.physical.sifterators.Selection
@@ -57,19 +68,30 @@ class Planner {
 
         /**
          * Constructs a [Sifterator] to execute the [LogicalPlan].
-         * See Andy Grove's KQuery
          */
         fun plan(plan: LogicalPlan): Sifterator = when (plan) {
-            is LogicalAggregation -> TODO()
-            is LogicalDistinct -> TODO()
-            is LogicalJoin -> TODO()
-            is LogicalLimit -> TODO()
+            is LogicalAggregation -> {
+                val input = plan.inputs().first()
+                val inPlan = plan(input)
+                val aggregations = plan.aggregations.map { (identity, agg) ->
+                    val column = col(input.schema, agg.input as LogicalIdentifierExpr)
+                    when (agg) {
+                        is LogicalMinExpr -> MinAccumulator(column)
+                        is LogicalMaxExpr -> MaxAccumulator(column)
+                        is LogicalSumExpr -> SumAccumulator(column)
+                        is LogicalCountExpr -> CountAccumulator(column)
+                        is LogicalAvgExpr -> AvgAccumulator(column)
+                    }
+                }
+                val groups = plan.groups.map { id -> col(input.schema, id) }
+                Aggregation(inPlan, aggregations, groups)
+            }
             is LogicalProjection -> {
                 val input = plan.inputs().first()
                 val inPlan = plan(plan.inputs().first())
                 val projs = mutableMapOf<Int, Expression>()
                 plan.projections.forEach { (identity, expr) ->
-                    val column = plan.schema.fieldIndexes[identity.identifier] ?: invalid("field reference", identity)
+                    val column = col(plan.schema, identity)
                     projs[column] = expression(expr, input.schema)
                 }
                 Projection(inPlan, projs)
@@ -82,6 +104,9 @@ class Planner {
                 Selection(inPlan, predicate)
             }
             is LogicalSort -> TODO()
+            is LogicalDistinct -> TODO()
+            is LogicalJoin -> TODO()
+            is LogicalLimit -> TODO()
             else -> invalid("plan", plan)
         }
 
@@ -108,7 +133,6 @@ class Planner {
                     else -> invalid("binary expression", expr)
                 }
             }
-            // TODO aggregates
             else -> invalid("expression", expr)
         }
 
@@ -134,5 +158,8 @@ class Planner {
 
         private fun invalid(expectedType: String, actualType: Any): Nothing =
             throw IllegalStateException("provided $actualType is not a valid $expectedType")
+
+        private fun col(schema: Schema, id: LogicalIdentifierExpr): Int =
+            schema.fieldIndexes[id.identifier] ?: invalid("field reference", id)
     }
 }
