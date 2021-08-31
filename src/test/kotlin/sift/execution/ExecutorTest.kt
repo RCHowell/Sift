@@ -76,6 +76,7 @@ internal class ExecutorTest {
             """
            'Pets'
              |> GROUP MAX(age) -> Oldest, MIN(age) -> Youngest, AVG(age) -> AvgAge BY isMale
+             |> SELECT Oldest > 5
             """.trimIndent()
         )
     }
