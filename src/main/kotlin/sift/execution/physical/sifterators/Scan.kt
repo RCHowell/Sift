@@ -12,8 +12,10 @@ import sift.types.Batch
  */
 class Scan(
     val source: Source,
-    val fields: List<String>
+    val fields: List<String>,
 ) : Sifterator {
+
+    override val schema = source.schema
 
     lateinit var batches: Iterator<Batch>
 

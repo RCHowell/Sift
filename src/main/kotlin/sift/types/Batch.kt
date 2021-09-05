@@ -1,51 +1,44 @@
 package sift.types
 
+import de.vandermeer.asciitable.AsciiTable
+
 /**
  * A Batch holds many records from one or more columns
  * See KQuery RecordBatch
  *
- * Note that a [Batch] is entirely separated from a [Schema].
- * Columns have indexes, not identifiers. I may want to change this.
- *
+ * @property schema has metadata for the columns
  * @property cols is the list of columns
  * @constructor Create empty Batch
  */
-class Batch(val columns: List<Column>) {
+class Batch(
+    val schema: Schema,
+    val columns: List<Column>
+) {
     /**
      * The number of records in the batch
      */
     val records: Int
         get() = columns.first().size
 
-    override fun toString(): String = buildString {
-        for (i in 0 until records) {
-            val sb = buildString {
-                append("| ")
-                append(
-                    columns.map {
-                        val v = it[i]
-                        val r = when (v) {
-                            is ByteArray -> v.toString(Charsets.UTF_8)
-                            else -> v.toString()
-                        }
-                        r
-                    }.joinToString(" | ")
-                )
-                append(" |")
-            }
-            append('\n')
-            append(sb)
-        }
-    }
+    override fun toString(): String {
+        val table = AsciiTable()
+        table.addRule()
 
-    /**
-     * This function returns the column as strings paired with the
-     * maximum length (width) to this column.
-     */
-    private fun maxWidthStrings(col: Column): Pair<Int, List<String>> {
-        val max = 0
-        val strings = mutableListOf<String>()
-        // TODO for pretty printing, I don't care yet
-        return Pair(0, listOf())
+        val fields = schema.fields.map { it.identifier }
+        table.addRow(fields)
+        table.addRule()
+
+        for (i in 0 until records) {
+            val vals = columns.map {
+                when (val v = it[i]) {
+                    is ByteArray -> v.toString(Charsets.UTF_8)
+                    is Double -> "%.2f".format(v)
+                    else -> v.toString()
+                }
+            }
+            table.addRow(vals)
+            table.addRule()
+        }
+        return table.render()
     }
 }

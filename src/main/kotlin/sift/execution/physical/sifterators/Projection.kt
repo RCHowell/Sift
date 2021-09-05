@@ -2,6 +2,7 @@ package sift.execution.physical.sifterators
 
 import sift.execution.physical.expressions.Expression
 import sift.types.Batch
+import sift.types.Schema
 
 /**
  * Projection holds a map of *output* column indexes to expressions.
@@ -15,6 +16,7 @@ import sift.types.Batch
 class Projection(
     val input: Sifterator,
     val projections: Map<Int, Expression>,
+    override val schema: Schema,
 ) : Sifterator {
 
     override fun open() {
@@ -24,7 +26,7 @@ class Projection(
     override fun next(): Batch? {
         val batch = input.next() ?: return null
         val output = projections.map { (_, v) -> v.eval(batch) }
-        return Batch(output)
+        return Batch(schema, output)
     }
 
     override fun close() {

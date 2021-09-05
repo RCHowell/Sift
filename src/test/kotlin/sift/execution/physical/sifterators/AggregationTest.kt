@@ -19,11 +19,12 @@ class AggregationTest {
     @Test
     fun aggregates() {
         val n = 1..100
+        val schema = Schema(listOf(Field("xs", Type.Num)))
         val xs = Column.Factory.numeric(n.map { it.toDouble() })
         val source = MemSource(
             identifier = "Foo",
             schema = Schema(listOf(Field("x", Type.Num))),
-            data = listOf(Batch(listOf(NumVectorColumn(xs))))
+            data = listOf(Batch(schema, listOf(NumVectorColumn(xs))))
         )
         val aggregation = Aggregation(
             input = Scan(source, listOf("x")),
@@ -35,6 +36,15 @@ class AggregationTest {
                 AvgAccumulator(0),
             ),
             groups = listOf(),
+            schema = Schema(
+                listOf(
+                    Field("sum", Type.Num),
+                    Field("min", Type.Num),
+                    Field("max", Type.Num),
+                    Field("count", Type.Num),
+                    Field("avg", Type.Num),
+                )
+            )
         )
         aggregation.open()
         val batch = aggregation.next()

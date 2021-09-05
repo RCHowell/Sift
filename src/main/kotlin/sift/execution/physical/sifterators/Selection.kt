@@ -11,7 +11,12 @@ import sift.types.Batch
  * @property predicateBinary
  * @constructor Create empty Selection
  */
-class Selection(val input: Sifterator, val predicateBinary: PredicateBinaryExpr) : Sifterator {
+class Selection(
+    val input: Sifterator,
+    val predicateBinary: PredicateBinaryExpr
+) : Sifterator {
+
+    override val schema = input.schema
 
     override fun open() {
         input.open()
@@ -21,7 +26,7 @@ class Selection(val input: Sifterator, val predicateBinary: PredicateBinaryExpr)
         val batch = input.next() ?: return null
         val mask = predicateBinary.eval(batch)
         val cols = batch.columns.map { it.filter(mask) }
-        return Batch(cols)
+        return Batch(schema, cols)
     }
 
     override fun close() {

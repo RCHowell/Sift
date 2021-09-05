@@ -16,7 +16,7 @@ import sift.types.Schema
  * @constructor Create empty Logical projection
  */
 class LogicalProjection(
-    private val input: LogicalPlan,
+    val input: LogicalPlan,
     val projections: Map<LogicalIdentifierExpr, LogicalExpr>,
 ) : LogicalPlan() {
 

@@ -26,6 +26,7 @@ internal class ScanTest {
             ),
             data = listOf(
                 Batch(
+                    Schema(listOf()),
                     listOf(
                         BoolVectorColumn(bv)
                     )

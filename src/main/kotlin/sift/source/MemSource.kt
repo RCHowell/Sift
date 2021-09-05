@@ -23,7 +23,7 @@ class MemSource(
     override fun scan(identifiers: List<String>): Sequence<Batch> {
         val selectedSchema = schema.select(identifiers)
         return data.asSequence().map { batch ->
-            Batch(selectedSchema.fieldIndexes.values.map { i -> batch.columns[i] })
+            Batch(selectedSchema, selectedSchema.fieldIndexes.values.map { i -> batch.columns[i] })
         }
     }
 

@@ -1,6 +1,7 @@
 package sift.execution.physical.sifterators
 
 import sift.types.Batch
+import sift.types.Schema
 
 /**
  * Iterator from The Volcano Model. Called Sifterator to avoid naming confusion.
@@ -8,6 +9,11 @@ import sift.types.Batch
  * Things might get interesting/weird because `next()` returns a [Batch] rather than a row.
  */
 interface Sifterator {
+
+    /**
+     * Output schema of this transformation
+     */
+    val schema: Schema
 
     /**
      * This method starts the process of getting tuples, but does not get a tuple.

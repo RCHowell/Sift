@@ -10,6 +10,8 @@ class Limit(val input: Sifterator, val limit: Int) : Sifterator {
 
     var sent = 0
 
+    override val schema = input.schema
+
     override fun open() {
         input.open()
     }

@@ -19,17 +19,19 @@ class ProjectionTest {
         val xs = Column.Factory.numeric(listOf(1.0, 2.0, 3.0))
         val ys = Column.Factory.numeric(listOf(2.0, 4.0, 6.0))
         val zs = Column.Factory.numeric(listOf(3.0, 5.0, 9.0))
+        val schema = Schema(
+            listOf(
+                Field("x", Type.Num),
+                Field("y", Type.Num),
+                Field("z", Type.Num),
+            )
+        )
         val source = MemSource(
             identifier = "Foo",
-            schema = Schema(
-                listOf(
-                    Field("x", Type.Num),
-                    Field("y", Type.Num),
-                    Field("z", Type.Num),
-                )
-            ),
+            schema = schema,
             data = listOf(
                 Batch(
+                    schema,
                     listOf(
                         NumVectorColumn(xs),
                         NumVectorColumn(ys),
@@ -52,7 +54,12 @@ class ProjectionTest {
                     ),
                 ),
             ),
-            input = Scan(source, listOf("x", "y", "z"))
+            input = Scan(source, listOf("x", "y", "z")),
+            schema = Schema(
+                listOf(
+                    Field("x", Type.Num),
+                )
+            )
         )
         projection.open()
         val batch = projection.next()

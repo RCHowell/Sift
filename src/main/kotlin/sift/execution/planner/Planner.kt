@@ -84,7 +84,7 @@ class Planner {
                     }
                 }
                 val groups = plan.groups.map { id -> col(input.schema, id) }
-                Aggregation(inPlan, aggregations, groups)
+                Aggregation(inPlan, aggregations, groups, plan.schema)
             }
             is LogicalProjection -> {
                 val input = plan.inputs().first()
@@ -94,7 +94,7 @@ class Planner {
                     val column = col(plan.schema, identity)
                     projs[column] = expression(expr, input.schema)
                 }
-                Projection(inPlan, projs)
+                Projection(inPlan, projs, plan.schema)
             }
             is LogicalScan -> Scan(plan.source, plan.identifiers)
             is LogicalSelection -> {

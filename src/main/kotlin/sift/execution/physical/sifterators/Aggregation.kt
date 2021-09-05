@@ -5,6 +5,7 @@ import sift.execution.physical.aggregations.Key
 import sift.types.Batch
 import sift.types.Column
 import sift.types.NumVectorColumn
+import sift.types.Schema
 import sift.types.StringVectorColumn
 
 /**
@@ -20,6 +21,7 @@ class Aggregation(
     val input: Sifterator,
     val aggregations: List<Accumulator>,
     val groups: List<Int>,
+    override val schema: Schema,
 ) : Sifterator {
 
     private val accumulators: MutableMap<Key, List<Accumulator>> = mutableMapOf()
@@ -63,7 +65,7 @@ class Aggregation(
             it.valueCount = row
             NumVectorColumn(it)
         }
-        return Batch(listOf(StringVectorColumn(keys)) + valueColumns)
+        return Batch(schema, listOf(StringVectorColumn(keys)) + valueColumns)
     }
 
     override fun close() {

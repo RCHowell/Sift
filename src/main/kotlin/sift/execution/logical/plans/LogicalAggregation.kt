@@ -13,7 +13,7 @@ import sift.types.Schema
  *  by the grouping operator (described next). Aggregation operators apply to attributes (columns) of a relation
  *
  * Grouping of tuples according to their value in one or more attributes has the effect of partitioning the tuples
- *  of a relation into “groups.” Aggregation can then be applied to columns within each group, giving us the ability
+ *  of a relation into groups. Aggregation can then be applied to columns within each group, giving us the ability
  *  to express a number of queries that are impossible to express in the classical relational algebra.
  *  The grouping operator, gamma, is an operator that combines the effect of grouping and aggregation. p213
  */
@@ -23,11 +23,17 @@ class LogicalAggregation(
     val groups: List<LogicalIdentifierExpr>,
 ) : LogicalPlan() {
 
-    override val schema: Schema = Schema(
-        aggregations.entries.map { (alias, expr) ->
-            Field(alias.identifier, expr.toField(input).type)
+    override val schema: Schema
+        get() {
+            val fields = mutableListOf<Field>()
+            // schema derived from groups
+            groups.forEach { fields.add(input.schema.find(it.identifier)) }
+            // schema derived from aggregated fields
+            aggregations.entries.forEach { (alias, expr) ->
+                fields.add(Field(alias.identifier, expr.toField(input).type))
+            }
+            return Schema(fields)
         }
-    )
 
     override fun inputs(): List<LogicalPlan> = listOf(input)
 

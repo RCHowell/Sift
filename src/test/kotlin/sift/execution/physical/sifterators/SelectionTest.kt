@@ -20,16 +20,18 @@ internal class SelectionTest {
     @Test
     operator fun next() {
 
+        val schema = Schema(
+            listOf(
+                Field("a", Type.Num),
+                Field("b", Type.Num),
+            )
+        )
         val source = MemSource(
             identifier = "Foo",
-            schema = Schema(
-                listOf(
-                    Field("a", Type.Num),
-                    Field("b", Type.Num),
-                )
-            ),
+            schema = schema,
             data = listOf(
                 Batch(
+                    schema,
                     listOf(
                         NumVectorColumn(Column.Factory.numeric(listOf(1.0, 2.0, 3.0, 4.0, 8.0, 1.0))),
                         NumVectorColumn(Column.Factory.numeric(listOf(4.0, 3.0, 2.0, 1.0, 3.0, 2.0))),
@@ -46,12 +48,13 @@ internal class SelectionTest {
                 ),
                 projections = mapOf(
                     0 to MulExpr(ColumnExpr(0), ColumnExpr(1))
-                )
+                ),
+                schema = schema,
             ),
             predicateBinary = GtBinaryExpr(
                 lhs = ColumnExpr(0),
                 rhs = LiteralExpr(NumLiteralColumn(5.0, 3))
-            )
+            ),
         )
 
         // run it

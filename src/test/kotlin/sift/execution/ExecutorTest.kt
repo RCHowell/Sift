@@ -15,17 +15,19 @@ internal class ExecutorTest {
 
     @Test
     fun sift() {
+        val schema = Schema(
+            listOf(
+                Field("name", Type.String),
+                Field("age", Type.Num),
+                Field("isMale", Type.Bool),
+            )
+        )
         val source = MemSource(
             identifier = "Pets",
-            schema = Schema(
-                listOf(
-                    Field("name", Type.String),
-                    Field("age", Type.Num),
-                    Field("isMale", Type.Bool),
-                )
-            ),
+            schema = schema,
             data = listOf(
                 Batch(
+                    schema,
                     listOf(
                         StringVectorColumn(
                             Column.Factory.string(
@@ -76,7 +78,6 @@ internal class ExecutorTest {
             """
            'Pets'
              |> GROUP MAX(age) -> Oldest, MIN(age) -> Youngest, AVG(age) -> AvgAge BY isMale
-             |> SELECT Oldest > 5
             """.trimIndent()
         )
     }

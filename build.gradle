@@ -12,14 +12,20 @@ repositories {
 }
 
 dependencies {
-    testImplementation 'org.jetbrains.kotlin:kotlin-test-junit5'
-    testImplementation 'org.junit.jupiter:junit-jupiter-api:5.6.0'
-    testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.6.0'
+    // Build Dependencies
     implementation 'org.apache.arrow:arrow-memory:0.17.0'
     implementation 'org.apache.arrow:arrow-vector:0.17.0'
     implementation 'com.opencsv:opencsv:5.5'
     implementation 'commons-cli:commons-cli:1.4'
     implementation 'com.github.RCHowell:Kosch:main-SNAPSHOT'
+    implementation 'de.vandermeer:asciitable:0.3.2'
+
+    // Test Dependencies
+    testImplementation 'org.jetbrains.kotlin:kotlin-test-junit5'
+    testImplementation 'org.junit.jupiter:junit-jupiter-api:5.6.0'
+
+    // Test Runtime Dependencies
+    testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.6.0'
 }
 
 test {
