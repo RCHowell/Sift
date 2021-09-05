@@ -35,14 +35,16 @@ val pets = MemSource(
                             "Cali",
                             "Gretchen",
                             "Cooper",
-                            "Eleanor"
+                            "Eleanor",
+                            "Huckleberry",
+                            "Madman Mochi"
                         )
                     )
                 ),
-                NumVectorColumn(Column.Factory.numeric(listOf(2.0, 2.0, 7.0, 13.0, 6.0, 5.0))),
-                StringVectorColumn(Column.Factory.string(listOf("F", "F", "F", "F", "M", "F"))),
-                NumVectorColumn(Column.Factory.numeric(listOf(8.0, 45.0, 30.0, 50.0, 30.0, 24.0))),
-                StringVectorColumn(Column.Factory.string(listOf("Cat", "Dog", "Dog", "Dog", "Dog", "Dog"))),
+                NumVectorColumn(Column.Factory.numeric(listOf(2.0, 2.0, 7.0, 13.0, 6.0, 5.0, 7.0, 3.0))),
+                StringVectorColumn(Column.Factory.string(listOf("F", "F", "F", "F", "M", "F", "M", "M"))),
+                NumVectorColumn(Column.Factory.numeric(listOf(8.0, 45.0, 30.0, 50.0, 30.0, 24.0, 20.0, 14.0))),
+                StringVectorColumn(Column.Factory.string(listOf("Cat", "Dog", "Dog", "Dog", "Dog", "Dog", "Cat", "Cat"))),
                 StringVectorColumn(
                     Column.Factory.string(
                         listOf(
@@ -51,7 +53,9 @@ val pets = MemSource(
                             "Vizsla",
                             "English Bulldog",
                             "Beagle",
-                            "Cocker Spaniel"
+                            "Cocker Spaniel",
+                            "Medium Coon",
+                            "Unknown"
                         )
                     )
                 ),

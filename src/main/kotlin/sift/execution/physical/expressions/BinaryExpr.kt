@@ -131,7 +131,7 @@ abstract class PredicateBinaryExpr(val lhs: Expression, val rhs: Expression) : E
     private fun eval(l: Int, r: Int): Boolean = eval(l == 1, r == 1)
 
     // VarCharVector
-    private fun eval(l: ByteArray, r: ByteArray): Boolean = eval(l.toString(), r.toString())
+    private fun eval(l: ByteArray, r: ByteArray): Boolean = eval(l.toString(Charsets.UTF_8), r.toString(Charsets.UTF_8))
 }
 
 /**

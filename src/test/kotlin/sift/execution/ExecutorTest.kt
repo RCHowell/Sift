@@ -15,7 +15,7 @@ internal class ExecutorTest {
             env,
             """
            'Pets'
-             |> GROUP MAX(Weight) -> Thiccest BY Type
+             |> GROUP MAX(Weight) -> Thiccest BY Gender, Type
             """.trimIndent()
         )
     }
