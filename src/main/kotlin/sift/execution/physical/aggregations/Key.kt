@@ -6,8 +6,6 @@ class Key(val values: List<Any?>) {
         val EMPTY = Key(listOf())
     }
 
-
-
     override fun equals(other: Any?): Boolean {
         if (this === other) return true
         if (javaClass != other?.javaClass) return false
@@ -22,4 +20,3 @@ class Key(val values: List<Any?>) {
 
     override fun toString(): String = values.joinToString("-")
 }
-

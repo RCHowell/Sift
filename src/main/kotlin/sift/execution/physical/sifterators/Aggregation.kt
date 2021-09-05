@@ -1,12 +1,18 @@
 package sift.execution.physical.sifterators
 
+import org.apache.arrow.vector.BitVector
+import org.apache.arrow.vector.Float8Vector
+import org.apache.arrow.vector.ValueVector
+import org.apache.arrow.vector.VarCharVector
 import sift.execution.physical.aggregations.Accumulator
 import sift.execution.physical.aggregations.Key
 import sift.types.Batch
+import sift.types.BoolVectorColumn
 import sift.types.Column
 import sift.types.NumVectorColumn
 import sift.types.Schema
 import sift.types.StringVectorColumn
+import sift.types.Type
 
 /**
  * Aggregation Sifterator maintains an accumulator for each aggregation key and processes all input batches
@@ -50,22 +56,57 @@ class Aggregation(
     override fun next(): Batch? {
         if (done) return null
         done = true
-        val keys = Column.Factory.string(accumulators.size)
-        val valueVecs = aggregations.map { Column.Factory.numeric(accumulators.size) }
-        var row = 0 // there is a row for each key
-        accumulators.forEach { (key, accumulator) ->
-            keys[row] = key.toString().toByteArray() // TODO have a column for each key
-            for (acc in accumulator.indices) {
-                valueVecs[acc][row] = accumulator[acc].get()
+
+        // Total number of rows in the output batch
+        val rowCount = accumulators.size
+
+        // Initialize vectors for each aggregation key, type is derived from the schema
+        val keyVectors: List<ValueVector> = groups.indices.map { group ->
+            when (schema.fields[group].type) {
+                Type.Num -> Column.Factory.numeric(rowCount)
+                Type.Bool -> Column.Factory.boolean(rowCount)
+                Type.String -> Column.Factory.string(rowCount)
             }
-            row++
         }
-        keys.valueCount = row
-        val valueColumns = valueVecs.map {
-            it.valueCount = row
-            NumVectorColumn(it)
+
+        // Initialize vectors for each aggregation value, type is always numeric
+        val valueVectors = aggregations.map { Column.Factory.numeric(rowCount) }
+
+        // Add all values to the output vectors
+        accumulators.keys.forEachIndexed { row, key ->
+
+            // Add all aggregation key values to the key vectors
+            key.values.forEachIndexed { i, kv ->
+                when (val keyVec = keyVectors[i]) {
+                    is Float8Vector -> keyVec[row] = kv as Double
+                    is BitVector -> keyVec[row] = kv as Int
+                    is VarCharVector -> keyVec[row] = kv as ByteArray
+                    else -> throw IllegalStateException("unknown key vector type ${keyVec::class.java} for key $kv")
+                }
+            }
+
+            // Add all aggregated values to the value vectors
+            val accumulator = accumulators[key]!!
+            accumulator.forEachIndexed { i, acc ->
+                valueVectors[i][row] = acc.get()
+            }
         }
-        return Batch(schema, listOf(StringVectorColumn(keys)) + valueColumns)
+
+        // Columns of the batch
+        val cols = mutableListOf<Column>()
+        keyVectors.forEach {
+            it.valueCount = rowCount
+            when (it) {
+                is Float8Vector -> cols.add(NumVectorColumn(it))
+                is BitVector -> cols.add(BoolVectorColumn(it))
+                is VarCharVector -> cols.add(StringVectorColumn(it))
+            }
+        }
+        valueVectors.forEach {
+            it.valueCount = rowCount
+            cols.add(NumVectorColumn(it))
+        }
+        return Batch(schema, cols)
     }
 
     override fun close() {
