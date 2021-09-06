@@ -7,7 +7,7 @@ The purpose of the Sift language is to provide a super simple query language tha
 Given a dataset Foo with columns X and Y, return the product of X and Y where X >= Y
 
 ```
-SCAN 'Foo'
+'Foo'
  |> SELECT X >= Y
  |> PROJECT X * Y -> Z
 ```
@@ -116,7 +116,7 @@ Let *R(A, B, C)* and *S(B, C, D)* be two relations. Here are some example relati
 ```bash
 <GROUP>    ::= GROUP <AGGS> (BY <IDS>)?
 <AGG>      ::= <AGG_FUNC> -> <ID>
-<AGG_FUNC> ::= \#<ID>(<ID>)
+<AGG_FUNC> ::= <ID>(<ID>)
 ```
 
 Examples
