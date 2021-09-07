@@ -1,7 +1,3 @@
-# Sift -- Basic Query Engine
-
----
-
 ## Preface
 
 I built this as an exercise while studying [Database Systems: The Complete Book](http://infolab.stanford.edu/~ullman/dscb.html) (DSCB) by Hector Garcia-Molina, Jeff Ullman, and Jennifer Widom. I also wanted to experiment with Apache Arrow, and I found Andy Grove's [KQuery](https://github.com/andygrove/how-query-engines-work); much of this work is modelled after his engine, and I have left notes where I use some of his constructs. This exercise was more about studying the execution of queries, so little effort was put into the parser and planner. There are currently no plan optimizations, and the language is simply syntactic sugar over the operators of Relation Algebra discussed in DSCB. 
