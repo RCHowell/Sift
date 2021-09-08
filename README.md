@@ -8,7 +8,8 @@ I built this as an exercise while studying [Database Systems: The Complete Book]
 - Projection
 - Limit
 - Grouping/Aggregation
-- Distinct
+- Distinct (TODO)
+- Sort (TODO)
 - Join / Union / Difference / Intersection (TODO)
 
 ## Language
@@ -16,6 +17,8 @@ I built this as an exercise while studying [Database Systems: The Complete Book]
 > Full details in *sift.lang/README.md*
 
 The purpose of the Sift language is to have a query language that maps near 1:1 to operators of the extended relational algebra discussed in section 5.2 of Garcia-Molina et. al. It is literally an inversion of the query expression tree using the F# (and Elixir) pipe operator to simplify writing nested transformations.
+
+Limitations in the language come from my inability to dedicate time to the parser. Right now, I'm more interested in learning about parser generators. The purpose of the hand-written lexer and parser was to learn some basics.
 
 A query is formed with a relation production followed by transformations. All type data is provided by the **Schema** of a data **Source** which is registered to the query execution environment. The full BNF is at the bottom.
 
