@@ -28,7 +28,7 @@ val pets = MemSource(
             petSchema,
             columns = listOf(
                 StringVectorColumn(
-                    Column.Factory.string(
+                    Column.VectorFactory.string(
                         listOf(
                             "Ramona",
                             "Mochi",
@@ -41,12 +41,12 @@ val pets = MemSource(
                         )
                     )
                 ),
-                NumVectorColumn(Column.Factory.numeric(listOf(2.0, 2.0, 7.0, 13.0, 6.0, 5.0, 7.0, 3.0))),
-                StringVectorColumn(Column.Factory.string(listOf("F", "F", "F", "F", "M", "F", "M", "M"))),
-                NumVectorColumn(Column.Factory.numeric(listOf(8.0, 45.0, 30.0, 50.0, 30.0, 24.0, 20.0, 14.0))),
-                StringVectorColumn(Column.Factory.string(listOf("Cat", "Dog", "Dog", "Dog", "Dog", "Dog", "Cat", "Cat"))),
+                NumVectorColumn(Column.VectorFactory.numeric(listOf(2.0, 2.0, 7.0, 13.0, 6.0, 5.0, 7.0, 3.0))),
+                StringVectorColumn(Column.VectorFactory.string(listOf("F", "F", "F", "F", "M", "F", "M", "M"))),
+                NumVectorColumn(Column.VectorFactory.numeric(listOf(8.0, 45.0, 30.0, 50.0, 30.0, 24.0, 20.0, 14.0))),
+                StringVectorColumn(Column.VectorFactory.string(listOf("Cat", "Dog", "Dog", "Dog", "Dog", "Dog", "Cat", "Cat"))),
                 StringVectorColumn(
-                    Column.Factory.string(
+                    Column.VectorFactory.string(
                         listOf(
                             "Mini Coon",
                             "Samoyed",

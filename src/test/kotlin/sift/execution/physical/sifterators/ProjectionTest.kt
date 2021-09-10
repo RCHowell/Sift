@@ -16,9 +16,9 @@ class ProjectionTest {
 
     @Test
     fun foo() {
-        val xs = Column.Factory.numeric(listOf(1.0, 2.0, 3.0))
-        val ys = Column.Factory.numeric(listOf(2.0, 4.0, 6.0))
-        val zs = Column.Factory.numeric(listOf(3.0, 5.0, 9.0))
+        val xs = Column.VectorFactory.numeric(listOf(1.0, 2.0, 3.0))
+        val ys = Column.VectorFactory.numeric(listOf(2.0, 4.0, 6.0))
+        val zs = Column.VectorFactory.numeric(listOf(3.0, 5.0, 9.0))
         val schema = Schema(
             listOf(
                 Field("x", Type.Num),

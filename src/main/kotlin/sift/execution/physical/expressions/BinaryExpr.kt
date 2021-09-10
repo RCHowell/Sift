@@ -17,7 +17,7 @@ abstract class BinaryExpr(val lhs: Expression, val rhs: Expression) : Expression
         assert(lc.size == rc.size)
         return when {
             (lc is NumColumn && rc is NumColumn) -> {
-                val result = Column.Factory.numeric(lc.size)
+                val result = Column.VectorFactory.numeric(lc.size)
                 for (i in 0 until lc.size) {
                     result[i] = eval(lc[i], rc[i])
                 }
@@ -25,7 +25,7 @@ abstract class BinaryExpr(val lhs: Expression, val rhs: Expression) : Expression
                 NumVectorColumn(result)
             }
             (lc is BoolColumn && rc is BoolColumn) -> {
-                val result = Column.Factory.boolean(lc.size)
+                val result = Column.VectorFactory.boolean(lc.size)
                 for (i in 0 until lc.size) {
                     result[i] = eval(lc[i], rc[i])
                 }
@@ -33,7 +33,7 @@ abstract class BinaryExpr(val lhs: Expression, val rhs: Expression) : Expression
                 BoolVectorColumn(result)
             }
             (lc is StringColumn && rc is StringColumn) -> {
-                val result = Column.Factory.string(lc.size)
+                val result = Column.VectorFactory.string(lc.size)
                 for (i in 0 until lc.size) {
                     result[i] = eval(lc[i], rc[i])
                 }
@@ -104,7 +104,7 @@ abstract class PredicateBinaryExpr(val lhs: Expression, val rhs: Expression) : E
         val lc = lhs.eval(batch)
         val rc = rhs.eval(batch)
         assert(lc.size == rc.size)
-        val result = Column.Factory.boolean(lc.size)
+        val result = Column.VectorFactory.boolean(lc.size)
         when {
             (lc is NumColumn && rc is NumColumn) -> {
                 for (i in 0 until lc.size) result[i] = if (eval(lc[i], rc[i])) 1 else 0

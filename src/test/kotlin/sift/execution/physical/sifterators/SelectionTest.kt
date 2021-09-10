@@ -33,8 +33,8 @@ internal class SelectionTest {
                 Batch(
                     schema,
                     listOf(
-                        NumVectorColumn(Column.Factory.numeric(listOf(1.0, 2.0, 3.0, 4.0, 8.0, 1.0))),
-                        NumVectorColumn(Column.Factory.numeric(listOf(4.0, 3.0, 2.0, 1.0, 3.0, 2.0))),
+                        NumVectorColumn(Column.VectorFactory.numeric(listOf(1.0, 2.0, 3.0, 4.0, 8.0, 1.0))),
+                        NumVectorColumn(Column.VectorFactory.numeric(listOf(4.0, 3.0, 2.0, 1.0, 3.0, 2.0))),
                     )
                 )
             )

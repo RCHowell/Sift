@@ -22,11 +22,30 @@ sealed class Column {
     abstract val size: Int
 
     /**
-     * Factory for concise [FieldVector] creation
-     *
-     * @constructor Create empty Factory
+     * Factory for concise [Column] creation
      */
     object Factory {
+
+        fun boolean(values: List<Boolean>): BoolColumn = boolean(values.size, values)
+
+        fun boolean(capacity: Int = 0, values: List<Boolean>): BoolColumn =
+            BoolVectorColumn(VectorFactory.boolean(capacity, values))
+
+        fun string(values: List<String>): StringColumn = string(values.size, values)
+
+        fun string(capacity: Int = 0, values: List<String>): StringColumn =
+            StringVectorColumn(VectorFactory.string(capacity, values))
+
+        fun numeric(values: List<Double>): NumColumn = numeric(values.size, values)
+
+        fun numeric(capacity: Int = 0, values: List<Double>): NumColumn =
+            NumVectorColumn(VectorFactory.numeric(capacity, values))
+    }
+
+    /**
+     * Factory for concise [FieldVector] creation
+     */
+    object VectorFactory {
 
         fun boolean(values: List<Boolean>): BitVector = boolean(values.size, values)
 
@@ -83,7 +102,7 @@ class BoolVectorColumn(val vector: BitVector) : BoolColumn() {
 
     override fun filter(mask: BoolColumn): BoolColumn {
         var vals = 0
-        val dupe = Factory.boolean(vector.valueCapacity)
+        val dupe = VectorFactory.boolean(vector.valueCapacity)
         for (i in 0 until vector.valueCount) {
             if (mask[i] == 1) dupe[vals++] = vector[i]
         }
@@ -117,7 +136,7 @@ class NumVectorColumn(val vector: Float8Vector) : NumColumn() {
 
     override fun filter(mask: BoolColumn): NumColumn {
         var vals = 0
-        val dupe = Factory.numeric(vector.valueCapacity)
+        val dupe = VectorFactory.numeric(vector.valueCapacity)
         for (i in 0 until vector.valueCount) {
             if (mask[i] == 1) dupe[vals++] = vector[i]
         }
@@ -151,7 +170,7 @@ class StringVectorColumn(val vector: VarCharVector) : StringColumn() {
 
     override fun filter(mask: BoolColumn): StringColumn {
         var vals = 0
-        val dupe = Factory.string(vector.valueCapacity)
+        val dupe = VectorFactory.string(vector.valueCapacity)
         for (i in 0 until vector.valueCount) {
             if (mask[i] == 1) dupe[vals++] = vector[i]
         }

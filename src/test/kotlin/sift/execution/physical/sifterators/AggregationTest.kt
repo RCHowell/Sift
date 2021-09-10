@@ -20,7 +20,7 @@ class AggregationTest {
     fun aggregates() {
         val n = 1..100
         val schema = Schema(listOf(Field("xs", Type.Num)))
-        val xs = Column.Factory.numeric(n.map { it.toDouble() })
+        val xs = Column.VectorFactory.numeric(n.map { it.toDouble() })
         val source = MemSource(
             identifier = "Foo",
             schema = Schema(listOf(Field("x", Type.Num))),

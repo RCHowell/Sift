@@ -16,12 +16,12 @@ internal class PhysicalAddExprTest {
             Field("xs", Type.Num),
             Field("ys", Type.Num),
         ))
-        val xs = Column.Factory.numeric(3)
+        val xs = Column.VectorFactory.numeric(3)
         xs[0] = 1.0
         xs[1] = 2.0
         xs[2] = 3.0
         xs.valueCount = 3
-        val ys = Column.Factory.numeric(3)
+        val ys = Column.VectorFactory.numeric(3)
         ys[0] = 4.0
         ys[1] = 5.0
         ys[2] = 6.0

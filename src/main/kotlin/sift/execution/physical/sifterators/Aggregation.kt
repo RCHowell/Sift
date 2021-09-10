@@ -63,14 +63,14 @@ class Aggregation(
         // Initialize vectors for each aggregation key, type is derived from the schema
         val keyVectors: List<ValueVector> = groups.indices.map { group ->
             when (schema.fields[group].type) {
-                Type.Num -> Column.Factory.numeric(rowCount)
-                Type.Bool -> Column.Factory.boolean(rowCount)
-                Type.String -> Column.Factory.string(rowCount)
+                Type.Num -> Column.VectorFactory.numeric(rowCount)
+                Type.Bool -> Column.VectorFactory.boolean(rowCount)
+                Type.String -> Column.VectorFactory.string(rowCount)
             }
         }
 
         // Initialize vectors for each aggregation value, type is always numeric
-        val valueVectors = aggregations.map { Column.Factory.numeric(rowCount) }
+        val valueVectors = aggregations.map { Column.VectorFactory.numeric(rowCount) }
 
         // Add all values to the output vectors
         accumulators.keys.forEachIndexed { row, key ->

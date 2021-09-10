@@ -1,6 +1,7 @@
 package sift.types
 
 import de.vandermeer.asciitable.AsciiTable
+import org.apache.arrow.vector.ValueVector
 
 /**
  * A Batch holds many records from one or more columns
@@ -40,5 +41,27 @@ class Batch(
             table.addRule()
         }
         return table.render()
+    }
+
+    companion object {
+
+        /**
+         * Constructs an empty [Batch] from the given schema
+         */
+        fun empty(schema: Schema, capacity: Int): List<ValueVector> {
+            val vectors = mutableListOf<ValueVector>()
+            schema.fields.map {
+                when (it.type) {
+                    Type.Bool -> vectors.add(Column.VectorFactory.boolean(capacity))
+                    Type.Num -> vectors.add(Column.VectorFactory.numeric(capacity))
+                    Type.String -> vectors.add(Column.VectorFactory.string(capacity))
+                }
+            }
+            return vectors
+        }
+
+        fun List<ValueVector>.valueCount(values: Int) {
+            this.forEach { it.valueCount = values }
+        }
     }
 }
