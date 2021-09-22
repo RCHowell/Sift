@@ -1,6 +1,9 @@
 plugins {
     id 'org.jetbrains.kotlin.jvm' version '1.4.10'
     id 'application'
+    id 'antlr'
+    id 'com.github.johnrengelman.shadow' version '7.0.0'
+    id 'java'
 }
 
 group = 'com.rchowell'
@@ -17,8 +20,17 @@ dependencies {
     implementation 'org.apache.arrow:arrow-vector:0.17.0'
     implementation 'com.opencsv:opencsv:5.5'
     implementation 'commons-cli:commons-cli:1.4'
-    implementation 'com.github.RCHowell:Kosch:main-SNAPSHOT'
     implementation 'de.vandermeer:asciitable:0.3.2'
+
+    // Shell
+    implementation 'org.jline:jline:3.20.0'
+    implementation 'com.github.RCHowell:Kosch:main-SNAPSHOT'
+    implementation 'info.picocli:picocli-shell-jline3:4.6.1'
+    implementation 'info.picocli:picocli:4.6.1'
+    implementation 'org.fusesource.jansi:jansi:2.3.4'
+
+    // Parser generator
+    antlr 'org.antlr:antlr4:4.9.2'
 
     // Test Dependencies
     testImplementation 'org.jetbrains.kotlin:kotlin-test-junit5'
@@ -40,10 +52,18 @@ compileTestKotlin {
     kotlinOptions.jvmTarget = '1.8'
 }
 
+generateGrammarSource {
+    maxHeapSize = "64m"
+    arguments += ["-visitor", "-long-messages"]
+}
+
 application {
     mainClassName = 'sift.shell.MainKt'
 }
 
-run {
-    standardInput = System.in
+// Build fat Jar for shell
+shadowJar {
+    archiveBaseName.set('sift')
+    archiveClassifier.set('')
+    archiveVersion.set('')
 }

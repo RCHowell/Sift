@@ -210,4 +210,6 @@ The sample data is a collection of some fuzzy friends.
 <LITERAL> ::= (<STRING>|<NUM>|<BOOL>|<NULL>)
 ```
 
+## Shell
 
+Try Graal

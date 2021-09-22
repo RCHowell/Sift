@@ -63,6 +63,5 @@ class ProjectionTest {
         )
         projection.open()
         val batch = projection.next()
-        println(batch)
     }
 }

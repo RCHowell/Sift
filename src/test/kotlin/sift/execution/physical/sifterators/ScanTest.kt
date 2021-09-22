@@ -6,14 +6,24 @@ import org.junit.jupiter.api.Test
 import sift.source.MemSource
 import sift.types.Batch
 import sift.types.BoolVectorColumn
+import sift.types.Field
 import sift.types.Schema
+import sift.types.Type
 
 internal class ScanTest {
 
     @Test
     fun simple() {
         val allocator = RootAllocator(Long.MAX_VALUE)
-        val bv = BitVector("foo", allocator)
+        val bv = BitVector("", allocator)
+        val schema = Schema(
+            listOf(
+                Field(
+                    "foo",
+                    type = Type.Bool,
+                )
+            )
+        )
         bv.allocateNew(3)
         bv[0] = 1
         bv[1] = 1
@@ -21,12 +31,10 @@ internal class ScanTest {
         bv.valueCount = 3
         val source = MemSource(
             identifier = "Foo",
-            schema = Schema(
-                listOf()
-            ),
+            schema = schema,
             data = listOf(
                 Batch(
-                    Schema(listOf()),
+                    schema,
                     listOf(
                         BoolVectorColumn(bv)
                     )

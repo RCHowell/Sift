@@ -3,7 +3,7 @@ package sift.execution.planner
 import org.junit.jupiter.api.Test
 import sift.execution.Environment
 import sift.lang.lexers.DirectCodedLexer
-import sift.lang.parsers.NaiveRecursiveDescentParser
+import sift.lang.parsers.rd.RecursiveDescentParser
 import sift.source.EmptySource
 import sift.types.Field
 import sift.types.Schema
@@ -28,7 +28,7 @@ internal class PlannerTest {
         env.registerSource(src)
 
         val lexer = DirectCodedLexer()
-        val parser = NaiveRecursiveDescentParser(env)
+        val parser = RecursiveDescentParser(env)
         val query = """
           'Families' |> SELECT gender = 'Male' |> PROJECT age / 10 -> decades
         """.trimIndent()

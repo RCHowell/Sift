@@ -10,7 +10,6 @@ import sift.source.MemSource
 import sift.types.Batch
 import sift.types.Column
 import sift.types.Field
-import sift.types.NumLiteralColumn
 import sift.types.NumVectorColumn
 import sift.types.Schema
 import sift.types.Type
@@ -47,13 +46,14 @@ internal class SelectionTest {
                     GteBinaryExpr(ColumnExpr(0), ColumnExpr(1)),
                 ),
                 projections = mapOf(
-                    0 to MulExpr(ColumnExpr(0), ColumnExpr(1))
+                    0 to MulExpr(ColumnExpr(0), ColumnExpr(1)),
+                    1 to MulExpr(ColumnExpr(0), ColumnExpr(1)) // TODO fix how Selection changes output schema
                 ),
                 schema = schema,
             ),
             predicateBinary = GtBinaryExpr(
                 lhs = ColumnExpr(0),
-                rhs = LiteralExpr(NumLiteralColumn(5.0, 3))
+                rhs = LiteralExpr(5)
             ),
         )
 

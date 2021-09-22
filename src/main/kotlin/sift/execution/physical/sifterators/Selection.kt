@@ -13,7 +13,7 @@ import sift.types.Batch
  */
 class Selection(
     val input: Sifterator,
-    val predicateBinary: PredicateBinaryExpr
+    val predicateBinary: PredicateBinaryExpr // TODO change to just predicate
 ) : Sifterator {
 
     override val schema = input.schema
