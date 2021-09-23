@@ -3,13 +3,19 @@ package sift.execution
 import sift.source.InvalidSourceException
 import sift.source.Source
 
-class Environment {
+class Environment(
+    sources: List<Source> = emptyList()
+) {
 
-    private val sources = mutableMapOf<String, Source>()
+    val sourceMap: MutableMap<String, Source> = mutableMapOf()
 
-    fun registerSource(source: Source) {
-        sources[source.identifier] = source
+    init {
+        sources.forEach { registerSource(it) }
     }
 
-    fun getSource(identifier: String): Source = sources[identifier] ?: throw InvalidSourceException(identifier)
+    fun registerSource(source: Source) {
+        sourceMap[source.identifier] = source
+    }
+
+    fun getSource(identifier: String): Source = sourceMap[identifier] ?: throw InvalidSourceException(identifier)
 }

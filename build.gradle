@@ -67,3 +67,8 @@ shadowJar {
     archiveClassifier.set('')
     archiveVersion.set('')
 }
+
+// Alias for building the shell jar
+task shell {
+    dependsOn shadowJar
+}
