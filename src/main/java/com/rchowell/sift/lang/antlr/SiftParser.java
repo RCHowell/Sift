@@ -125,14 +125,6 @@ public class SiftParser extends Parser {
 		}
 		@Override public int getRuleIndex() { return RULE_query; }
 		@Override
-		public void enterRule(ParseTreeListener listener) {
-			if ( listener instanceof SiftListener ) ((SiftListener)listener).enterQuery(this);
-		}
-		@Override
-		public void exitRule(ParseTreeListener listener) {
-			if ( listener instanceof SiftListener ) ((SiftListener)listener).exitQuery(this);
-		}
-		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
 			if ( visitor instanceof SiftVisitor ) return ((SiftVisitor<? extends T>)visitor).visitQuery(this);
 			else return visitor.visitChildren(this);
@@ -192,14 +184,6 @@ public class SiftParser extends Parser {
 		public TerminalNode ID() { return getToken(SiftParser.ID, 0); }
 		public RelIdContext(RelationContext ctx) { copyFrom(ctx); }
 		@Override
-		public void enterRule(ParseTreeListener listener) {
-			if ( listener instanceof SiftListener ) ((SiftListener)listener).enterRelId(this);
-		}
-		@Override
-		public void exitRule(ParseTreeListener listener) {
-			if ( listener instanceof SiftListener ) ((SiftListener)listener).exitRelId(this);
-		}
-		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
 			if ( visitor instanceof SiftVisitor ) return ((SiftVisitor<? extends T>)visitor).visitRelId(this);
 			else return visitor.visitChildren(this);
@@ -212,14 +196,6 @@ public class SiftParser extends Parser {
 		}
 		public TerminalNode RP() { return getToken(SiftParser.RP, 0); }
 		public RelSubqueryContext(RelationContext ctx) { copyFrom(ctx); }
-		@Override
-		public void enterRule(ParseTreeListener listener) {
-			if ( listener instanceof SiftListener ) ((SiftListener)listener).enterRelSubquery(this);
-		}
-		@Override
-		public void exitRule(ParseTreeListener listener) {
-			if ( listener instanceof SiftListener ) ((SiftListener)listener).exitRelSubquery(this);
-		}
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
 			if ( visitor instanceof SiftVisitor ) return ((SiftVisitor<? extends T>)visitor).visitRelSubquery(this);
@@ -249,14 +225,6 @@ public class SiftParser extends Parser {
 		public TerminalNode RIGHT() { return getToken(SiftParser.RIGHT, 0); }
 		public RelJoinContext(RelationContext ctx) { copyFrom(ctx); }
 		@Override
-		public void enterRule(ParseTreeListener listener) {
-			if ( listener instanceof SiftListener ) ((SiftListener)listener).enterRelJoin(this);
-		}
-		@Override
-		public void exitRule(ParseTreeListener listener) {
-			if ( listener instanceof SiftListener ) ((SiftListener)listener).exitRelJoin(this);
-		}
-		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
 			if ( visitor instanceof SiftVisitor ) return ((SiftVisitor<? extends T>)visitor).visitRelJoin(this);
 			else return visitor.visitChildren(this);
@@ -271,14 +239,6 @@ public class SiftParser extends Parser {
 		}
 		public TerminalNode INTERSECT() { return getToken(SiftParser.INTERSECT, 0); }
 		public RelIntersectContext(RelationContext ctx) { copyFrom(ctx); }
-		@Override
-		public void enterRule(ParseTreeListener listener) {
-			if ( listener instanceof SiftListener ) ((SiftListener)listener).enterRelIntersect(this);
-		}
-		@Override
-		public void exitRule(ParseTreeListener listener) {
-			if ( listener instanceof SiftListener ) ((SiftListener)listener).exitRelIntersect(this);
-		}
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
 			if ( visitor instanceof SiftVisitor ) return ((SiftVisitor<? extends T>)visitor).visitRelIntersect(this);
@@ -295,14 +255,6 @@ public class SiftParser extends Parser {
 		public TerminalNode CROSS() { return getToken(SiftParser.CROSS, 0); }
 		public RelCrossContext(RelationContext ctx) { copyFrom(ctx); }
 		@Override
-		public void enterRule(ParseTreeListener listener) {
-			if ( listener instanceof SiftListener ) ((SiftListener)listener).enterRelCross(this);
-		}
-		@Override
-		public void exitRule(ParseTreeListener listener) {
-			if ( listener instanceof SiftListener ) ((SiftListener)listener).exitRelCross(this);
-		}
-		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
 			if ( visitor instanceof SiftVisitor ) return ((SiftVisitor<? extends T>)visitor).visitRelCross(this);
 			else return visitor.visitChildren(this);
@@ -318,14 +270,6 @@ public class SiftParser extends Parser {
 		public TerminalNode DIFF() { return getToken(SiftParser.DIFF, 0); }
 		public RelDiffContext(RelationContext ctx) { copyFrom(ctx); }
 		@Override
-		public void enterRule(ParseTreeListener listener) {
-			if ( listener instanceof SiftListener ) ((SiftListener)listener).enterRelDiff(this);
-		}
-		@Override
-		public void exitRule(ParseTreeListener listener) {
-			if ( listener instanceof SiftListener ) ((SiftListener)listener).exitRelDiff(this);
-		}
-		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
 			if ( visitor instanceof SiftVisitor ) return ((SiftVisitor<? extends T>)visitor).visitRelDiff(this);
 			else return visitor.visitChildren(this);
@@ -340,14 +284,6 @@ public class SiftParser extends Parser {
 		}
 		public TerminalNode UNION() { return getToken(SiftParser.UNION, 0); }
 		public RelUnionContext(RelationContext ctx) { copyFrom(ctx); }
-		@Override
-		public void enterRule(ParseTreeListener listener) {
-			if ( listener instanceof SiftListener ) ((SiftListener)listener).enterRelUnion(this);
-		}
-		@Override
-		public void exitRule(ParseTreeListener listener) {
-			if ( listener instanceof SiftListener ) ((SiftListener)listener).exitRelUnion(this);
-		}
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
 			if ( visitor instanceof SiftVisitor ) return ((SiftVisitor<? extends T>)visitor).visitRelUnion(this);
@@ -585,14 +521,6 @@ public class SiftParser extends Parser {
 		}
 		public TransformSortContext(TransformContext ctx) { copyFrom(ctx); }
 		@Override
-		public void enterRule(ParseTreeListener listener) {
-			if ( listener instanceof SiftListener ) ((SiftListener)listener).enterTransformSort(this);
-		}
-		@Override
-		public void exitRule(ParseTreeListener listener) {
-			if ( listener instanceof SiftListener ) ((SiftListener)listener).exitTransformSort(this);
-		}
-		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
 			if ( visitor instanceof SiftVisitor ) return ((SiftVisitor<? extends T>)visitor).visitTransformSort(this);
 			else return visitor.visitChildren(this);
@@ -603,14 +531,6 @@ public class SiftParser extends Parser {
 			return getRuleContext(ProjectContext.class,0);
 		}
 		public TransformProjectContext(TransformContext ctx) { copyFrom(ctx); }
-		@Override
-		public void enterRule(ParseTreeListener listener) {
-			if ( listener instanceof SiftListener ) ((SiftListener)listener).enterTransformProject(this);
-		}
-		@Override
-		public void exitRule(ParseTreeListener listener) {
-			if ( listener instanceof SiftListener ) ((SiftListener)listener).exitTransformProject(this);
-		}
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
 			if ( visitor instanceof SiftVisitor ) return ((SiftVisitor<? extends T>)visitor).visitTransformProject(this);
@@ -623,14 +543,6 @@ public class SiftParser extends Parser {
 		}
 		public TransformGroupContext(TransformContext ctx) { copyFrom(ctx); }
 		@Override
-		public void enterRule(ParseTreeListener listener) {
-			if ( listener instanceof SiftListener ) ((SiftListener)listener).enterTransformGroup(this);
-		}
-		@Override
-		public void exitRule(ParseTreeListener listener) {
-			if ( listener instanceof SiftListener ) ((SiftListener)listener).exitTransformGroup(this);
-		}
-		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
 			if ( visitor instanceof SiftVisitor ) return ((SiftVisitor<? extends T>)visitor).visitTransformGroup(this);
 			else return visitor.visitChildren(this);
@@ -641,14 +553,6 @@ public class SiftParser extends Parser {
 			return getRuleContext(LimitContext.class,0);
 		}
 		public TransformLimitContext(TransformContext ctx) { copyFrom(ctx); }
-		@Override
-		public void enterRule(ParseTreeListener listener) {
-			if ( listener instanceof SiftListener ) ((SiftListener)listener).enterTransformLimit(this);
-		}
-		@Override
-		public void exitRule(ParseTreeListener listener) {
-			if ( listener instanceof SiftListener ) ((SiftListener)listener).exitTransformLimit(this);
-		}
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
 			if ( visitor instanceof SiftVisitor ) return ((SiftVisitor<? extends T>)visitor).visitTransformLimit(this);
@@ -661,14 +565,6 @@ public class SiftParser extends Parser {
 		}
 		public TransformDistinctContext(TransformContext ctx) { copyFrom(ctx); }
 		@Override
-		public void enterRule(ParseTreeListener listener) {
-			if ( listener instanceof SiftListener ) ((SiftListener)listener).enterTransformDistinct(this);
-		}
-		@Override
-		public void exitRule(ParseTreeListener listener) {
-			if ( listener instanceof SiftListener ) ((SiftListener)listener).exitTransformDistinct(this);
-		}
-		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
 			if ( visitor instanceof SiftVisitor ) return ((SiftVisitor<? extends T>)visitor).visitTransformDistinct(this);
 			else return visitor.visitChildren(this);
@@ -679,14 +575,6 @@ public class SiftParser extends Parser {
 			return getRuleContext(SelectContext.class,0);
 		}
 		public TransformSelectContext(TransformContext ctx) { copyFrom(ctx); }
-		@Override
-		public void enterRule(ParseTreeListener listener) {
-			if ( listener instanceof SiftListener ) ((SiftListener)listener).enterTransformSelect(this);
-		}
-		@Override
-		public void exitRule(ParseTreeListener listener) {
-			if ( listener instanceof SiftListener ) ((SiftListener)listener).exitTransformSelect(this);
-		}
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
 			if ( visitor instanceof SiftVisitor ) return ((SiftVisitor<? extends T>)visitor).visitTransformSelect(this);
@@ -774,14 +662,6 @@ public class SiftParser extends Parser {
 		}
 		@Override public int getRuleIndex() { return RULE_select; }
 		@Override
-		public void enterRule(ParseTreeListener listener) {
-			if ( listener instanceof SiftListener ) ((SiftListener)listener).enterSelect(this);
-		}
-		@Override
-		public void exitRule(ParseTreeListener listener) {
-			if ( listener instanceof SiftListener ) ((SiftListener)listener).exitSelect(this);
-		}
-		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
 			if ( visitor instanceof SiftVisitor ) return ((SiftVisitor<? extends T>)visitor).visitSelect(this);
 			else return visitor.visitChildren(this);
@@ -827,14 +707,6 @@ public class SiftParser extends Parser {
 			super(parent, invokingState);
 		}
 		@Override public int getRuleIndex() { return RULE_project; }
-		@Override
-		public void enterRule(ParseTreeListener listener) {
-			if ( listener instanceof SiftListener ) ((SiftListener)listener).enterProject(this);
-		}
-		@Override
-		public void exitRule(ParseTreeListener listener) {
-			if ( listener instanceof SiftListener ) ((SiftListener)listener).exitProject(this);
-		}
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
 			if ( visitor instanceof SiftVisitor ) return ((SiftVisitor<? extends T>)visitor).visitProject(this);
@@ -902,14 +774,6 @@ public class SiftParser extends Parser {
 			super(parent, invokingState);
 		}
 		@Override public int getRuleIndex() { return RULE_group; }
-		@Override
-		public void enterRule(ParseTreeListener listener) {
-			if ( listener instanceof SiftListener ) ((SiftListener)listener).enterGroup(this);
-		}
-		@Override
-		public void exitRule(ParseTreeListener listener) {
-			if ( listener instanceof SiftListener ) ((SiftListener)listener).exitGroup(this);
-		}
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
 			if ( visitor instanceof SiftVisitor ) return ((SiftVisitor<? extends T>)visitor).visitGroup(this);
@@ -982,14 +846,6 @@ public class SiftParser extends Parser {
 		}
 		@Override public int getRuleIndex() { return RULE_sort; }
 		@Override
-		public void enterRule(ParseTreeListener listener) {
-			if ( listener instanceof SiftListener ) ((SiftListener)listener).enterSort(this);
-		}
-		@Override
-		public void exitRule(ParseTreeListener listener) {
-			if ( listener instanceof SiftListener ) ((SiftListener)listener).exitSort(this);
-		}
-		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
 			if ( visitor instanceof SiftVisitor ) return ((SiftVisitor<? extends T>)visitor).visitSort(this);
 			else return visitor.visitChildren(this);
@@ -1056,14 +912,6 @@ public class SiftParser extends Parser {
 		}
 		@Override public int getRuleIndex() { return RULE_limit; }
 		@Override
-		public void enterRule(ParseTreeListener listener) {
-			if ( listener instanceof SiftListener ) ((SiftListener)listener).enterLimit(this);
-		}
-		@Override
-		public void exitRule(ParseTreeListener listener) {
-			if ( listener instanceof SiftListener ) ((SiftListener)listener).exitLimit(this);
-		}
-		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
 			if ( visitor instanceof SiftVisitor ) return ((SiftVisitor<? extends T>)visitor).visitLimit(this);
 			else return visitor.visitChildren(this);
@@ -1099,14 +947,6 @@ public class SiftParser extends Parser {
 			super(parent, invokingState);
 		}
 		@Override public int getRuleIndex() { return RULE_distinct; }
-		@Override
-		public void enterRule(ParseTreeListener listener) {
-			if ( listener instanceof SiftListener ) ((SiftListener)listener).enterDistinct(this);
-		}
-		@Override
-		public void exitRule(ParseTreeListener listener) {
-			if ( listener instanceof SiftListener ) ((SiftListener)listener).exitDistinct(this);
-		}
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
 			if ( visitor instanceof SiftVisitor ) return ((SiftVisitor<? extends T>)visitor).visitDistinct(this);
@@ -1155,14 +995,6 @@ public class SiftParser extends Parser {
 			super(parent, invokingState);
 		}
 		@Override public int getRuleIndex() { return RULE_expr; }
-		@Override
-		public void enterRule(ParseTreeListener listener) {
-			if ( listener instanceof SiftListener ) ((SiftListener)listener).enterExpr(this);
-		}
-		@Override
-		public void exitRule(ParseTreeListener listener) {
-			if ( listener instanceof SiftListener ) ((SiftListener)listener).exitExpr(this);
-		}
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
 			if ( visitor instanceof SiftVisitor ) return ((SiftVisitor<? extends T>)visitor).visitExpr(this);
@@ -1307,14 +1139,6 @@ public class SiftParser extends Parser {
 		}
 		@Override public int getRuleIndex() { return RULE_func; }
 		@Override
-		public void enterRule(ParseTreeListener listener) {
-			if ( listener instanceof SiftListener ) ((SiftListener)listener).enterFunc(this);
-		}
-		@Override
-		public void exitRule(ParseTreeListener listener) {
-			if ( listener instanceof SiftListener ) ((SiftListener)listener).exitFunc(this);
-		}
-		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
 			if ( visitor instanceof SiftVisitor ) return ((SiftVisitor<? extends T>)visitor).visitFunc(this);
 			else return visitor.visitChildren(this);
@@ -1372,14 +1196,6 @@ public class SiftParser extends Parser {
 		}
 		@Override public int getRuleIndex() { return RULE_agg; }
 		@Override
-		public void enterRule(ParseTreeListener listener) {
-			if ( listener instanceof SiftListener ) ((SiftListener)listener).enterAgg(this);
-		}
-		@Override
-		public void exitRule(ParseTreeListener listener) {
-			if ( listener instanceof SiftListener ) ((SiftListener)listener).exitAgg(this);
-		}
-		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
 			if ( visitor instanceof SiftVisitor ) return ((SiftVisitor<? extends T>)visitor).visitAgg(this);
 			else return visitor.visitChildren(this);
@@ -1434,14 +1250,6 @@ public class SiftParser extends Parser {
 		}
 		@Override public int getRuleIndex() { return RULE_alias; }
 		@Override
-		public void enterRule(ParseTreeListener listener) {
-			if ( listener instanceof SiftListener ) ((SiftListener)listener).enterAlias(this);
-		}
-		@Override
-		public void exitRule(ParseTreeListener listener) {
-			if ( listener instanceof SiftListener ) ((SiftListener)listener).exitAlias(this);
-		}
-		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
 			if ( visitor instanceof SiftVisitor ) return ((SiftVisitor<? extends T>)visitor).visitAlias(this);
 			else return visitor.visitChildren(this);
@@ -1484,14 +1292,6 @@ public class SiftParser extends Parser {
 			super(parent, invokingState);
 		}
 		@Override public int getRuleIndex() { return RULE_ids; }
-		@Override
-		public void enterRule(ParseTreeListener listener) {
-			if ( listener instanceof SiftListener ) ((SiftListener)listener).enterIds(this);
-		}
-		@Override
-		public void exitRule(ParseTreeListener listener) {
-			if ( listener instanceof SiftListener ) ((SiftListener)listener).exitIds(this);
-		}
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
 			if ( visitor instanceof SiftVisitor ) return ((SiftVisitor<? extends T>)visitor).visitIds(this);
