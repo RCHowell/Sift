@@ -11,7 +11,6 @@ version = '0.0.1'
 
 repositories {
     mavenCentral()
-    maven { url 'https://jitpack.io' }
 }
 
 dependencies {
@@ -24,13 +23,13 @@ dependencies {
 
     // Shell
     implementation 'org.jline:jline:3.20.0'
-    implementation 'com.github.RCHowell:Kosch:main-SNAPSHOT'
     implementation 'info.picocli:picocli-shell-jline3:4.6.1'
     implementation 'info.picocli:picocli:4.6.1'
     implementation 'org.fusesource.jansi:jansi:2.3.4'
 
     // Parser generator
     antlr 'org.antlr:antlr4:4.9.2'
+    compileOnly 'org.antlr:antlr4-runtime:4.9.2'
 
     // Test Dependencies
     testImplementation 'org.jetbrains.kotlin:kotlin-test-junit5'
@@ -55,10 +54,11 @@ compileTestKotlin {
 generateGrammarSource {
     maxHeapSize = "64m"
     arguments += ["-visitor", "-long-messages"]
+    outputDirectory = file("src/main/java/com/rchowell/sift/lang/antlr")
 }
 
 application {
-    mainClassName = 'sift.shell.MainKt'
+    mainClassName = 'com.rchowell.sift.shell.MainKt'
 }
 
 // Build fat Jar for shell
@@ -68,7 +68,6 @@ shadowJar {
     archiveVersion.set('')
 }
 
-// Alias for building the shell jar
-task shell {
-    dependsOn shadowJar
-}
+// Aliases
+task shell { dependsOn shadowJar }
+task gen { dependsOn generateGrammarSource }
