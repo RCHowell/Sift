@@ -1,5 +1,6 @@
 package sift.shell.commands
 
+import de.vandermeer.asciitable.AsciiTable
 import picocli.CommandLine.Command
 import picocli.CommandLine.ParentCommand
 
@@ -18,12 +19,15 @@ class RelationsCommand : Runnable {
 
     override fun run() {
         try {
-            val sources = buildString {
-                root.context.env.sourceMap.keys.forEach {
-                    append(it).append("\n")
-                }
+            val table = AsciiTable()
+            table.addRule()
+            table.addRow("Name", "Type")
+            table.addRule()
+            root.context.env.sourceMap.forEach {
+                table.addRow(it.key, it.value::class.java.name)
+                table.addRule()
             }
-            println(sources)
+            println(table.render())
         } catch (e: Exception) {
             println("unknown relation")
             println(e)
