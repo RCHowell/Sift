@@ -1,6 +1,6 @@
-package com.rchowell.sift.execution.logical.plans
+package com.rchowell.sift.execution.logical.transforms
 
-import com.rchowell.sift.execution.logical.LogicalPlan
+import com.rchowell.sift.execution.logical.LogicalTransform
 import com.rchowell.sift.execution.logical.expressions.LogicalIdentifierExpr
 import com.rchowell.sift.types.Schema
 
@@ -13,17 +13,17 @@ import com.rchowell.sift.types.Schema
  * @constructor Create empty Logical sort
  */
 class LogicalSort(
-    private val input: LogicalPlan,
+    private val input: LogicalTransform,
     private val asc: Boolean,
     private val fields: List<LogicalIdentifierExpr>,
-) : LogicalPlan() {
+) : LogicalTransform() {
 
     /**
      * Sorting does not change schema
      */
     override val schema: Schema = input.schema
 
-    override fun inputs(): List<LogicalPlan> = listOf(input)
+    override fun inputs(): List<LogicalTransform> = listOf(input)
 
     override fun toString(): String = buildString {
         append("SORT ")

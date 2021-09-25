@@ -1,6 +1,6 @@
 package com.rchowell.sift.lang
 
-import com.rchowell.sift.execution.logical.LogicalPlan
+import com.rchowell.sift.execution.logical.LogicalTransform
 
 /**
  * SiftParser transforms a list of tokens into a query plan
@@ -9,5 +9,5 @@ import com.rchowell.sift.execution.logical.LogicalPlan
  */
 interface SiftParser {
 
-    fun parse(tokens: List<Token<*>>): LogicalPlan
+    fun parse(tokens: List<Token<*>>): LogicalTransform
 }

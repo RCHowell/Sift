@@ -1,7 +1,7 @@
 package com.rchowell.sift.execution.planner
 
 import com.rchowell.sift.execution.logical.LogicalExpr
-import com.rchowell.sift.execution.logical.LogicalPlan
+import com.rchowell.sift.execution.logical.LogicalTransform
 import com.rchowell.sift.execution.logical.expressions.BinaryOp
 import com.rchowell.sift.execution.logical.expressions.LogicalAddExpr
 import com.rchowell.sift.execution.logical.expressions.LogicalAndExpr
@@ -25,14 +25,14 @@ import com.rchowell.sift.execution.logical.expressions.LogicalNeqExpr
 import com.rchowell.sift.execution.logical.expressions.LogicalOrExpr
 import com.rchowell.sift.execution.logical.expressions.LogicalSubExpr
 import com.rchowell.sift.execution.logical.expressions.LogicalSumExpr
-import com.rchowell.sift.execution.logical.plans.LogicalAggregation
-import com.rchowell.sift.execution.logical.plans.LogicalDistinct
-import com.rchowell.sift.execution.logical.plans.LogicalJoin
-import com.rchowell.sift.execution.logical.plans.LogicalLimit
-import com.rchowell.sift.execution.logical.plans.LogicalProjection
-import com.rchowell.sift.execution.logical.plans.LogicalScan
-import com.rchowell.sift.execution.logical.plans.LogicalSelection
-import com.rchowell.sift.execution.logical.plans.LogicalSort
+import com.rchowell.sift.execution.logical.transforms.LogicalAggregation
+import com.rchowell.sift.execution.logical.transforms.LogicalDistinct
+import com.rchowell.sift.execution.logical.transforms.LogicalJoin
+import com.rchowell.sift.execution.logical.transforms.LogicalLimit
+import com.rchowell.sift.execution.logical.transforms.LogicalProjection
+import com.rchowell.sift.execution.logical.transforms.LogicalScan
+import com.rchowell.sift.execution.logical.transforms.LogicalSelection
+import com.rchowell.sift.execution.logical.transforms.LogicalSort
 import com.rchowell.sift.execution.physical.aggregations.AvgAccumulator
 import com.rchowell.sift.execution.physical.aggregations.CountAccumulator
 import com.rchowell.sift.execution.physical.aggregations.MaxAccumulator
@@ -67,13 +67,13 @@ class Planner {
     companion object {
 
         /**
-         * Constructs a [Sifterator] to execute the [LogicalPlan].
+         * Constructs a [Sifterator] to execute the [LogicalTransform].
          */
-        fun plan(plan: LogicalPlan): Sifterator = when (plan) {
+        fun plan(transform: LogicalTransform): Sifterator = when (transform) {
             is LogicalAggregation -> {
-                val input = plan.inputs().first()
+                val input = transform.inputs().first()
                 val inPlan = plan(input)
-                val aggregations = plan.aggregations.map { (identity, agg) ->
+                val aggregations = transform.aggregations.map { (identity, agg) ->
                     val column = col(input.schema, agg.input as LogicalIdentifierExpr)
                     when (agg) {
                         is LogicalMinExpr -> MinAccumulator(column)
@@ -83,31 +83,31 @@ class Planner {
                         is LogicalAvgExpr -> AvgAccumulator(column)
                     }
                 }
-                val groups = plan.groups.map { id -> col(input.schema, id) }
-                Aggregation(inPlan, aggregations, groups, plan.schema)
+                val groups = transform.groups.map { id -> col(input.schema, id) }
+                Aggregation(inPlan, aggregations, groups, transform.schema)
             }
             is LogicalProjection -> {
-                val input = plan.inputs().first()
-                val inPlan = plan(plan.inputs().first())
+                val input = transform.inputs().first()
+                val inPlan = plan(transform.inputs().first())
                 val projs = mutableMapOf<Int, Expression>()
-                plan.projections.forEach { (identity, expr) ->
-                    val column = col(plan.schema, identity)
+                transform.projections.forEach { (identity, expr) ->
+                    val column = col(transform.schema, identity)
                     projs[column] = expression(expr, input.schema)
                 }
-                Projection(inPlan, projs, plan.schema)
+                Projection(inPlan, projs, transform.schema)
             }
-            is LogicalScan -> Scan(plan.source, plan.identifiers)
+            is LogicalScan -> Scan(transform.source, transform.identifiers)
             is LogicalSelection -> {
-                val input = plan.inputs().first()
-                val inPlan = plan(plan.inputs().first())
-                val predicate = predicate(plan.expr, input.schema)
+                val input = transform.inputs().first()
+                val inPlan = plan(transform.inputs().first())
+                val predicate = predicate(transform.expr, input.schema)
                 Selection(inPlan, predicate)
             }
             is LogicalSort -> TODO()
             is LogicalDistinct -> TODO()
             is LogicalJoin -> TODO()
             is LogicalLimit -> TODO()
-            else -> invalid("plan", plan)
+            else -> invalid("plan", transform)
         }
 
         private fun expression(expr: LogicalExpr, schema: Schema): Expression = when (expr) {

@@ -1,6 +1,6 @@
-package com.rchowell.sift.execution.logical.plans
+package com.rchowell.sift.execution.logical.transforms
 
-import com.rchowell.sift.execution.logical.LogicalPlan
+import com.rchowell.sift.execution.logical.LogicalTransform
 import com.rchowell.sift.execution.logical.expressions.LogicalAggregateExpr
 import com.rchowell.sift.execution.logical.expressions.LogicalIdentifierExpr
 import com.rchowell.sift.types.Field
@@ -18,10 +18,10 @@ import com.rchowell.sift.types.Schema
  *  The grouping operator, gamma, is an operator that combines the effect of grouping and aggregation. p213
  */
 class LogicalAggregation(
-    val input: LogicalPlan,
+    val input: LogicalTransform,
     val aggregations: Map<LogicalIdentifierExpr, LogicalAggregateExpr>,
     val groups: List<LogicalIdentifierExpr>,
-) : LogicalPlan() {
+) : LogicalTransform() {
 
     override val schema: Schema
         get() {
@@ -35,7 +35,7 @@ class LogicalAggregation(
             return Schema(fields)
         }
 
-    override fun inputs(): List<LogicalPlan> = listOf(input)
+    override fun inputs(): List<LogicalTransform> = listOf(input)
 
     override fun toString(): String = buildString {
         append("AGGREGATE ")

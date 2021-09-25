@@ -9,6 +9,9 @@ query: relation (PIPE transform)*;
 // ===========
 //  Relations
 // ===========
+
+// TODO identifiers in scans
+
 relation
     :   ID                                                                      #relId
     |   LP query RP                                                             #relSubquery
@@ -47,20 +50,21 @@ distinct: DISTINCT;
 //  Expressions and Functions
 // ===========================
 
-expr:   expr ('*'|'/') expr
-    |   expr ('+'|'-') expr
-    |   INT
-    |   ID
-    |   SQUOTE WORD SQUOTE
-    |   LP expr RP;
+expr:   expr op=(LT|LTE|EQ|GT|GTE) expr     #comparisonExpr
+    |   ID                                  #identExpr
+    |   INT                                 #intLitExpr
+    |   SQUOTE WORD SQUOTE                  #stringLitExpr
+    |   LP expr RP                          #quotedExpr;
 
 func:   ID
     |   expr MAPS ID
     ;
 
-agg: ID LP ID RP (MAPS ID)?; // ID(ID) -> ID
+agg: ID LP ID RP mapsto?; // ID(ID) (-> ID)?
 
 alias: AS ID;
+
+mapsto: (MAPS ID);
 
 ids: ID (COMMA ID)*;
 
@@ -75,6 +79,13 @@ LP: '(';
 RP: ')';
 COMMA: ',';
 SQUOTE: '\'';
+
+// Ops
+EQ: '=';
+GT: '>';
+LT: '<';
+GTE: '>=';
+LTE: '<=';
 
 // Transforms
 SELECT: 'SELECT';

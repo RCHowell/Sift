@@ -1,23 +1,25 @@
 package com.rchowell.sift.lang.antlr
 
 import com.rchowell.sift.execution.Environment
-import com.rchowell.sift.shell.data.pets
 import org.antlr.v4.runtime.CharStreams
 import org.antlr.v4.runtime.CommonTokenStream
 import org.antlr.v4.runtime.tree.Tree
 import org.antlr.v4.runtime.tree.Trees
-import org.junit.jupiter.api.Test
 import java.io.ByteArrayInputStream
 
-class SiftAntlrVisitorTest {
+class SiftCompiler(private val env: Environment) {
+    //
+    //    fun compile(query: String): LogicalTransform {
+    //        val input = ByteArrayInputStream(query.toByteArray(Charsets.UTF_8))
+    //        val lexer = SiftLexer(CharStreams.fromStream(input))
+    //        val tokens = CommonTokenStream(lexer)
+    //        val parser = SiftParser(tokens)
+    //        val tree = parser.query()
+    //        val visitor = SiftAntlrVisitor(env)
+    //        val queryBuilder = visitor.visit(tree)
+    //    }
 
-    @Test
-    fun test() {
-        val env = Environment(listOf(pets))
-        val query = """
-            Pets
-            |> SELECT 100 * 100
-        """.trimIndent()
+    fun describe(query: String) {
         val input = ByteArrayInputStream(query.toByteArray(Charsets.UTF_8))
         val lexer = SiftLexer(CharStreams.fromStream(input))
         val tokens = CommonTokenStream(lexer)
@@ -36,8 +38,8 @@ class SiftAntlrVisitorTest {
 
         println("==== Plan ====")
         val visitor = SiftAntlrVisitor(env)
-        val plan = visitor.visit(tree)
-        println(plan.pretty())
+        val state = visitor.visit(tree)
+        println(state.query().pretty())
     }
 }
 

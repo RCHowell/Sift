@@ -1,6 +1,6 @@
-package com.rchowell.sift.execution.logical.plans
+package com.rchowell.sift.execution.logical.transforms
 
-import com.rchowell.sift.execution.logical.LogicalPlan
+import com.rchowell.sift.execution.logical.LogicalTransform
 import com.rchowell.sift.types.Schema
 
 /**
@@ -15,13 +15,13 @@ import com.rchowell.sift.types.Schema
  * @constructor Create empty Logical limit
  */
 class LogicalLimit(
-    private val input: LogicalPlan,
+    private val input: LogicalTransform,
     private val n: Int,
-) : LogicalPlan() {
+) : LogicalTransform() {
 
     override val schema: Schema = input.schema
 
-    override fun inputs(): List<LogicalPlan> = listOf(input)
+    override fun inputs(): List<LogicalTransform> = listOf(input)
 
     override fun toString(): String = "LIMIT $n"
 }

@@ -1,7 +1,7 @@
 package com.rchowell.sift.execution.logical.expressions
 
 import com.rchowell.sift.execution.logical.LogicalExpr
-import com.rchowell.sift.execution.logical.LogicalPlan
+import com.rchowell.sift.execution.logical.LogicalTransform
 import com.rchowell.sift.types.Field
 import com.rchowell.sift.types.Type
 
@@ -19,7 +19,7 @@ sealed class LogicalAggregateExpr(
     val input: LogicalExpr,
 ) : LogicalExpr {
     override fun toString(): String = "$op($input)"
-    override fun toField(input: LogicalPlan): Field = Field(op.name, this.input.toField(input).type)
+    override fun toField(input: LogicalTransform): Field = Field(op.name, this.input.toField(input).type)
 
     companion object {
 
@@ -41,7 +41,7 @@ class LogicalMaxExpr(input: LogicalExpr) : LogicalAggregateExpr(AggOp.MAX, input
 class LogicalSumExpr(input: LogicalExpr) : LogicalAggregateExpr(AggOp.SUM, input)
 
 class LogicalCountExpr(input: LogicalExpr) : LogicalAggregateExpr(AggOp.COUNT, input) {
-    override fun toField(input: LogicalPlan): Field = Field(op.name, Type.Num)
+    override fun toField(input: LogicalTransform): Field = Field(op.name, Type.Num)
 }
 
 class LogicalAvgExpr(input: LogicalExpr) : LogicalAggregateExpr(AggOp.AVG, input)

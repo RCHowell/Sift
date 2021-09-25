@@ -1,7 +1,7 @@
-package com.rchowell.sift.execution.logical.plans
+package com.rchowell.sift.execution.logical.transforms
 
 import com.rchowell.sift.execution.logical.LogicalExpr
-import com.rchowell.sift.execution.logical.LogicalPlan
+import com.rchowell.sift.execution.logical.LogicalTransform
 import com.rchowell.sift.execution.logical.expressions.LogicalIdentifierExpr
 import com.rchowell.sift.types.Field
 import com.rchowell.sift.types.Schema
@@ -16,9 +16,9 @@ import com.rchowell.sift.types.Schema
  * @constructor Create empty Logical projection
  */
 class LogicalProjection(
-    val input: LogicalPlan,
+    val input: LogicalTransform,
     val projections: Map<LogicalIdentifierExpr, LogicalExpr>,
-) : LogicalPlan() {
+) : LogicalTransform() {
 
     /**
      * Each expression describes its output field, so the Schema produced by this
@@ -26,7 +26,7 @@ class LogicalProjection(
      */
     override val schema: Schema = Schema(projections.entries.map { (k, v) -> Field(k.identifier, v.toField(input).type) })
 
-    override fun inputs(): List<LogicalPlan> = listOf(input)
+    override fun inputs(): List<LogicalTransform> = listOf(input)
 
     override fun toString(): String = buildString {
         append("PROJECT ")

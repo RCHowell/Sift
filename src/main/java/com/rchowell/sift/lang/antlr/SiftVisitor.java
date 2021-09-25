@@ -146,11 +146,40 @@ public interface SiftVisitor<T> extends ParseTreeVisitor<T> {
 	 */
 	T visitDistinct(SiftParser.DistinctContext ctx);
 	/**
-	 * Visit a parse tree produced by {@link SiftParser#expr}.
+	 * Visit a parse tree produced by the {@code identExpr}
+	 * labeled alternative in {@link SiftParser#expr}.
 	 * @param ctx the parse tree
 	 * @return the visitor result
 	 */
-	T visitExpr(SiftParser.ExprContext ctx);
+	T visitIdentExpr(SiftParser.IdentExprContext ctx);
+	/**
+	 * Visit a parse tree produced by the {@code intLitExpr}
+	 * labeled alternative in {@link SiftParser#expr}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitIntLitExpr(SiftParser.IntLitExprContext ctx);
+	/**
+	 * Visit a parse tree produced by the {@code stringLitExpr}
+	 * labeled alternative in {@link SiftParser#expr}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitStringLitExpr(SiftParser.StringLitExprContext ctx);
+	/**
+	 * Visit a parse tree produced by the {@code comparisonExpr}
+	 * labeled alternative in {@link SiftParser#expr}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitComparisonExpr(SiftParser.ComparisonExprContext ctx);
+	/**
+	 * Visit a parse tree produced by the {@code quotedExpr}
+	 * labeled alternative in {@link SiftParser#expr}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitQuotedExpr(SiftParser.QuotedExprContext ctx);
 	/**
 	 * Visit a parse tree produced by {@link SiftParser#func}.
 	 * @param ctx the parse tree
@@ -169,6 +198,12 @@ public interface SiftVisitor<T> extends ParseTreeVisitor<T> {
 	 * @return the visitor result
 	 */
 	T visitAlias(SiftParser.AliasContext ctx);
+	/**
+	 * Visit a parse tree produced by {@link SiftParser#mapsto}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitMapsto(SiftParser.MapstoContext ctx);
 	/**
 	 * Visit a parse tree produced by {@link SiftParser#ids}.
 	 * @param ctx the parse tree

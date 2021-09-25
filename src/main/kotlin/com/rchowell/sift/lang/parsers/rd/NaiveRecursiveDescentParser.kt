@@ -2,20 +2,20 @@ package com.rchowell.sift.lang.parsers
 
 import com.rchowell.sift.execution.Environment
 import com.rchowell.sift.execution.logical.LogicalExpr
-import com.rchowell.sift.execution.logical.LogicalPlan
+import com.rchowell.sift.execution.logical.LogicalTransform
 import com.rchowell.sift.execution.logical.expressions.BinaryOp
 import com.rchowell.sift.execution.logical.expressions.LogicalAggregateExpr
 import com.rchowell.sift.execution.logical.expressions.LogicalBinaryExpr
 import com.rchowell.sift.execution.logical.expressions.LogicalIdentifierExpr
 import com.rchowell.sift.execution.logical.expressions.LogicalLiteralExpr
 import com.rchowell.sift.execution.logical.functions.LogicalFunction
-import com.rchowell.sift.execution.logical.plans.LogicalAggregation
-import com.rchowell.sift.execution.logical.plans.LogicalDistinct
-import com.rchowell.sift.execution.logical.plans.LogicalLimit
-import com.rchowell.sift.execution.logical.plans.LogicalProjection
-import com.rchowell.sift.execution.logical.plans.LogicalScan
-import com.rchowell.sift.execution.logical.plans.LogicalSelection
-import com.rchowell.sift.execution.logical.plans.LogicalSort
+import com.rchowell.sift.execution.logical.transforms.LogicalAggregation
+import com.rchowell.sift.execution.logical.transforms.LogicalDistinct
+import com.rchowell.sift.execution.logical.transforms.LogicalLimit
+import com.rchowell.sift.execution.logical.transforms.LogicalProjection
+import com.rchowell.sift.execution.logical.transforms.LogicalScan
+import com.rchowell.sift.execution.logical.transforms.LogicalSelection
+import com.rchowell.sift.execution.logical.transforms.LogicalSort
 import com.rchowell.sift.lang.SiftParser
 import com.rchowell.sift.lang.Token
 import com.rchowell.sift.lang.TokenType
@@ -29,15 +29,15 @@ class NaiveRecursiveDescentParser(
     lateinit var words: Array<Token<*>>
     var pointer = 0
 
-    override fun parse(tokens: List<Token<*>>): LogicalPlan {
+    override fun parse(tokens: List<Token<*>>): LogicalTransform {
         words = tokens.toTypedArray()
         return query()
     }
 
-    private fun query(): LogicalPlan {
+    private fun query(): LogicalTransform {
         val scan = relationProduction()
         var prev = scan
-        var next: LogicalPlan
+        var next: LogicalTransform
         while (pointer < words.size) {
             val p = words[pointer++]
             if (p.type != TokenType.PIPE) throw InvalidSyntaxException("expected pipe where $p is")
@@ -47,7 +47,7 @@ class NaiveRecursiveDescentParser(
         return prev
     }
 
-    private fun relationProduction(): LogicalPlan {
+    private fun relationProduction(): LogicalTransform {
         val word = words[pointer++]
         return when (word.type) {
             TokenType.LEFT_PAREN -> {
@@ -67,7 +67,7 @@ class NaiveRecursiveDescentParser(
         }
     }
 
-    private fun transform(input: LogicalPlan): LogicalPlan {
+    private fun transform(input: LogicalTransform): LogicalTransform {
         val word = words[pointer++]
         if (word.type != TokenType.KEYWORD) throw InvalidSyntaxException("Expected keyword")
         return when (word.value.toString()) {
@@ -81,7 +81,7 @@ class NaiveRecursiveDescentParser(
         }
     }
 
-    private fun select(input: LogicalPlan): LogicalPlan =
+    private fun select(input: LogicalTransform): LogicalTransform =
         LogicalSelection(input, expression())
 
     private fun expression(): LogicalExpr {
@@ -140,7 +140,7 @@ class NaiveRecursiveDescentParser(
         }
     }
 
-    private fun project(input: LogicalPlan): LogicalPlan {
+    private fun project(input: LogicalTransform): LogicalTransform {
         val projections = mutableMapOf<LogicalIdentifierExpr, LogicalExpr>()
         while (true) {
             val (fExpr, fProj) = func()
@@ -161,7 +161,7 @@ class NaiveRecursiveDescentParser(
         return Pair(expr, LogicalIdentifierExpr(alias.value as String))
     }
 
-    private fun group(input: LogicalPlan): LogicalPlan {
+    private fun group(input: LogicalTransform): LogicalTransform {
         val aggs = aggs()
         val groups = mutableListOf<LogicalIdentifierExpr>()
         if (pointer < words.size) {
@@ -230,13 +230,13 @@ class NaiveRecursiveDescentParser(
         return ids
     }
 
-    private fun limit(input: LogicalPlan): LogicalPlan {
+    private fun limit(input: LogicalTransform): LogicalTransform {
         val n = words[pointer++]
         if (n.type != TokenType.LITERAL || n.value !is Int) throw InvalidSyntaxException("expected integer at $n")
         return LogicalLimit(input, n.value)
     }
 
-    private fun sort(input: LogicalPlan): LogicalPlan {
+    private fun sort(input: LogicalTransform): LogicalTransform {
         var asc = true
         var next = words[pointer++]
         val fields = mutableListOf<LogicalIdentifierExpr>()

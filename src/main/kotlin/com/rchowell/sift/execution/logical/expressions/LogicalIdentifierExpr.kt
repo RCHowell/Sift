@@ -1,7 +1,7 @@
 package com.rchowell.sift.execution.logical.expressions
 
 import com.rchowell.sift.execution.logical.LogicalExpr
-import com.rchowell.sift.execution.logical.LogicalPlan
+import com.rchowell.sift.execution.logical.LogicalTransform
 import com.rchowell.sift.types.Field
 
 /**
@@ -18,7 +18,7 @@ class LogicalIdentifierExpr(val identifier: String) : LogicalExpr {
      * @param input
      * @return
      */
-    override fun toField(input: LogicalPlan): Field = input.schema.find(identifier)
+    override fun toField(input: LogicalTransform): Field = input.schema.find(identifier)
 
     override fun toString(): String = "#$identifier"
 

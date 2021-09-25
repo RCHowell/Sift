@@ -1,7 +1,7 @@
 package com.rchowell.sift.execution.logical.expressions
 
 import com.rchowell.sift.execution.logical.LogicalExpr
-import com.rchowell.sift.execution.logical.LogicalPlan
+import com.rchowell.sift.execution.logical.LogicalTransform
 import com.rchowell.sift.execution.logical.expressions.BinaryOp.ADD
 import com.rchowell.sift.execution.logical.expressions.BinaryOp.AND
 import com.rchowell.sift.execution.logical.expressions.BinaryOp.DIV
@@ -64,7 +64,7 @@ sealed class LogicalBooleanBinaryExpr(
     lhs: LogicalExpr,
     rhs: LogicalExpr,
 ) : LogicalBinaryExpr(op, lhs, rhs) {
-    override fun toField(input: LogicalPlan): Field = Field(op.name, Type.Bool)
+    override fun toField(input: LogicalTransform): Field = Field(op.name, Type.Bool)
 }
 
 class LogicalEqExpr(lhs: LogicalExpr, rhs: LogicalExpr) : LogicalBooleanBinaryExpr(EQ, lhs, rhs)
@@ -91,7 +91,7 @@ sealed class LogicalMathBinaryExpr(
     lhs: LogicalExpr,
     rhs: LogicalExpr,
 ) : LogicalBinaryExpr(op, lhs, rhs) {
-    override fun toField(input: LogicalPlan): Field = Field(op.name, Type.Num)
+    override fun toField(input: LogicalTransform): Field = Field(op.name, Type.Num)
 }
 
 class LogicalAddExpr(lhs: LogicalExpr, rhs: LogicalExpr) : LogicalBooleanBinaryExpr(ADD, lhs, rhs)

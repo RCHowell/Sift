@@ -1,7 +1,7 @@
-package com.rchowell.sift.execution.logical.plans
+package com.rchowell.sift.execution.logical.transforms
 
 import com.rchowell.sift.execution.logical.LogicalExpr
-import com.rchowell.sift.execution.logical.LogicalPlan
+import com.rchowell.sift.execution.logical.LogicalTransform
 import com.rchowell.sift.types.Schema
 
 /**
@@ -13,13 +13,13 @@ import com.rchowell.sift.types.Schema
  * @constructor Create empty Logical selection
  */
 class LogicalSelection(
-    val input: LogicalPlan,
+    val input: LogicalTransform,
     val expr: LogicalExpr,
-) : LogicalPlan() {
+) : LogicalTransform() {
 
     override val schema: Schema = input.schema
 
-    override fun inputs(): List<LogicalPlan> = listOf(input)
+    override fun inputs(): List<LogicalTransform> = listOf(input)
 
     override fun toString(): String = "SELECT $expr"
 }

@@ -1,7 +1,7 @@
-package com.rchowell.sift.execution.logical.plans
+package com.rchowell.sift.execution.logical.transforms
 
 import com.rchowell.sift.execution.logical.LogicalExpr
-import com.rchowell.sift.execution.logical.LogicalPlan
+import com.rchowell.sift.execution.logical.LogicalTransform
 import com.rchowell.sift.types.Field
 import com.rchowell.sift.types.Schema
 
@@ -22,11 +22,11 @@ enum class JoinType {
  * @constructor Create empty Logical join
  */
 class LogicalJoin(
-    private val lhs: LogicalPlan,
-    private val rhs: LogicalPlan,
+    private val lhs: LogicalTransform,
+    private val rhs: LogicalTransform,
     private val condition: LogicalExpr?,
     private val type: JoinType,
-) : LogicalPlan() {
+) : LogicalTransform() {
 
     /**
      * Schema of a join is the combination of the two schemas
@@ -39,7 +39,7 @@ class LogicalJoin(
             return Schema(fields.toList())
         }
 
-    override fun inputs(): List<LogicalPlan> = listOf(lhs, rhs)
+    override fun inputs(): List<LogicalTransform> = listOf(lhs, rhs)
 
     override fun pretty(): String = if (condition == null) "$type JOIN" else "$type JOIN ON $condition"
 }

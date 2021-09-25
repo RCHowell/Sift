@@ -1,7 +1,7 @@
 package com.rchowell.sift.execution.logical.expressions
 
 import com.rchowell.sift.execution.logical.LogicalExpr
-import com.rchowell.sift.execution.logical.LogicalPlan
+import com.rchowell.sift.execution.logical.LogicalTransform
 import com.rchowell.sift.types.Field
 import com.rchowell.sift.types.Type
 
@@ -17,7 +17,7 @@ class LogicalLiteralExpr<T : Any>(val v: T) : LogicalExpr {
         else -> throw IllegalArgumentException("unsupported type ${v::class.java.name}")
     }
 
-    override fun toField(input: LogicalPlan): Field = Field(v.toString(), type)
+    override fun toField(input: LogicalTransform): Field = Field(v.toString(), type)
 
     override fun toString(): String = v.toString()
 }

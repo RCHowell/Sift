@@ -2,19 +2,19 @@ package com.rchowell.sift.lang.parsers.rd
 
 import com.rchowell.sift.execution.Environment
 import com.rchowell.sift.execution.logical.LogicalExpr
-import com.rchowell.sift.execution.logical.LogicalPlan
+import com.rchowell.sift.execution.logical.LogicalTransform
 import com.rchowell.sift.execution.logical.expressions.BinaryOp
 import com.rchowell.sift.execution.logical.expressions.LogicalAggregateExpr
 import com.rchowell.sift.execution.logical.expressions.LogicalBinaryExpr
 import com.rchowell.sift.execution.logical.expressions.LogicalIdentifierExpr
 import com.rchowell.sift.execution.logical.expressions.LogicalLiteralExpr
-import com.rchowell.sift.execution.logical.plans.LogicalAggregation
-import com.rchowell.sift.execution.logical.plans.LogicalDistinct
-import com.rchowell.sift.execution.logical.plans.LogicalLimit
-import com.rchowell.sift.execution.logical.plans.LogicalProjection
-import com.rchowell.sift.execution.logical.plans.LogicalScan
-import com.rchowell.sift.execution.logical.plans.LogicalSelection
-import com.rchowell.sift.execution.logical.plans.LogicalSort
+import com.rchowell.sift.execution.logical.transforms.LogicalAggregation
+import com.rchowell.sift.execution.logical.transforms.LogicalDistinct
+import com.rchowell.sift.execution.logical.transforms.LogicalLimit
+import com.rchowell.sift.execution.logical.transforms.LogicalProjection
+import com.rchowell.sift.execution.logical.transforms.LogicalScan
+import com.rchowell.sift.execution.logical.transforms.LogicalSelection
+import com.rchowell.sift.execution.logical.transforms.LogicalSort
 import com.rchowell.sift.lang.SiftParser
 import com.rchowell.sift.lang.Token
 import com.rchowell.sift.lang.TokenList
@@ -35,9 +35,9 @@ import com.rchowell.sift.lang.parsers.InvalidSyntaxException
 class RecursiveDescentParser(val environment: Environment) : SiftParser {
 
     lateinit var words: TokenList
-    lateinit var query: LogicalPlan
+    lateinit var query: LogicalTransform
 
-    override fun parse(tokens: List<Token<*>>): LogicalPlan {
+    override fun parse(tokens: List<Token<*>>): LogicalTransform {
         words = TokenList(tokens)
         return query()
     }
@@ -51,7 +51,7 @@ class RecursiveDescentParser(val environment: Environment) : SiftParser {
      *
      * @return
      */
-    private fun query(): LogicalPlan {
+    private fun query(): LogicalTransform {
         var prev = production()
         var curr = prev
         while (words.peek().type == TokenType.PIPE) {
@@ -62,7 +62,7 @@ class RecursiveDescentParser(val environment: Environment) : SiftParser {
         return curr
     }
 
-    private fun production(): LogicalPlan {
+    private fun production(): LogicalTransform {
         val word = words.next()
         return when (word.type) {
             // TODO these must be infix
@@ -91,7 +91,7 @@ class RecursiveDescentParser(val environment: Environment) : SiftParser {
         }
     }
 
-    private fun transform(input: LogicalPlan): LogicalPlan {
+    private fun transform(input: LogicalTransform): LogicalTransform {
         val word = words.next()
         if (word.type != TokenType.KEYWORD) throw error("keyword", word.value)
         return when (word.value as String) {
@@ -105,7 +105,7 @@ class RecursiveDescentParser(val environment: Environment) : SiftParser {
         }
     }
 
-    private fun select(input: LogicalPlan): LogicalPlan {
+    private fun select(input: LogicalTransform): LogicalTransform {
         val expression = expression()
         return LogicalSelection(input, expression)
     }
@@ -154,7 +154,7 @@ class RecursiveDescentParser(val environment: Environment) : SiftParser {
         return LogicalBinaryExpr.get(binop, lhs, rhs)
     }
 
-    private fun project(input: LogicalPlan): LogicalPlan {
+    private fun project(input: LogicalTransform): LogicalTransform {
         val projections = mutableMapOf<LogicalIdentifierExpr, LogicalExpr>()
         while (true) {
             val (expr, ident) = func()
@@ -193,7 +193,7 @@ class RecursiveDescentParser(val environment: Environment) : SiftParser {
         return Pair(expr, LogicalIdentifierExpr(word.value as String))
     }
 
-    private fun limit(input: LogicalPlan): LogicalPlan {
+    private fun limit(input: LogicalTransform): LogicalTransform {
         val word = words.next()
         if (word.type != TokenType.LITERAL && word.value !is Int) {
             throw error("integer limit", word.value)
@@ -201,7 +201,7 @@ class RecursiveDescentParser(val environment: Environment) : SiftParser {
         return LogicalLimit(input, word.value as Int)
     }
 
-    private fun group(input: LogicalPlan): LogicalPlan {
+    private fun group(input: LogicalTransform): LogicalTransform {
         val aggs = mutableMapOf<LogicalIdentifierExpr, LogicalAggregateExpr>()
         val groups = mutableListOf<LogicalIdentifierExpr>()
         while (true) {
@@ -256,7 +256,7 @@ class RecursiveDescentParser(val environment: Environment) : SiftParser {
         }
     }
 
-    private fun sort(input: LogicalPlan): LogicalPlan {
+    private fun sort(input: LogicalTransform): LogicalTransform {
         val order = words.next()
         if (order.type != TokenType.KEYWORD) throw error("ASC or DESC", order)
         val asc = when (order.value) {

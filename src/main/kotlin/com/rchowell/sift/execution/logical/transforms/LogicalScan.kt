@@ -1,6 +1,6 @@
-package com.rchowell.sift.execution.logical.plans
+package com.rchowell.sift.execution.logical.transforms
 
-import com.rchowell.sift.execution.logical.LogicalPlan
+import com.rchowell.sift.execution.logical.LogicalTransform
 import com.rchowell.sift.source.Source
 
 /**
@@ -13,7 +13,7 @@ import com.rchowell.sift.source.Source
 class LogicalScan(
     val source: Source,
     val identifiers: List<String> = listOf(),
-) : LogicalPlan() {
+) : LogicalTransform() {
 
     /**
      * Schema is derived from the source
@@ -25,7 +25,7 @@ class LogicalScan(
      *
      * @return
      */
-    override fun inputs(): List<LogicalPlan> = listOf()
+    override fun inputs(): List<LogicalTransform> = listOf()
 
     override fun toString(): String {
         val f = if (identifiers.isEmpty()) "*" else identifiers.joinToString()
