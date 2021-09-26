@@ -2,10 +2,7 @@ package com.rchowell.sift.lang.antlr
 
 import com.rchowell.sift.execution.logical.LogicalExpr
 import com.rchowell.sift.execution.logical.LogicalTransform
-import com.rchowell.sift.execution.logical.transforms.LogicalScan
-import com.rchowell.sift.execution.logical.transforms.LogicalSelection
 import java.util.Stack
-import kotlin.reflect.KClass
 
 /**
  * Visitor build state is used by the parser to generate the parsed
@@ -29,21 +26,11 @@ class SiftVisitorBuildState {
         exprs.push(expr)
     }
 
-    fun expr(): LogicalExpr = exprs.pop()
-
-    // Ehhhh
-    fun <T : LogicalTransform> push(transform: KClass<T>) {
-        when (transform) {
-            LogicalSelection::class -> transforms.push(
-                LogicalSelection(
-                    input = transforms.pop(),
-                    expr = exprs.pop(),
-                )
-            )
-        }
-    }
-
-    fun push(scan: LogicalScan) {
+    fun push(scan: LogicalTransform) {
         transforms.push(scan)
     }
+
+    fun expr(): LogicalExpr = exprs.pop()
+
+    fun transform(): LogicalTransform = transforms.pop()
 }

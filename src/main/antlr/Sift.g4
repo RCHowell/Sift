@@ -53,7 +53,7 @@ distinct: DISTINCT;
 expr:   expr op=(LT|LTE|EQ|GT|GTE) expr     #comparisonExpr
     |   ID                                  #identExpr
     |   INT                                 #intLitExpr
-    |   SQUOTE WORD SQUOTE                  #stringLitExpr
+    |   STRING                              #stringLitExpr
     |   LP expr RP                          #quotedExpr;
 
 func:   ID
@@ -117,6 +117,6 @@ DIFF: 'DIFF';
 INTERSECT: 'INTERSECT';
 
 ID : [a-zA-Z]+;
-WORD: [a-zA-Z]+[a-zA-Z0-9]+;
+STRING: '"' [a-zA-Z]+[a-zA-Z0-9]* '"';
 INT : [0-9]+;
 WS : [ \t\n\r]+ -> skip;

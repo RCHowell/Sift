@@ -11,7 +11,7 @@ class SiftAntlrTest {
         val env = Environment(listOf(pets))
         val query = """
             Pets
-            |> SELECT 100
+            |> SELECT "A" > 100
         """.trimIndent()
         val compiler = SiftCompiler(env)
         compiler.describe(query)
