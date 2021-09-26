@@ -1,9 +1,9 @@
 package com.rchowell.sift.shell.commands
 
-import picocli.CommandLine
-import picocli.shell.jline3.PicocliCommands
 import com.rchowell.sift.shell.Context
 import com.rchowell.sift.shell.kosh.RootCommand
+import picocli.CommandLine
+import picocli.shell.jline3.PicocliCommands
 
 /**
  * Top-level command for Sift shell.
@@ -14,7 +14,8 @@ import com.rchowell.sift.shell.kosh.RootCommand
         CommandLine.HelpCommand::class,
         SiftCommand::class,
         UseCommand::class,
-        RelationsCommand::class,
+        DescribeCommand::class,
+        ListCommand::class,
     ]
 )
 class SiftRootCommand(val context: Context) : RootCommand()

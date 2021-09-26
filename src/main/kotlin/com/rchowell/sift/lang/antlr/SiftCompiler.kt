@@ -4,6 +4,7 @@ import com.rchowell.sift.execution.Environment
 import com.rchowell.sift.execution.logical.LogicalTransform
 import org.antlr.v4.runtime.CharStreams
 import org.antlr.v4.runtime.CommonTokenStream
+import org.antlr.v4.runtime.Token
 import org.antlr.v4.runtime.tree.Tree
 import org.antlr.v4.runtime.tree.Trees
 import java.io.ByteArrayInputStream
@@ -11,35 +12,61 @@ import java.io.ByteArrayInputStream
 class SiftCompiler(private val env: Environment) {
 
     fun compile(query: String): LogicalTransform {
-        val input = ByteArrayInputStream(query.toByteArray(Charsets.UTF_8))
-        val lexer = SiftLexer(CharStreams.fromStream(input))
-        val tokens = CommonTokenStream(lexer)
+        val tokens = lex(query)
         val parser = SiftParser(tokens)
         val tree = parser.query()
-        val visitor = SiftAntlrVisitor(env)
-        val state = visitor.visit(tree)
+        val state = SiftVisitorBuildState(env)
+        val visitor = SiftAntlrVisitor(state)
+        visitor.visit(tree)
         return state.query()
     }
 
-    fun describe(query: String) {
-        val input = ByteArrayInputStream(query.toByteArray(Charsets.UTF_8))
-        val lexer = SiftLexer(CharStreams.fromStream(input))
-        val tokens = CommonTokenStream(lexer)
+    fun describe(query: String, verbose: Boolean = false): QueryDescription {
+        val tokens = lex(query)
+        if (verbose) {
+            tokens.tokens.forEach {
+                val type = SiftLexer.VOCABULARY.getDisplayName(it.type)
+                println(String.format("%s: %s\n", type, it.text))
+            }
+        }
         val parser = SiftParser(tokens)
         val tree = parser.query()
-        println("==== Tokens ====")
-        tokens.tokens.forEach {
-            val type = SiftLexer.VOCABULARY.getDisplayName(it.type)
-            System.out.printf("%s: %s\n", type, it.text)
+        if (verbose) println(tree.format(parser))
+        val state = SiftVisitorBuildState(env)
+        val visitor = SiftAntlrVisitor(state)
+        visitor.visit(tree)
+        if (verbose) println(state.query().pretty())
+        return QueryDescription(
+            tokens.tokens,
+            parser,
+            tree,
+            state.query()
+        )
+    }
+
+    fun lex(query: String): CommonTokenStream {
+        val input = ByteArrayInputStream(query.toByteArray(Charsets.UTF_8))
+        val lexer = SiftLexer(CharStreams.fromStream(input))
+        return CommonTokenStream(lexer)
+    }
+
+    data class QueryDescription(
+        val tokens: List<Token>,
+        val parser: SiftParser,
+        val ast: SiftParser.QueryContext,
+        val plan: LogicalTransform,
+    ) {
+        override fun toString(): String = buildString {
+            append("==== Tokens ====\n")
+            tokens.forEach {
+                val type = SiftLexer.VOCABULARY.getDisplayName(it.type)
+                append(String.format("%s: %s\n", type, it.text))
+            }
+            append("==== Tree ====\n")
+            append(ast.format(parser)).append('\n')
+            append("==== Plan ====\n")
+            append(plan.pretty())
         }
-        println()
-        println("==== Tree ====")
-        println(tree.format(parser))
-        println()
-        println("==== Plan ====")
-        val visitor = SiftAntlrVisitor(env)
-        val state = visitor.visit(tree)
-        println(state.query().pretty())
     }
 }
 

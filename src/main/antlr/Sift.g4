@@ -6,9 +6,9 @@ grammar Sift;
 
 query: relation (PIPE transform)*;
 
-// ===========
+// -----------
 //  Relations
-// ===========
+// -----------
 
 // TODO identifiers in scans
 
@@ -22,16 +22,17 @@ relation
     |   relation ('&'|INTERSECT) relation                                       #relIntersect
     ;
 
-// ============
+// ------------
 //  Transforms
-// ============
+// ------------
+
 transform
-    :   select      #transformSelect
-    |   project     #transformProject
-    |   group       #transformGroup
-    |   sort        #transformSort
-    |   limit       #transformLimit
-    |   distinct    #transformDistinct
+    :   select
+    |   project
+    |   group
+    |   sort
+    |   limit
+    |   distinct
     ;
 
 select: SELECT expr;
@@ -40,37 +41,36 @@ project: PROJECT func (COMMA func)*;
 
 group: GROUP agg (COMMA agg)* (BY ids)?;
 
-sort: SORT (BY ids)? (ASC|DESC)?;
+sort: SORT (ids)? order=(ASC|DESC)?;
 
 limit: LIMIT INT;
 
 distinct: DISTINCT;
 
-// ===========================
+// ---------------------------
 //  Expressions and Functions
-// ===========================
+// ---------------------------
 
 expr:   expr op=(LT|LTE|EQ|GT|GTE) expr     #comparisonExpr
+    |   expr op=(AND|OR) expr               #boolExpr
     |   ID                                  #identExpr
     |   INT                                 #intLitExpr
     |   STRING                              #stringLitExpr
     |   LP expr RP                          #quotedExpr;
 
-func:   ID
-    |   expr MAPS ID
+func:   expr MAPS ID    #projMap
+    |   ID              #projIdent
     ;
 
-agg: ID LP ID RP mapsto?; // ID(ID) (-> ID)?
+agg: op=(MIN|MAX|SUM|AVG|COUNT) LP expr RP (MAPS ID)?; // AGG(expr) (-> ID)?
 
 alias: AS ID;
 
-mapsto: (MAPS ID);
-
 ids: ID (COMMA ID)*;
 
-// ========
+// --------
 //  Tokens
-// ========
+// --------
 
 // Symbols
 PIPE : '|>';
@@ -86,6 +86,15 @@ GT: '>';
 LT: '<';
 GTE: '>=';
 LTE: '<=';
+AND: '&&';
+OR: '||';
+
+// Aggregations
+MIN: 'MIN';
+MAX: 'MAX';
+SUM: 'SUM';
+AVG: 'AVG';
+COUNT: 'COUNT';
 
 // Transforms
 SELECT: 'SELECT';
@@ -106,8 +115,6 @@ ASC: 'ASC';
 DESC: 'DESC';
 TRUE: 'TRUE';
 FALSE: 'FALSE';
-AND: 'AND';
-OR: 'OR';
 
 // Bag Ops
 JOIN: 'JOIN';
@@ -116,7 +123,7 @@ UNION: 'UNION';
 DIFF: 'DIFF';
 INTERSECT: 'INTERSECT';
 
-ID : [a-zA-Z]+;
+ID : [a-zA-Z_\-]+;
 STRING: '"' [a-zA-Z]+[a-zA-Z0-9]* '"';
 INT : [0-9]+;
 WS : [ \t\n\r]+ -> skip;

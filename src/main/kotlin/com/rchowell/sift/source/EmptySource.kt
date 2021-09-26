@@ -12,7 +12,6 @@ class EmptySource(
 
     override fun close() {}
 
-    /** Reads in the full */
     override fun scan(identifiers: List<String>): Sequence<Batch> = emptySequence()
 
     override fun toString(): String = "EmptySource '$identifier'"

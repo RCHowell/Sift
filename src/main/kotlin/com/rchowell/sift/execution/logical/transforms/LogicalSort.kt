@@ -14,8 +14,8 @@ import com.rchowell.sift.types.Schema
  */
 class LogicalSort(
     private val input: LogicalTransform,
-    private val asc: Boolean,
     private val fields: List<LogicalIdentifierExpr>,
+    private val asc: Boolean,
 ) : LogicalTransform() {
 
     /**

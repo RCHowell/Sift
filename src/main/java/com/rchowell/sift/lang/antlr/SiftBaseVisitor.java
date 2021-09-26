@@ -75,42 +75,7 @@ public class SiftBaseVisitor<T> extends AbstractParseTreeVisitor<T> implements S
 	 * <p>The default implementation returns the result of calling
 	 * {@link #visitChildren} on {@code ctx}.</p>
 	 */
-	@Override public T visitTransformSelect(SiftParser.TransformSelectContext ctx) { return visitChildren(ctx); }
-	/**
-	 * {@inheritDoc}
-	 *
-	 * <p>The default implementation returns the result of calling
-	 * {@link #visitChildren} on {@code ctx}.</p>
-	 */
-	@Override public T visitTransformProject(SiftParser.TransformProjectContext ctx) { return visitChildren(ctx); }
-	/**
-	 * {@inheritDoc}
-	 *
-	 * <p>The default implementation returns the result of calling
-	 * {@link #visitChildren} on {@code ctx}.</p>
-	 */
-	@Override public T visitTransformGroup(SiftParser.TransformGroupContext ctx) { return visitChildren(ctx); }
-	/**
-	 * {@inheritDoc}
-	 *
-	 * <p>The default implementation returns the result of calling
-	 * {@link #visitChildren} on {@code ctx}.</p>
-	 */
-	@Override public T visitTransformSort(SiftParser.TransformSortContext ctx) { return visitChildren(ctx); }
-	/**
-	 * {@inheritDoc}
-	 *
-	 * <p>The default implementation returns the result of calling
-	 * {@link #visitChildren} on {@code ctx}.</p>
-	 */
-	@Override public T visitTransformLimit(SiftParser.TransformLimitContext ctx) { return visitChildren(ctx); }
-	/**
-	 * {@inheritDoc}
-	 *
-	 * <p>The default implementation returns the result of calling
-	 * {@link #visitChildren} on {@code ctx}.</p>
-	 */
-	@Override public T visitTransformDistinct(SiftParser.TransformDistinctContext ctx) { return visitChildren(ctx); }
+	@Override public T visitTransform(SiftParser.TransformContext ctx) { return visitChildren(ctx); }
 	/**
 	 * {@inheritDoc}
 	 *
@@ -187,6 +152,13 @@ public class SiftBaseVisitor<T> extends AbstractParseTreeVisitor<T> implements S
 	 * <p>The default implementation returns the result of calling
 	 * {@link #visitChildren} on {@code ctx}.</p>
 	 */
+	@Override public T visitBoolExpr(SiftParser.BoolExprContext ctx) { return visitChildren(ctx); }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation returns the result of calling
+	 * {@link #visitChildren} on {@code ctx}.</p>
+	 */
 	@Override public T visitQuotedExpr(SiftParser.QuotedExprContext ctx) { return visitChildren(ctx); }
 	/**
 	 * {@inheritDoc}
@@ -194,7 +166,14 @@ public class SiftBaseVisitor<T> extends AbstractParseTreeVisitor<T> implements S
 	 * <p>The default implementation returns the result of calling
 	 * {@link #visitChildren} on {@code ctx}.</p>
 	 */
-	@Override public T visitFunc(SiftParser.FuncContext ctx) { return visitChildren(ctx); }
+	@Override public T visitProjMap(SiftParser.ProjMapContext ctx) { return visitChildren(ctx); }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation returns the result of calling
+	 * {@link #visitChildren} on {@code ctx}.</p>
+	 */
+	@Override public T visitProjIdent(SiftParser.ProjIdentContext ctx) { return visitChildren(ctx); }
 	/**
 	 * {@inheritDoc}
 	 *
@@ -209,13 +188,6 @@ public class SiftBaseVisitor<T> extends AbstractParseTreeVisitor<T> implements S
 	 * {@link #visitChildren} on {@code ctx}.</p>
 	 */
 	@Override public T visitAlias(SiftParser.AliasContext ctx) { return visitChildren(ctx); }
-	/**
-	 * {@inheritDoc}
-	 *
-	 * <p>The default implementation returns the result of calling
-	 * {@link #visitChildren} on {@code ctx}.</p>
-	 */
-	@Override public T visitMapsto(SiftParser.MapstoContext ctx) { return visitChildren(ctx); }
 	/**
 	 * {@inheritDoc}
 	 *

@@ -250,6 +250,6 @@ class NaiveRecursiveDescentParser(
             "DESC" -> false
             else -> throw InvalidSyntaxException("at $next")
         }
-        return LogicalSort(input, asc, fields)
+        return LogicalSort(input, fields, asc)
     }
 }

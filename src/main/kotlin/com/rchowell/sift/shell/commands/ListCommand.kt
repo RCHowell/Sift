@@ -8,11 +8,11 @@ import picocli.CommandLine.ParentCommand
  * Command to list relations in the environment
  */
 @Command(
-    name = "relations",
+    name = "list",
     aliases = ["ls"],
     mixinStandardHelpOptions = true,
 )
-class RelationsCommand : Runnable {
+class ListCommand : Runnable {
 
     @ParentCommand
     lateinit var root: SiftRootCommand

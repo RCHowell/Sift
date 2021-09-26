@@ -1,9 +1,9 @@
 package com.rchowell.sift.shell.commands
 
+import com.rchowell.sift.execution.Executor
 import picocli.CommandLine.Command
 import picocli.CommandLine.Parameters
 import picocli.CommandLine.ParentCommand
-import com.rchowell.sift.execution.Executor
 
 /**
  * Execute a query in the environment.
@@ -11,7 +11,7 @@ import com.rchowell.sift.execution.Executor
  *  having to worry about escaping quotes. Still trying to
  *  learn about JLine widgets + custom LineReader
  */
-@Command(name = "com/rchowell/sift")
+@Command(name = "sift")
 class SiftCommand : Runnable {
 
     @ParentCommand

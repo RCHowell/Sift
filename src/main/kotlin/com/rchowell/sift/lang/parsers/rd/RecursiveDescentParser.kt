@@ -265,7 +265,7 @@ class RecursiveDescentParser(val environment: Environment) : SiftParser {
             else -> throw error("ASC or DESC", order)
         }
         val ids = ids() as List
-        return LogicalSort(input, asc, ids)
+        return LogicalSort(input, ids, asc)
     }
 
     /**

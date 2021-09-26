@@ -68,47 +68,11 @@ public interface SiftVisitor<T> extends ParseTreeVisitor<T> {
 	 */
 	T visitRelUnion(SiftParser.RelUnionContext ctx);
 	/**
-	 * Visit a parse tree produced by the {@code transformSelect}
-	 * labeled alternative in {@link SiftParser#transform}.
+	 * Visit a parse tree produced by {@link SiftParser#transform}.
 	 * @param ctx the parse tree
 	 * @return the visitor result
 	 */
-	T visitTransformSelect(SiftParser.TransformSelectContext ctx);
-	/**
-	 * Visit a parse tree produced by the {@code transformProject}
-	 * labeled alternative in {@link SiftParser#transform}.
-	 * @param ctx the parse tree
-	 * @return the visitor result
-	 */
-	T visitTransformProject(SiftParser.TransformProjectContext ctx);
-	/**
-	 * Visit a parse tree produced by the {@code transformGroup}
-	 * labeled alternative in {@link SiftParser#transform}.
-	 * @param ctx the parse tree
-	 * @return the visitor result
-	 */
-	T visitTransformGroup(SiftParser.TransformGroupContext ctx);
-	/**
-	 * Visit a parse tree produced by the {@code transformSort}
-	 * labeled alternative in {@link SiftParser#transform}.
-	 * @param ctx the parse tree
-	 * @return the visitor result
-	 */
-	T visitTransformSort(SiftParser.TransformSortContext ctx);
-	/**
-	 * Visit a parse tree produced by the {@code transformLimit}
-	 * labeled alternative in {@link SiftParser#transform}.
-	 * @param ctx the parse tree
-	 * @return the visitor result
-	 */
-	T visitTransformLimit(SiftParser.TransformLimitContext ctx);
-	/**
-	 * Visit a parse tree produced by the {@code transformDistinct}
-	 * labeled alternative in {@link SiftParser#transform}.
-	 * @param ctx the parse tree
-	 * @return the visitor result
-	 */
-	T visitTransformDistinct(SiftParser.TransformDistinctContext ctx);
+	T visitTransform(SiftParser.TransformContext ctx);
 	/**
 	 * Visit a parse tree produced by {@link SiftParser#select}.
 	 * @param ctx the parse tree
@@ -174,6 +138,13 @@ public interface SiftVisitor<T> extends ParseTreeVisitor<T> {
 	 */
 	T visitComparisonExpr(SiftParser.ComparisonExprContext ctx);
 	/**
+	 * Visit a parse tree produced by the {@code boolExpr}
+	 * labeled alternative in {@link SiftParser#expr}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitBoolExpr(SiftParser.BoolExprContext ctx);
+	/**
 	 * Visit a parse tree produced by the {@code quotedExpr}
 	 * labeled alternative in {@link SiftParser#expr}.
 	 * @param ctx the parse tree
@@ -181,11 +152,19 @@ public interface SiftVisitor<T> extends ParseTreeVisitor<T> {
 	 */
 	T visitQuotedExpr(SiftParser.QuotedExprContext ctx);
 	/**
-	 * Visit a parse tree produced by {@link SiftParser#func}.
+	 * Visit a parse tree produced by the {@code projMap}
+	 * labeled alternative in {@link SiftParser#func}.
 	 * @param ctx the parse tree
 	 * @return the visitor result
 	 */
-	T visitFunc(SiftParser.FuncContext ctx);
+	T visitProjMap(SiftParser.ProjMapContext ctx);
+	/**
+	 * Visit a parse tree produced by the {@code projIdent}
+	 * labeled alternative in {@link SiftParser#func}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitProjIdent(SiftParser.ProjIdentContext ctx);
 	/**
 	 * Visit a parse tree produced by {@link SiftParser#agg}.
 	 * @param ctx the parse tree
@@ -198,12 +177,6 @@ public interface SiftVisitor<T> extends ParseTreeVisitor<T> {
 	 * @return the visitor result
 	 */
 	T visitAlias(SiftParser.AliasContext ctx);
-	/**
-	 * Visit a parse tree produced by {@link SiftParser#mapsto}.
-	 * @param ctx the parse tree
-	 * @return the visitor result
-	 */
-	T visitMapsto(SiftParser.MapstoContext ctx);
 	/**
 	 * Visit a parse tree produced by {@link SiftParser#ids}.
 	 * @param ctx the parse tree
