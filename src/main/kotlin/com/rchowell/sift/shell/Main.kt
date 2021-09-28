@@ -13,8 +13,10 @@ fun main(args: Array<String>) {
     )
     val context = Context(env)
 
+    val name = System.getProperty("user.name")
+
     val shell = Shell(
-        prompt = "-> ",
+        prompt = "$name-> ",
         root = SiftRootCommand(context),
     )
     shell.run()

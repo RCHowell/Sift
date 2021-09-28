@@ -18,4 +18,6 @@ data class Field(val identifier: String, val type: Type) {
             org.apache.arrow.vector.types.pojo.FieldType(true, type.arrow, null),
             listOf()
         )
+
+    override fun toString(): String = String.format("%s::%s", identifier, type)
 }

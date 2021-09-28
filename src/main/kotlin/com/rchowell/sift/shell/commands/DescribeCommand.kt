@@ -7,15 +7,12 @@ import picocli.CommandLine.ParentCommand
 
 /**
  * Describes the given query
- *  - Tokens
- *  - AST
- *  - Logical Plan
  */
 @Command(name = "describe")
 class DescribeCommand : Runnable {
 
     @ParentCommand
-    lateinit var root: SiftRootCommand
+    lateinit var root: DebugGroup
 
     @Parameters(description = ["sift query"])
     lateinit var query: String
@@ -23,10 +20,7 @@ class DescribeCommand : Runnable {
     override fun run() {
         try {
             val compiler = SiftCompiler(root.context.env)
-            println(query)
-            val trimmed = query.trim('"')
-            println(trimmed)
-            val description = compiler.describe(trimmed)
+            val description = compiler.describe(query)
             println(description)
         } catch (e: Exception) {
             println(e)

@@ -1,6 +1,7 @@
 package com.rchowell.sift.shell.commands
 
 import de.vandermeer.asciitable.AsciiTable
+import de.vandermeer.skb.interfaces.transformers.textformat.TextAlignment
 import picocli.CommandLine.Command
 import picocli.CommandLine.ParentCommand
 
@@ -19,15 +20,22 @@ class ListCommand : Runnable {
 
     override fun run() {
         try {
-            val table = AsciiTable()
-            table.addRule()
-            table.addRow("Name", "Type")
-            table.addRule()
-            root.context.env.sourceMap.forEach {
-                table.addRow(it.key, it.value::class.java.name)
+            root.context.env.sourceMap.values.forEach { source ->
+                val table = AsciiTable()
                 table.addRule()
+                val r = table.addRow(null, source.identifier)
+                r.setPadding(1)
+                r.setTextAlignment(TextAlignment.CENTER)
+                table.addRule()
+                table.addRow("Field", "Type")
+                table.addRule()
+                source.schema.fields.forEach { field ->
+                    table.addRow(" ● ${field.identifier}", " ○ ${field.type}")
+                    table.addRule()
+                }
+                println(table.render())
+                println()
             }
-            println(table.render())
         } catch (e: Exception) {
             println("unknown relation")
             println(e)

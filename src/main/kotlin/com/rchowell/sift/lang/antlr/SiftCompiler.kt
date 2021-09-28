@@ -23,20 +23,21 @@ class SiftCompiler(private val env: Environment) {
 
     fun describe(query: String, verbose: Boolean = false): QueryDescription {
         val tokens = lex(query)
+        val parser = SiftParser(tokens)
+        val tree = parser.query()
         if (verbose) {
             tokens.tokens.forEach {
                 val type = SiftLexer.VOCABULARY.getDisplayName(it.type)
                 println(String.format("%s: %s\n", type, it.text))
             }
+            println(tree.format(parser))
         }
-        val parser = SiftParser(tokens)
-        val tree = parser.query()
-        if (verbose) println(tree.format(parser))
         val state = SiftVisitorBuildState(env)
         val visitor = SiftAntlrVisitor(state)
         visitor.visit(tree)
         if (verbose) println(state.query().pretty())
         return QueryDescription(
+            query,
             tokens.tokens,
             parser,
             tree,
@@ -51,12 +52,15 @@ class SiftCompiler(private val env: Environment) {
     }
 
     data class QueryDescription(
+        val query: String,
         val tokens: List<Token>,
         val parser: SiftParser,
         val ast: SiftParser.QueryContext,
         val plan: LogicalTransform,
     ) {
         override fun toString(): String = buildString {
+            append("==== Query ====\n")
+            append(query).append('\n')
             append("==== Tokens ====\n")
             tokens.forEach {
                 val type = SiftLexer.VOCABULARY.getDisplayName(it.type)
