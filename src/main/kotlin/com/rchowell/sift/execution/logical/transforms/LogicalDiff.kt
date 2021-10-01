@@ -13,6 +13,10 @@ class LogicalDiff(
     override fun inputs(): List<LogicalTransform> = listOf(lhs, rhs)
 
     init {
+        assert(rhs.schema.subsetOf(lhs.schema)) {
+            // But really? Need to look into this
+            "Schema of right-side relation must be a subset of left-side relation in bag difference"
+        }
         schema = lhs.schema
     }
 

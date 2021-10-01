@@ -3,10 +3,13 @@ package com.rchowell.sift.types
 /**
  * Holding object for identifier to [Type] mappings
  *
+ * Something to keep in mind will be maintaing orderings
+ *
  * @property fields
+ * @property relation is the relation identifier
  * @constructor Create empty Schema
  */
-data class Schema(val fields: List<Field>) {
+data class Schema(val fields: List<Field>, val relation: String = "") {
 
     /**
      * Arrow representation of this Schema
@@ -37,7 +40,7 @@ data class Schema(val fields: List<Field>) {
      * @return
      */
     fun project(indices: List<Int>): Schema {
-        return Schema(indices.map { fields[it] })
+        return Schema(indices.map { fields[it] }, relation)
     }
 
     /**
@@ -60,4 +63,40 @@ data class Schema(val fields: List<Field>) {
      * @return
      */
     fun find(identifier: String): Field = fieldMap[identifier] ?: throw Exception("unknown identifier `$identifier`")
+
+    /**
+     * Returns true if this is a subset of the other
+     *
+     * @param other
+     * @return
+     */
+    fun subsetOf(other: Schema): Boolean {
+        val set = this.fields.toMutableSet()
+        other.fields.forEach { set.remove(it) }
+        return set.isEmpty()
+    }
+
+    // Helper method though?
+    fun combine(other: Schema, relation: String = ""): Schema {
+        val combined = mutableListOf<Field>()
+        combined.addAll(resolvedFields(this))
+        combined.addAll(resolvedFields(other))
+        return Schema(combined, relation)
+    }
+
+    companion object {
+
+        // Renames all fields in this Schema to use the fully resolved name
+        fun resolvedFields(schema: Schema): List<Field> = schema.fields.map {
+            Field("${schema.relation}.${it.identifier}", it.type)
+        }
+
+        // Returns a combined schema with just the common fields
+        fun common(lhs: Schema, rhs: Schema, relation: String = ""): Schema {
+            val lfs = lhs.fields.toSet()
+            val set = mutableSetOf<Field>()
+            rhs.fields.forEach { if (lfs.contains(it)) set.add(it) }
+            return Schema(set.toList(), relation)
+        }
+    }
 }

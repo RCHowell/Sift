@@ -8,13 +8,9 @@ class LogicalCross(
     val rhs: LogicalTransform,
 ) : LogicalTransform() {
 
-    override lateinit var schema: Schema
+    override var schema: Schema = lhs.schema.combine((rhs.schema))
 
     override fun inputs(): List<LogicalTransform> = listOf(lhs, rhs)
-
-    init {
-        schema = lhs.schema
-    }
 
     override fun pretty(): String = buildString {
         append('(').append(lhs.pretty()).append(')')

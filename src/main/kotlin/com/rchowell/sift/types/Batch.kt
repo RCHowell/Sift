@@ -1,7 +1,10 @@
 package com.rchowell.sift.types
 
 import de.vandermeer.asciitable.AsciiTable
+import org.apache.arrow.vector.BitVector
+import org.apache.arrow.vector.Float8Vector
 import org.apache.arrow.vector.ValueVector
+import org.apache.arrow.vector.VarCharVector
 
 /**
  * A Batch holds many records from one or more columns
@@ -62,6 +65,18 @@ class Batch(
 
         fun List<ValueVector>.valueCount(values: Int) {
             this.forEach { it.valueCount = values }
+        }
+
+        fun fromVectors(schema: Schema, vecs: List<ValueVector>): Batch {
+            val columns = vecs.map {
+                when (it) {
+                    is BitVector -> BoolVectorColumn(it)
+                    is VarCharVector -> StringVectorColumn(it)
+                    is Float8Vector -> NumVectorColumn(it)
+                    else -> throw IllegalStateException("unsupported vector type $it")
+                }
+            }
+            return Batch(schema, columns)
         }
     }
 }

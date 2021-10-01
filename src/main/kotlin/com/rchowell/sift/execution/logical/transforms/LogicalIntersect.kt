@@ -8,13 +8,9 @@ class LogicalIntersect(
     val rhs: LogicalTransform,
 ) : LogicalTransform() {
 
-    override lateinit var schema: Schema
+    override var schema: Schema = Schema.common(lhs.schema, rhs.schema)
 
     override fun inputs(): List<LogicalTransform> = listOf(lhs, rhs)
-
-    init {
-        schema = lhs.schema
-    }
 
     override fun pretty(): String = buildString {
         append('(').append(lhs.pretty()).append(')')
