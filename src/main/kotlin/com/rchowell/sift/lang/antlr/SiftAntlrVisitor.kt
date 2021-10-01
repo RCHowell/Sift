@@ -11,12 +11,16 @@ import com.rchowell.sift.execution.logical.expressions.LogicalLtExpr
 import com.rchowell.sift.execution.logical.expressions.LogicalLteExpr
 import com.rchowell.sift.execution.logical.expressions.LogicalOrExpr
 import com.rchowell.sift.execution.logical.transforms.LogicalAggregation
+import com.rchowell.sift.execution.logical.transforms.LogicalCross
+import com.rchowell.sift.execution.logical.transforms.LogicalDiff
 import com.rchowell.sift.execution.logical.transforms.LogicalDistinct
+import com.rchowell.sift.execution.logical.transforms.LogicalIntersect
 import com.rchowell.sift.execution.logical.transforms.LogicalLimit
 import com.rchowell.sift.execution.logical.transforms.LogicalProjection
 import com.rchowell.sift.execution.logical.transforms.LogicalScan
 import com.rchowell.sift.execution.logical.transforms.LogicalSelection
 import com.rchowell.sift.execution.logical.transforms.LogicalSort
+import com.rchowell.sift.execution.logical.transforms.LogicalUnion
 
 /**
  * The visitor builds a [LogicalPlan] starting from the provided [SiftVisitorBuildState]
@@ -35,6 +39,21 @@ class SiftAntlrVisitor(private val state: SiftVisitorBuildState) : SiftBaseVisit
         val id = ctx.ID()?.text!!
         val source = state.source(id)
         state.push(LogicalScan(source, listOf()))
+    }
+
+    override fun visitRelBagOp(ctx: SiftParser.RelBagOpContext) {
+        visit(ctx.relation(0)) // lhs
+        val lhs = state.popQuery()
+        visit(ctx.relation(1)) // rhs
+        val rhs = state.popQuery()
+        val transform = when (ctx.op.type) {
+            SiftLexer.CROSS -> LogicalCross(lhs, rhs)
+            SiftLexer.UNION -> LogicalUnion(lhs, rhs)
+            SiftLexer.DIFF -> LogicalDiff(lhs, rhs)
+            SiftLexer.INTERSECT -> LogicalIntersect(lhs, rhs)
+            else -> throw IllegalStateException("unknown bag op ${ctx.op}")
+        }
+        state.push(transform)
     }
 
     // ------------
@@ -114,8 +133,8 @@ class SiftAntlrVisitor(private val state: SiftVisitorBuildState) : SiftBaseVisit
     }
 
     override fun visitComparisonExpr(ctx: SiftParser.ComparisonExprContext) {
-        visit(ctx.expr(1)) // rhs
         visit(ctx.expr(0)) // lhs
+        visit(ctx.expr(1)) // rhs
         val rhs = state.expr()
         val lhs = state.expr()
         when (ctx.op.type) {
@@ -128,8 +147,8 @@ class SiftAntlrVisitor(private val state: SiftVisitorBuildState) : SiftBaseVisit
     }
 
     override fun visitBoolExpr(ctx: SiftParser.BoolExprContext) {
-        visit(ctx.expr(1)) // rhs
         visit(ctx.expr(0)) // lhs
+        visit(ctx.expr(1)) // rhs
         val rhs = state.expr()
         val lhs = state.expr()
         when (ctx.op.type) {

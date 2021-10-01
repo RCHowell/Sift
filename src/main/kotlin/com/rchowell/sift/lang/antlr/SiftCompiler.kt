@@ -28,7 +28,7 @@ class SiftCompiler(private val env: Environment) {
         if (verbose) {
             tokens.tokens.forEach {
                 val type = SiftLexer.VOCABULARY.getDisplayName(it.type)
-                println(String.format("%s: %s\n", type, it.text))
+                println(String.format("%s: %s", type, it.text))
             }
             println(tree.format(parser))
         }

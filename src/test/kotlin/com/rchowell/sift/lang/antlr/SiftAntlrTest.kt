@@ -9,6 +9,17 @@ import org.junit.jupiter.api.Test
 
 class SiftAntlrTest {
 
+    private val dogs = EmptySource(
+        identifier = "Dogs",
+        schema = Schema(listOf(Field("age", Type.Num)))
+    )
+    private val cats = EmptySource(
+        identifier = "Cats",
+        schema = Schema(listOf(Field("age", Type.Num)))
+    )
+    private val env = Environment(listOf(dogs, cats))
+    private val compiler = SiftCompiler(env)
+
     @Test
     fun test() {
         val source = EmptySource(
@@ -32,6 +43,38 @@ class SiftAntlrTest {
             |> LIMIT 50
         """.trimIndent()
         val compiler = SiftCompiler(env)
+        compiler.describe(query, verbose = true)
+    }
+
+    @Test
+    fun cross() {
+        val query = """
+            (Dogs X Cats) |> SELECT Age > 2
+        """.trimIndent()
+        compiler.describe(query, verbose = true)
+    }
+
+    @Test
+    fun union() {
+        val query = """
+            (Dogs U Cats) |> SELECT Age > 2
+        """.trimIndent()
+        compiler.describe(query, verbose = true)
+    }
+
+    @Test
+    fun diff() {
+        val query = """
+            (Dogs - Cats) |> SELECT Age > 2
+        """.trimIndent()
+        compiler.describe(query, verbose = true)
+    }
+
+    @Test
+    fun intersect() {
+        val query = """
+            (Dogs & Cats) |> SELECT Age > 2
+        """.trimIndent()
         compiler.describe(query, verbose = true)
     }
 }

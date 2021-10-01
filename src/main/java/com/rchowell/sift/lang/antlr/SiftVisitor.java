@@ -33,40 +33,19 @@ public interface SiftVisitor<T> extends ParseTreeVisitor<T> {
 	 */
 	T visitRelSubquery(SiftParser.RelSubqueryContext ctx);
 	/**
+	 * Visit a parse tree produced by the {@code relBagOp}
+	 * labeled alternative in {@link SiftParser#relation}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitRelBagOp(SiftParser.RelBagOpContext ctx);
+	/**
 	 * Visit a parse tree produced by the {@code relJoin}
 	 * labeled alternative in {@link SiftParser#relation}.
 	 * @param ctx the parse tree
 	 * @return the visitor result
 	 */
 	T visitRelJoin(SiftParser.RelJoinContext ctx);
-	/**
-	 * Visit a parse tree produced by the {@code relIntersect}
-	 * labeled alternative in {@link SiftParser#relation}.
-	 * @param ctx the parse tree
-	 * @return the visitor result
-	 */
-	T visitRelIntersect(SiftParser.RelIntersectContext ctx);
-	/**
-	 * Visit a parse tree produced by the {@code relCross}
-	 * labeled alternative in {@link SiftParser#relation}.
-	 * @param ctx the parse tree
-	 * @return the visitor result
-	 */
-	T visitRelCross(SiftParser.RelCrossContext ctx);
-	/**
-	 * Visit a parse tree produced by the {@code relDiff}
-	 * labeled alternative in {@link SiftParser#relation}.
-	 * @param ctx the parse tree
-	 * @return the visitor result
-	 */
-	T visitRelDiff(SiftParser.RelDiffContext ctx);
-	/**
-	 * Visit a parse tree produced by the {@code relUnion}
-	 * labeled alternative in {@link SiftParser#relation}.
-	 * @param ctx the parse tree
-	 * @return the visitor result
-	 */
-	T visitRelUnion(SiftParser.RelUnionContext ctx);
 	/**
 	 * Visit a parse tree produced by {@link SiftParser#transform}.
 	 * @param ctx the parse tree

@@ -16,10 +16,7 @@ relation
     :   ID                                                                      #relId
     |   LP query RP                                                             #relSubquery
     |   relation (alias)? (OUTER|LEFT|RIGHT)? JOIN relation (alias)? (ON expr)  #relJoin
-    |   relation ('X'|CROSS) relation                                           #relCross
-    |   relation ('U'|UNION) relation                                           #relUnion
-    |   relation ('-'|DIFF) relation                                            #relDiff
-    |   relation ('&'|INTERSECT) relation                                       #relIntersect
+    |   relation op=(UNION|CROSS|DIFF|INTERSECT) relation                       #relBagOp
     ;
 
 // ------------
@@ -118,10 +115,10 @@ FALSE: 'FALSE';
 
 // Bag Ops
 JOIN: 'JOIN';
-CROSS: 'CROSS';
-UNION: 'UNION';
-DIFF: 'DIFF';
-INTERSECT: 'INTERSECT';
+CROSS: 'X' | 'CROSS';
+UNION: 'U' | 'UNION';
+DIFF: '-' | 'DIFF';
+INTERSECT: '&' | 'INTERSECT';
 
 ID : [a-zA-Z_\-]+;
 STRING: '"' [a-zA-Z]+[a-zA-Z0-9]* '"';

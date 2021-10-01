@@ -1,17 +1,15 @@
 package com.rchowell.sift.execution
 
 import com.rchowell.sift.execution.planner.Planner
-import com.rchowell.sift.lang.lexers.DirectCodedLexer
-import com.rchowell.sift.lang.parsers.rd.RecursiveDescentParser
+import com.rchowell.sift.lang.antlr.SiftCompiler
 
 class Executor {
 
     companion object {
 
         fun sift(environment: Environment, query: String) {
-            val lexer = DirectCodedLexer()
-            val parser = RecursiveDescentParser(environment)
-            val logicalPlan = parser.parse(lexer.tokenize(query))
+            val compiler = SiftCompiler(environment)
+            val logicalPlan = compiler.compile(query)
             val physicalPlan = Planner.plan(logicalPlan)
             physicalPlan.open()
             var batch = physicalPlan.next()

@@ -32,6 +32,8 @@ class SiftVisitorBuildState(private val env: Environment) {
      */
     fun query(): LogicalTransform = transforms.peek()
 
+    fun popQuery(): LogicalTransform = transforms.pop()
+
     fun source(identifier: String) = env.getSource(identifier)
 
     fun push(expr: LogicalExpr) {

@@ -19,12 +19,11 @@ public class SiftParser extends Parser {
 	protected static final PredictionContextCache _sharedContextCache =
 		new PredictionContextCache();
 	public static final int
-		T__0=1, T__1=2, T__2=3, T__3=4, PIPE=5, MAPS=6, LP=7, RP=8, COMMA=9, SQUOTE=10, 
-		EQ=11, GT=12, LT=13, GTE=14, LTE=15, AND=16, OR=17, MIN=18, MAX=19, SUM=20, 
-		AVG=21, COUNT=22, SELECT=23, PROJECT=24, GROUP=25, SORT=26, LIMIT=27, 
-		DISTINCT=28, ON=29, AS=30, BY=31, OUTER=32, LEFT=33, RIGHT=34, ASC=35, 
-		DESC=36, TRUE=37, FALSE=38, JOIN=39, CROSS=40, UNION=41, DIFF=42, INTERSECT=43, 
-		ID=44, STRING=45, INT=46, WS=47;
+		PIPE=1, MAPS=2, LP=3, RP=4, COMMA=5, SQUOTE=6, EQ=7, GT=8, LT=9, GTE=10, 
+		LTE=11, AND=12, OR=13, MIN=14, MAX=15, SUM=16, AVG=17, COUNT=18, SELECT=19, 
+		PROJECT=20, GROUP=21, SORT=22, LIMIT=23, DISTINCT=24, ON=25, AS=26, BY=27, 
+		OUTER=28, LEFT=29, RIGHT=30, ASC=31, DESC=32, TRUE=33, FALSE=34, JOIN=35, 
+		CROSS=36, UNION=37, DIFF=38, INTERSECT=39, ID=40, STRING=41, INT=42, WS=43;
 	public static final int
 		RULE_query = 0, RULE_relation = 1, RULE_transform = 2, RULE_select = 3, 
 		RULE_project = 4, RULE_group = 5, RULE_sort = 6, RULE_limit = 7, RULE_distinct = 8, 
@@ -39,23 +38,21 @@ public class SiftParser extends Parser {
 
 	private static String[] makeLiteralNames() {
 		return new String[] {
-			null, "'X'", "'U'", "'-'", "'&'", "'|>'", "'->'", "'('", "')'", "','", 
-			"'''", "'='", "'>'", "'<'", "'>='", "'<='", "'&&'", "'||'", "'MIN'", 
-			"'MAX'", "'SUM'", "'AVG'", "'COUNT'", "'SELECT'", "'PROJECT'", "'GROUP'", 
-			"'SORT'", "'LIMIT'", "'DISTINCT'", "'ON'", "'AS'", "'BY'", "'OUTER'", 
-			"'LEFT'", "'RIGHT'", "'ASC'", "'DESC'", "'TRUE'", "'FALSE'", "'JOIN'", 
-			"'CROSS'", "'UNION'", "'DIFF'", "'INTERSECT'"
+			null, "'|>'", "'->'", "'('", "')'", "','", "'''", "'='", "'>'", "'<'", 
+			"'>='", "'<='", "'&&'", "'||'", "'MIN'", "'MAX'", "'SUM'", "'AVG'", "'COUNT'", 
+			"'SELECT'", "'PROJECT'", "'GROUP'", "'SORT'", "'LIMIT'", "'DISTINCT'", 
+			"'ON'", "'AS'", "'BY'", "'OUTER'", "'LEFT'", "'RIGHT'", "'ASC'", "'DESC'", 
+			"'TRUE'", "'FALSE'", "'JOIN'"
 		};
 	}
 	private static final String[] _LITERAL_NAMES = makeLiteralNames();
 	private static String[] makeSymbolicNames() {
 		return new String[] {
-			null, null, null, null, null, "PIPE", "MAPS", "LP", "RP", "COMMA", "SQUOTE", 
-			"EQ", "GT", "LT", "GTE", "LTE", "AND", "OR", "MIN", "MAX", "SUM", "AVG", 
-			"COUNT", "SELECT", "PROJECT", "GROUP", "SORT", "LIMIT", "DISTINCT", "ON", 
-			"AS", "BY", "OUTER", "LEFT", "RIGHT", "ASC", "DESC", "TRUE", "FALSE", 
-			"JOIN", "CROSS", "UNION", "DIFF", "INTERSECT", "ID", "STRING", "INT", 
-			"WS"
+			null, "PIPE", "MAPS", "LP", "RP", "COMMA", "SQUOTE", "EQ", "GT", "LT", 
+			"GTE", "LTE", "AND", "OR", "MIN", "MAX", "SUM", "AVG", "COUNT", "SELECT", 
+			"PROJECT", "GROUP", "SORT", "LIMIT", "DISTINCT", "ON", "AS", "BY", "OUTER", 
+			"LEFT", "RIGHT", "ASC", "DESC", "TRUE", "FALSE", "JOIN", "CROSS", "UNION", 
+			"DIFF", "INTERSECT", "ID", "STRING", "INT", "WS"
 		};
 	}
 	private static final String[] _SYMBOLIC_NAMES = makeSymbolicNames();
@@ -205,6 +202,25 @@ public class SiftParser extends Parser {
 			else return visitor.visitChildren(this);
 		}
 	}
+	public static class RelBagOpContext extends RelationContext {
+		public Token op;
+		public List<RelationContext> relation() {
+			return getRuleContexts(RelationContext.class);
+		}
+		public RelationContext relation(int i) {
+			return getRuleContext(RelationContext.class,i);
+		}
+		public TerminalNode UNION() { return getToken(SiftParser.UNION, 0); }
+		public TerminalNode CROSS() { return getToken(SiftParser.CROSS, 0); }
+		public TerminalNode DIFF() { return getToken(SiftParser.DIFF, 0); }
+		public TerminalNode INTERSECT() { return getToken(SiftParser.INTERSECT, 0); }
+		public RelBagOpContext(RelationContext ctx) { copyFrom(ctx); }
+		@Override
+		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
+			if ( visitor instanceof SiftVisitor ) return ((SiftVisitor<? extends T>)visitor).visitRelBagOp(this);
+			else return visitor.visitChildren(this);
+		}
+	}
 	public static class RelJoinContext extends RelationContext {
 		public List<RelationContext> relation() {
 			return getRuleContexts(RelationContext.class);
@@ -230,66 +246,6 @@ public class SiftParser extends Parser {
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
 			if ( visitor instanceof SiftVisitor ) return ((SiftVisitor<? extends T>)visitor).visitRelJoin(this);
-			else return visitor.visitChildren(this);
-		}
-	}
-	public static class RelIntersectContext extends RelationContext {
-		public List<RelationContext> relation() {
-			return getRuleContexts(RelationContext.class);
-		}
-		public RelationContext relation(int i) {
-			return getRuleContext(RelationContext.class,i);
-		}
-		public TerminalNode INTERSECT() { return getToken(SiftParser.INTERSECT, 0); }
-		public RelIntersectContext(RelationContext ctx) { copyFrom(ctx); }
-		@Override
-		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof SiftVisitor ) return ((SiftVisitor<? extends T>)visitor).visitRelIntersect(this);
-			else return visitor.visitChildren(this);
-		}
-	}
-	public static class RelCrossContext extends RelationContext {
-		public List<RelationContext> relation() {
-			return getRuleContexts(RelationContext.class);
-		}
-		public RelationContext relation(int i) {
-			return getRuleContext(RelationContext.class,i);
-		}
-		public TerminalNode CROSS() { return getToken(SiftParser.CROSS, 0); }
-		public RelCrossContext(RelationContext ctx) { copyFrom(ctx); }
-		@Override
-		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof SiftVisitor ) return ((SiftVisitor<? extends T>)visitor).visitRelCross(this);
-			else return visitor.visitChildren(this);
-		}
-	}
-	public static class RelDiffContext extends RelationContext {
-		public List<RelationContext> relation() {
-			return getRuleContexts(RelationContext.class);
-		}
-		public RelationContext relation(int i) {
-			return getRuleContext(RelationContext.class,i);
-		}
-		public TerminalNode DIFF() { return getToken(SiftParser.DIFF, 0); }
-		public RelDiffContext(RelationContext ctx) { copyFrom(ctx); }
-		@Override
-		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof SiftVisitor ) return ((SiftVisitor<? extends T>)visitor).visitRelDiff(this);
-			else return visitor.visitChildren(this);
-		}
-	}
-	public static class RelUnionContext extends RelationContext {
-		public List<RelationContext> relation() {
-			return getRuleContexts(RelationContext.class);
-		}
-		public RelationContext relation(int i) {
-			return getRuleContext(RelationContext.class,i);
-		}
-		public TerminalNode UNION() { return getToken(SiftParser.UNION, 0); }
-		public RelUnionContext(RelationContext ctx) { copyFrom(ctx); }
-		@Override
-		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof SiftVisitor ) return ((SiftVisitor<? extends T>)visitor).visitRelUnion(this);
 			else return visitor.visitChildren(this);
 		}
 	}
@@ -340,7 +296,7 @@ public class SiftParser extends Parser {
 				throw new NoViableAltException(this);
 			}
 			_ctx.stop = _input.LT(-1);
-			setState(73);
+			setState(64);
 			_errHandler.sync(this);
 			_alt = getInterpreter().adaptivePredict(_input,6,_ctx);
 			while ( _alt!=2 && _alt!=org.antlr.v4.runtime.atn.ATN.INVALID_ALT_NUMBER ) {
@@ -348,19 +304,20 @@ public class SiftParser extends Parser {
 					if ( _parseListeners!=null ) triggerExitRuleEvent();
 					_prevctx = _localctx;
 					{
-					setState(71);
+					setState(62);
 					_errHandler.sync(this);
 					switch ( getInterpreter().adaptivePredict(_input,5,_ctx) ) {
 					case 1:
 						{
-						_localctx = new RelCrossContext(new RelationContext(_parentctx, _parentState));
+						_localctx = new RelBagOpContext(new RelationContext(_parentctx, _parentState));
 						pushNewRecursionContext(_localctx, _startState, RULE_relation);
 						setState(44);
-						if (!(precpred(_ctx, 4))) throw new FailedPredicateException(this, "precpred(_ctx, 4)");
+						if (!(precpred(_ctx, 1))) throw new FailedPredicateException(this, "precpred(_ctx, 1)");
 						setState(45);
+						((RelBagOpContext)_localctx).op = _input.LT(1);
 						_la = _input.LA(1);
-						if ( !(_la==T__0 || _la==CROSS) ) {
-						_errHandler.recoverInline(this);
+						if ( !((((_la) & ~0x3f) == 0 && ((1L << _la) & ((1L << CROSS) | (1L << UNION) | (1L << DIFF) | (1L << INTERSECT))) != 0)) ) {
+							((RelBagOpContext)_localctx).op = (Token)_errHandler.recoverInline(this);
 						}
 						else {
 							if ( _input.LA(1)==Token.EOF ) matchedEOF = true;
@@ -368,91 +325,31 @@ public class SiftParser extends Parser {
 							consume();
 						}
 						setState(46);
-						relation(5);
+						relation(2);
 						}
 						break;
 					case 2:
 						{
-						_localctx = new RelUnionContext(new RelationContext(_parentctx, _parentState));
-						pushNewRecursionContext(_localctx, _startState, RULE_relation);
-						setState(47);
-						if (!(precpred(_ctx, 3))) throw new FailedPredicateException(this, "precpred(_ctx, 3)");
-						setState(48);
-						_la = _input.LA(1);
-						if ( !(_la==T__1 || _la==UNION) ) {
-						_errHandler.recoverInline(this);
-						}
-						else {
-							if ( _input.LA(1)==Token.EOF ) matchedEOF = true;
-							_errHandler.reportMatch(this);
-							consume();
-						}
-						setState(49);
-						relation(4);
-						}
-						break;
-					case 3:
-						{
-						_localctx = new RelDiffContext(new RelationContext(_parentctx, _parentState));
-						pushNewRecursionContext(_localctx, _startState, RULE_relation);
-						setState(50);
-						if (!(precpred(_ctx, 2))) throw new FailedPredicateException(this, "precpred(_ctx, 2)");
-						setState(51);
-						_la = _input.LA(1);
-						if ( !(_la==T__2 || _la==DIFF) ) {
-						_errHandler.recoverInline(this);
-						}
-						else {
-							if ( _input.LA(1)==Token.EOF ) matchedEOF = true;
-							_errHandler.reportMatch(this);
-							consume();
-						}
-						setState(52);
-						relation(3);
-						}
-						break;
-					case 4:
-						{
-						_localctx = new RelIntersectContext(new RelationContext(_parentctx, _parentState));
-						pushNewRecursionContext(_localctx, _startState, RULE_relation);
-						setState(53);
-						if (!(precpred(_ctx, 1))) throw new FailedPredicateException(this, "precpred(_ctx, 1)");
-						setState(54);
-						_la = _input.LA(1);
-						if ( !(_la==T__3 || _la==INTERSECT) ) {
-						_errHandler.recoverInline(this);
-						}
-						else {
-							if ( _input.LA(1)==Token.EOF ) matchedEOF = true;
-							_errHandler.reportMatch(this);
-							consume();
-						}
-						setState(55);
-						relation(2);
-						}
-						break;
-					case 5:
-						{
 						_localctx = new RelJoinContext(new RelationContext(_parentctx, _parentState));
 						pushNewRecursionContext(_localctx, _startState, RULE_relation);
-						setState(56);
-						if (!(precpred(_ctx, 5))) throw new FailedPredicateException(this, "precpred(_ctx, 5)");
-						setState(58);
+						setState(47);
+						if (!(precpred(_ctx, 2))) throw new FailedPredicateException(this, "precpred(_ctx, 2)");
+						setState(49);
 						_errHandler.sync(this);
 						_la = _input.LA(1);
 						if (_la==AS) {
 							{
-							setState(57);
+							setState(48);
 							alias();
 							}
 						}
 
-						setState(61);
+						setState(52);
 						_errHandler.sync(this);
 						_la = _input.LA(1);
 						if ((((_la) & ~0x3f) == 0 && ((1L << _la) & ((1L << OUTER) | (1L << LEFT) | (1L << RIGHT))) != 0)) {
 							{
-							setState(60);
+							setState(51);
 							_la = _input.LA(1);
 							if ( !((((_la) & ~0x3f) == 0 && ((1L << _la) & ((1L << OUTER) | (1L << LEFT) | (1L << RIGHT))) != 0)) ) {
 							_errHandler.recoverInline(this);
@@ -465,24 +362,24 @@ public class SiftParser extends Parser {
 							}
 						}
 
-						setState(63);
+						setState(54);
 						match(JOIN);
-						setState(64);
+						setState(55);
 						relation(0);
-						setState(66);
+						setState(57);
 						_errHandler.sync(this);
 						_la = _input.LA(1);
 						if (_la==AS) {
 							{
-							setState(65);
+							setState(56);
 							alias();
 							}
 						}
 
 						{
-						setState(68);
+						setState(59);
 						match(ON);
-						setState(69);
+						setState(60);
 						expr(0);
 						}
 						}
@@ -490,7 +387,7 @@ public class SiftParser extends Parser {
 					}
 					} 
 				}
-				setState(75);
+				setState(66);
 				_errHandler.sync(this);
 				_alt = getInterpreter().adaptivePredict(_input,6,_ctx);
 			}
@@ -541,48 +438,48 @@ public class SiftParser extends Parser {
 		TransformContext _localctx = new TransformContext(_ctx, getState());
 		enterRule(_localctx, 4, RULE_transform);
 		try {
-			setState(82);
+			setState(73);
 			_errHandler.sync(this);
 			switch (_input.LA(1)) {
 			case SELECT:
 				enterOuterAlt(_localctx, 1);
 				{
-				setState(76);
+				setState(67);
 				select();
 				}
 				break;
 			case PROJECT:
 				enterOuterAlt(_localctx, 2);
 				{
-				setState(77);
+				setState(68);
 				project();
 				}
 				break;
 			case GROUP:
 				enterOuterAlt(_localctx, 3);
 				{
-				setState(78);
+				setState(69);
 				group();
 				}
 				break;
 			case SORT:
 				enterOuterAlt(_localctx, 4);
 				{
-				setState(79);
+				setState(70);
 				sort();
 				}
 				break;
 			case LIMIT:
 				enterOuterAlt(_localctx, 5);
 				{
-				setState(80);
+				setState(71);
 				limit();
 				}
 				break;
 			case DISTINCT:
 				enterOuterAlt(_localctx, 6);
 				{
-				setState(81);
+				setState(72);
 				distinct();
 				}
 				break;
@@ -623,9 +520,9 @@ public class SiftParser extends Parser {
 		try {
 			enterOuterAlt(_localctx, 1);
 			{
-			setState(84);
+			setState(75);
 			match(SELECT);
-			setState(85);
+			setState(76);
 			expr(0);
 			}
 		}
@@ -670,23 +567,23 @@ public class SiftParser extends Parser {
 		try {
 			enterOuterAlt(_localctx, 1);
 			{
-			setState(87);
+			setState(78);
 			match(PROJECT);
-			setState(88);
+			setState(79);
 			func();
-			setState(93);
+			setState(84);
 			_errHandler.sync(this);
 			_la = _input.LA(1);
 			while (_la==COMMA) {
 				{
 				{
-				setState(89);
+				setState(80);
 				match(COMMA);
-				setState(90);
+				setState(81);
 				func();
 				}
 				}
-				setState(95);
+				setState(86);
 				_errHandler.sync(this);
 				_la = _input.LA(1);
 			}
@@ -737,34 +634,34 @@ public class SiftParser extends Parser {
 		try {
 			enterOuterAlt(_localctx, 1);
 			{
-			setState(96);
+			setState(87);
 			match(GROUP);
-			setState(97);
+			setState(88);
 			agg();
-			setState(102);
+			setState(93);
 			_errHandler.sync(this);
 			_la = _input.LA(1);
 			while (_la==COMMA) {
 				{
 				{
-				setState(98);
+				setState(89);
 				match(COMMA);
-				setState(99);
+				setState(90);
 				agg();
 				}
 				}
-				setState(104);
+				setState(95);
 				_errHandler.sync(this);
 				_la = _input.LA(1);
 			}
-			setState(107);
+			setState(98);
 			_errHandler.sync(this);
 			_la = _input.LA(1);
 			if (_la==BY) {
 				{
-				setState(105);
+				setState(96);
 				match(BY);
-				setState(106);
+				setState(97);
 				ids();
 				}
 			}
@@ -808,24 +705,24 @@ public class SiftParser extends Parser {
 		try {
 			enterOuterAlt(_localctx, 1);
 			{
-			setState(109);
+			setState(100);
 			match(SORT);
-			setState(111);
+			setState(102);
 			_errHandler.sync(this);
 			_la = _input.LA(1);
 			if (_la==ID) {
 				{
-				setState(110);
+				setState(101);
 				ids();
 				}
 			}
 
-			setState(114);
+			setState(105);
 			_errHandler.sync(this);
 			_la = _input.LA(1);
 			if (_la==ASC || _la==DESC) {
 				{
-				setState(113);
+				setState(104);
 				((SortContext)_localctx).order = _input.LT(1);
 				_la = _input.LA(1);
 				if ( !(_la==ASC || _la==DESC) ) {
@@ -872,9 +769,9 @@ public class SiftParser extends Parser {
 		try {
 			enterOuterAlt(_localctx, 1);
 			{
-			setState(116);
+			setState(107);
 			match(LIMIT);
-			setState(117);
+			setState(108);
 			match(INT);
 			}
 		}
@@ -908,7 +805,7 @@ public class SiftParser extends Parser {
 		try {
 			enterOuterAlt(_localctx, 1);
 			{
-			setState(119);
+			setState(110);
 			match(DISTINCT);
 			}
 		}
@@ -1028,7 +925,7 @@ public class SiftParser extends Parser {
 			int _alt;
 			enterOuterAlt(_localctx, 1);
 			{
-			setState(129);
+			setState(120);
 			_errHandler.sync(this);
 			switch (_input.LA(1)) {
 			case ID:
@@ -1037,7 +934,7 @@ public class SiftParser extends Parser {
 				_ctx = _localctx;
 				_prevctx = _localctx;
 
-				setState(122);
+				setState(113);
 				match(ID);
 				}
 				break;
@@ -1046,7 +943,7 @@ public class SiftParser extends Parser {
 				_localctx = new IntLitExprContext(_localctx);
 				_ctx = _localctx;
 				_prevctx = _localctx;
-				setState(123);
+				setState(114);
 				match(INT);
 				}
 				break;
@@ -1055,7 +952,7 @@ public class SiftParser extends Parser {
 				_localctx = new StringLitExprContext(_localctx);
 				_ctx = _localctx;
 				_prevctx = _localctx;
-				setState(124);
+				setState(115);
 				match(STRING);
 				}
 				break;
@@ -1064,11 +961,11 @@ public class SiftParser extends Parser {
 				_localctx = new QuotedExprContext(_localctx);
 				_ctx = _localctx;
 				_prevctx = _localctx;
-				setState(125);
+				setState(116);
 				match(LP);
-				setState(126);
+				setState(117);
 				expr(0);
-				setState(127);
+				setState(118);
 				match(RP);
 				}
 				break;
@@ -1076,7 +973,7 @@ public class SiftParser extends Parser {
 				throw new NoViableAltException(this);
 			}
 			_ctx.stop = _input.LT(-1);
-			setState(139);
+			setState(130);
 			_errHandler.sync(this);
 			_alt = getInterpreter().adaptivePredict(_input,15,_ctx);
 			while ( _alt!=2 && _alt!=org.antlr.v4.runtime.atn.ATN.INVALID_ALT_NUMBER ) {
@@ -1084,16 +981,16 @@ public class SiftParser extends Parser {
 					if ( _parseListeners!=null ) triggerExitRuleEvent();
 					_prevctx = _localctx;
 					{
-					setState(137);
+					setState(128);
 					_errHandler.sync(this);
 					switch ( getInterpreter().adaptivePredict(_input,14,_ctx) ) {
 					case 1:
 						{
 						_localctx = new ComparisonExprContext(new ExprContext(_parentctx, _parentState));
 						pushNewRecursionContext(_localctx, _startState, RULE_expr);
-						setState(131);
+						setState(122);
 						if (!(precpred(_ctx, 6))) throw new FailedPredicateException(this, "precpred(_ctx, 6)");
-						setState(132);
+						setState(123);
 						((ComparisonExprContext)_localctx).op = _input.LT(1);
 						_la = _input.LA(1);
 						if ( !((((_la) & ~0x3f) == 0 && ((1L << _la) & ((1L << EQ) | (1L << GT) | (1L << LT) | (1L << GTE) | (1L << LTE))) != 0)) ) {
@@ -1104,7 +1001,7 @@ public class SiftParser extends Parser {
 							_errHandler.reportMatch(this);
 							consume();
 						}
-						setState(133);
+						setState(124);
 						expr(7);
 						}
 						break;
@@ -1112,9 +1009,9 @@ public class SiftParser extends Parser {
 						{
 						_localctx = new BoolExprContext(new ExprContext(_parentctx, _parentState));
 						pushNewRecursionContext(_localctx, _startState, RULE_expr);
-						setState(134);
+						setState(125);
 						if (!(precpred(_ctx, 5))) throw new FailedPredicateException(this, "precpred(_ctx, 5)");
-						setState(135);
+						setState(126);
 						((BoolExprContext)_localctx).op = _input.LT(1);
 						_la = _input.LA(1);
 						if ( !(_la==AND || _la==OR) ) {
@@ -1125,14 +1022,14 @@ public class SiftParser extends Parser {
 							_errHandler.reportMatch(this);
 							consume();
 						}
-						setState(136);
+						setState(127);
 						expr(6);
 						}
 						break;
 					}
 					} 
 				}
-				setState(141);
+				setState(132);
 				_errHandler.sync(this);
 				_alt = getInterpreter().adaptivePredict(_input,15,_ctx);
 			}
@@ -1187,18 +1084,18 @@ public class SiftParser extends Parser {
 		FuncContext _localctx = new FuncContext(_ctx, getState());
 		enterRule(_localctx, 20, RULE_func);
 		try {
-			setState(147);
+			setState(138);
 			_errHandler.sync(this);
 			switch ( getInterpreter().adaptivePredict(_input,16,_ctx) ) {
 			case 1:
 				_localctx = new ProjMapContext(_localctx);
 				enterOuterAlt(_localctx, 1);
 				{
-				setState(142);
+				setState(133);
 				expr(0);
-				setState(143);
+				setState(134);
 				match(MAPS);
-				setState(144);
+				setState(135);
 				match(ID);
 				}
 				break;
@@ -1206,7 +1103,7 @@ public class SiftParser extends Parser {
 				_localctx = new ProjIdentContext(_localctx);
 				enterOuterAlt(_localctx, 2);
 				{
-				setState(146);
+				setState(137);
 				match(ID);
 				}
 				break;
@@ -1255,7 +1152,7 @@ public class SiftParser extends Parser {
 		try {
 			enterOuterAlt(_localctx, 1);
 			{
-			setState(149);
+			setState(140);
 			((AggContext)_localctx).op = _input.LT(1);
 			_la = _input.LA(1);
 			if ( !((((_la) & ~0x3f) == 0 && ((1L << _la) & ((1L << MIN) | (1L << MAX) | (1L << SUM) | (1L << AVG) | (1L << COUNT))) != 0)) ) {
@@ -1266,20 +1163,20 @@ public class SiftParser extends Parser {
 				_errHandler.reportMatch(this);
 				consume();
 			}
-			setState(150);
+			setState(141);
 			match(LP);
-			setState(151);
+			setState(142);
 			expr(0);
-			setState(152);
+			setState(143);
 			match(RP);
-			setState(155);
+			setState(146);
 			_errHandler.sync(this);
 			_la = _input.LA(1);
 			if (_la==MAPS) {
 				{
-				setState(153);
+				setState(144);
 				match(MAPS);
-				setState(154);
+				setState(145);
 				match(ID);
 				}
 			}
@@ -1317,9 +1214,9 @@ public class SiftParser extends Parser {
 		try {
 			enterOuterAlt(_localctx, 1);
 			{
-			setState(157);
+			setState(148);
 			match(AS);
-			setState(158);
+			setState(149);
 			match(ID);
 			}
 		}
@@ -1361,21 +1258,21 @@ public class SiftParser extends Parser {
 		try {
 			enterOuterAlt(_localctx, 1);
 			{
-			setState(160);
+			setState(151);
 			match(ID);
-			setState(165);
+			setState(156);
 			_errHandler.sync(this);
 			_la = _input.LA(1);
 			while (_la==COMMA) {
 				{
 				{
-				setState(161);
+				setState(152);
 				match(COMMA);
-				setState(162);
+				setState(153);
 				match(ID);
 				}
 				}
-				setState(167);
+				setState(158);
 				_errHandler.sync(this);
 				_la = _input.LA(1);
 			}
@@ -1404,79 +1301,69 @@ public class SiftParser extends Parser {
 	private boolean relation_sempred(RelationContext _localctx, int predIndex) {
 		switch (predIndex) {
 		case 0:
-			return precpred(_ctx, 4);
-		case 1:
-			return precpred(_ctx, 3);
-		case 2:
-			return precpred(_ctx, 2);
-		case 3:
 			return precpred(_ctx, 1);
-		case 4:
-			return precpred(_ctx, 5);
+		case 1:
+			return precpred(_ctx, 2);
 		}
 		return true;
 	}
 	private boolean expr_sempred(ExprContext _localctx, int predIndex) {
 		switch (predIndex) {
-		case 5:
+		case 2:
 			return precpred(_ctx, 6);
-		case 6:
+		case 3:
 			return precpred(_ctx, 5);
 		}
 		return true;
 	}
 
 	public static final String _serializedATN =
-		"\3\u608b\ua72a\u8133\ub9ed\u417c\u3be7\u7786\u5964\3\61\u00ab\4\2\t\2"+
-		"\4\3\t\3\4\4\t\4\4\5\t\5\4\6\t\6\4\7\t\7\4\b\t\b\4\t\t\t\4\n\t\n\4\13"+
-		"\t\13\4\f\t\f\4\r\t\r\4\16\t\16\4\17\t\17\3\2\3\2\3\2\7\2\"\n\2\f\2\16"+
-		"\2%\13\2\3\3\3\3\3\3\3\3\3\3\3\3\5\3-\n\3\3\3\3\3\3\3\3\3\3\3\3\3\3\3"+
-		"\3\3\3\3\3\3\3\3\3\3\3\3\3\3\5\3=\n\3\3\3\5\3@\n\3\3\3\3\3\3\3\5\3E\n"+
-		"\3\3\3\3\3\3\3\7\3J\n\3\f\3\16\3M\13\3\3\4\3\4\3\4\3\4\3\4\3\4\5\4U\n"+
-		"\4\3\5\3\5\3\5\3\6\3\6\3\6\3\6\7\6^\n\6\f\6\16\6a\13\6\3\7\3\7\3\7\3\7"+
-		"\7\7g\n\7\f\7\16\7j\13\7\3\7\3\7\5\7n\n\7\3\b\3\b\5\br\n\b\3\b\5\bu\n"+
-		"\b\3\t\3\t\3\t\3\n\3\n\3\13\3\13\3\13\3\13\3\13\3\13\3\13\3\13\5\13\u0084"+
-		"\n\13\3\13\3\13\3\13\3\13\3\13\3\13\7\13\u008c\n\13\f\13\16\13\u008f\13"+
-		"\13\3\f\3\f\3\f\3\f\3\f\5\f\u0096\n\f\3\r\3\r\3\r\3\r\3\r\3\r\5\r\u009e"+
-		"\n\r\3\16\3\16\3\16\3\17\3\17\3\17\7\17\u00a6\n\17\f\17\16\17\u00a9\13"+
-		"\17\3\17\2\4\4\24\20\2\4\6\b\n\f\16\20\22\24\26\30\32\34\2\13\4\2\3\3"+
-		"**\4\2\4\4++\4\2\5\5,,\4\2\6\6--\3\2\"$\3\2%&\3\2\r\21\3\2\22\23\3\2\24"+
-		"\30\2\u00b8\2\36\3\2\2\2\4,\3\2\2\2\6T\3\2\2\2\bV\3\2\2\2\nY\3\2\2\2\f"+
-		"b\3\2\2\2\16o\3\2\2\2\20v\3\2\2\2\22y\3\2\2\2\24\u0083\3\2\2\2\26\u0095"+
-		"\3\2\2\2\30\u0097\3\2\2\2\32\u009f\3\2\2\2\34\u00a2\3\2\2\2\36#\5\4\3"+
-		"\2\37 \7\7\2\2 \"\5\6\4\2!\37\3\2\2\2\"%\3\2\2\2#!\3\2\2\2#$\3\2\2\2$"+
-		"\3\3\2\2\2%#\3\2\2\2&\'\b\3\1\2\'-\7.\2\2()\7\t\2\2)*\5\2\2\2*+\7\n\2"+
-		"\2+-\3\2\2\2,&\3\2\2\2,(\3\2\2\2-K\3\2\2\2./\f\6\2\2/\60\t\2\2\2\60J\5"+
-		"\4\3\7\61\62\f\5\2\2\62\63\t\3\2\2\63J\5\4\3\6\64\65\f\4\2\2\65\66\t\4"+
-		"\2\2\66J\5\4\3\5\678\f\3\2\289\t\5\2\29J\5\4\3\4:<\f\7\2\2;=\5\32\16\2"+
-		"<;\3\2\2\2<=\3\2\2\2=?\3\2\2\2>@\t\6\2\2?>\3\2\2\2?@\3\2\2\2@A\3\2\2\2"+
-		"AB\7)\2\2BD\5\4\3\2CE\5\32\16\2DC\3\2\2\2DE\3\2\2\2EF\3\2\2\2FG\7\37\2"+
-		"\2GH\5\24\13\2HJ\3\2\2\2I.\3\2\2\2I\61\3\2\2\2I\64\3\2\2\2I\67\3\2\2\2"+
-		"I:\3\2\2\2JM\3\2\2\2KI\3\2\2\2KL\3\2\2\2L\5\3\2\2\2MK\3\2\2\2NU\5\b\5"+
-		"\2OU\5\n\6\2PU\5\f\7\2QU\5\16\b\2RU\5\20\t\2SU\5\22\n\2TN\3\2\2\2TO\3"+
-		"\2\2\2TP\3\2\2\2TQ\3\2\2\2TR\3\2\2\2TS\3\2\2\2U\7\3\2\2\2VW\7\31\2\2W"+
-		"X\5\24\13\2X\t\3\2\2\2YZ\7\32\2\2Z_\5\26\f\2[\\\7\13\2\2\\^\5\26\f\2]"+
-		"[\3\2\2\2^a\3\2\2\2_]\3\2\2\2_`\3\2\2\2`\13\3\2\2\2a_\3\2\2\2bc\7\33\2"+
-		"\2ch\5\30\r\2de\7\13\2\2eg\5\30\r\2fd\3\2\2\2gj\3\2\2\2hf\3\2\2\2hi\3"+
-		"\2\2\2im\3\2\2\2jh\3\2\2\2kl\7!\2\2ln\5\34\17\2mk\3\2\2\2mn\3\2\2\2n\r"+
-		"\3\2\2\2oq\7\34\2\2pr\5\34\17\2qp\3\2\2\2qr\3\2\2\2rt\3\2\2\2su\t\7\2"+
-		"\2ts\3\2\2\2tu\3\2\2\2u\17\3\2\2\2vw\7\35\2\2wx\7\60\2\2x\21\3\2\2\2y"+
-		"z\7\36\2\2z\23\3\2\2\2{|\b\13\1\2|\u0084\7.\2\2}\u0084\7\60\2\2~\u0084"+
-		"\7/\2\2\177\u0080\7\t\2\2\u0080\u0081\5\24\13\2\u0081\u0082\7\n\2\2\u0082"+
-		"\u0084\3\2\2\2\u0083{\3\2\2\2\u0083}\3\2\2\2\u0083~\3\2\2\2\u0083\177"+
-		"\3\2\2\2\u0084\u008d\3\2\2\2\u0085\u0086\f\b\2\2\u0086\u0087\t\b\2\2\u0087"+
-		"\u008c\5\24\13\t\u0088\u0089\f\7\2\2\u0089\u008a\t\t\2\2\u008a\u008c\5"+
-		"\24\13\b\u008b\u0085\3\2\2\2\u008b\u0088\3\2\2\2\u008c\u008f\3\2\2\2\u008d"+
-		"\u008b\3\2\2\2\u008d\u008e\3\2\2\2\u008e\25\3\2\2\2\u008f\u008d\3\2\2"+
-		"\2\u0090\u0091\5\24\13\2\u0091\u0092\7\b\2\2\u0092\u0093\7.\2\2\u0093"+
-		"\u0096\3\2\2\2\u0094\u0096\7.\2\2\u0095\u0090\3\2\2\2\u0095\u0094\3\2"+
-		"\2\2\u0096\27\3\2\2\2\u0097\u0098\t\n\2\2\u0098\u0099\7\t\2\2\u0099\u009a"+
-		"\5\24\13\2\u009a\u009d\7\n\2\2\u009b\u009c\7\b\2\2\u009c\u009e\7.\2\2"+
-		"\u009d\u009b\3\2\2\2\u009d\u009e\3\2\2\2\u009e\31\3\2\2\2\u009f\u00a0"+
-		"\7 \2\2\u00a0\u00a1\7.\2\2\u00a1\33\3\2\2\2\u00a2\u00a7\7.\2\2\u00a3\u00a4"+
-		"\7\13\2\2\u00a4\u00a6\7.\2\2\u00a5\u00a3\3\2\2\2\u00a6\u00a9\3\2\2\2\u00a7"+
-		"\u00a5\3\2\2\2\u00a7\u00a8\3\2\2\2\u00a8\35\3\2\2\2\u00a9\u00a7\3\2\2"+
-		"\2\25#,<?DIKT_hmqt\u0083\u008b\u008d\u0095\u009d\u00a7";
+		"\3\u608b\ua72a\u8133\ub9ed\u417c\u3be7\u7786\u5964\3-\u00a2\4\2\t\2\4"+
+		"\3\t\3\4\4\t\4\4\5\t\5\4\6\t\6\4\7\t\7\4\b\t\b\4\t\t\t\4\n\t\n\4\13\t"+
+		"\13\4\f\t\f\4\r\t\r\4\16\t\16\4\17\t\17\3\2\3\2\3\2\7\2\"\n\2\f\2\16\2"+
+		"%\13\2\3\3\3\3\3\3\3\3\3\3\3\3\5\3-\n\3\3\3\3\3\3\3\3\3\3\3\5\3\64\n\3"+
+		"\3\3\5\3\67\n\3\3\3\3\3\3\3\5\3<\n\3\3\3\3\3\3\3\7\3A\n\3\f\3\16\3D\13"+
+		"\3\3\4\3\4\3\4\3\4\3\4\3\4\5\4L\n\4\3\5\3\5\3\5\3\6\3\6\3\6\3\6\7\6U\n"+
+		"\6\f\6\16\6X\13\6\3\7\3\7\3\7\3\7\7\7^\n\7\f\7\16\7a\13\7\3\7\3\7\5\7"+
+		"e\n\7\3\b\3\b\5\bi\n\b\3\b\5\bl\n\b\3\t\3\t\3\t\3\n\3\n\3\13\3\13\3\13"+
+		"\3\13\3\13\3\13\3\13\3\13\5\13{\n\13\3\13\3\13\3\13\3\13\3\13\3\13\7\13"+
+		"\u0083\n\13\f\13\16\13\u0086\13\13\3\f\3\f\3\f\3\f\3\f\5\f\u008d\n\f\3"+
+		"\r\3\r\3\r\3\r\3\r\3\r\5\r\u0095\n\r\3\16\3\16\3\16\3\17\3\17\3\17\7\17"+
+		"\u009d\n\17\f\17\16\17\u00a0\13\17\3\17\2\4\4\24\20\2\4\6\b\n\f\16\20"+
+		"\22\24\26\30\32\34\2\b\3\2&)\3\2\36 \3\2!\"\3\2\t\r\3\2\16\17\3\2\20\24"+
+		"\2\u00ac\2\36\3\2\2\2\4,\3\2\2\2\6K\3\2\2\2\bM\3\2\2\2\nP\3\2\2\2\fY\3"+
+		"\2\2\2\16f\3\2\2\2\20m\3\2\2\2\22p\3\2\2\2\24z\3\2\2\2\26\u008c\3\2\2"+
+		"\2\30\u008e\3\2\2\2\32\u0096\3\2\2\2\34\u0099\3\2\2\2\36#\5\4\3\2\37 "+
+		"\7\3\2\2 \"\5\6\4\2!\37\3\2\2\2\"%\3\2\2\2#!\3\2\2\2#$\3\2\2\2$\3\3\2"+
+		"\2\2%#\3\2\2\2&\'\b\3\1\2\'-\7*\2\2()\7\5\2\2)*\5\2\2\2*+\7\6\2\2+-\3"+
+		"\2\2\2,&\3\2\2\2,(\3\2\2\2-B\3\2\2\2./\f\3\2\2/\60\t\2\2\2\60A\5\4\3\4"+
+		"\61\63\f\4\2\2\62\64\5\32\16\2\63\62\3\2\2\2\63\64\3\2\2\2\64\66\3\2\2"+
+		"\2\65\67\t\3\2\2\66\65\3\2\2\2\66\67\3\2\2\2\678\3\2\2\289\7%\2\29;\5"+
+		"\4\3\2:<\5\32\16\2;:\3\2\2\2;<\3\2\2\2<=\3\2\2\2=>\7\33\2\2>?\5\24\13"+
+		"\2?A\3\2\2\2@.\3\2\2\2@\61\3\2\2\2AD\3\2\2\2B@\3\2\2\2BC\3\2\2\2C\5\3"+
+		"\2\2\2DB\3\2\2\2EL\5\b\5\2FL\5\n\6\2GL\5\f\7\2HL\5\16\b\2IL\5\20\t\2J"+
+		"L\5\22\n\2KE\3\2\2\2KF\3\2\2\2KG\3\2\2\2KH\3\2\2\2KI\3\2\2\2KJ\3\2\2\2"+
+		"L\7\3\2\2\2MN\7\25\2\2NO\5\24\13\2O\t\3\2\2\2PQ\7\26\2\2QV\5\26\f\2RS"+
+		"\7\7\2\2SU\5\26\f\2TR\3\2\2\2UX\3\2\2\2VT\3\2\2\2VW\3\2\2\2W\13\3\2\2"+
+		"\2XV\3\2\2\2YZ\7\27\2\2Z_\5\30\r\2[\\\7\7\2\2\\^\5\30\r\2][\3\2\2\2^a"+
+		"\3\2\2\2_]\3\2\2\2_`\3\2\2\2`d\3\2\2\2a_\3\2\2\2bc\7\35\2\2ce\5\34\17"+
+		"\2db\3\2\2\2de\3\2\2\2e\r\3\2\2\2fh\7\30\2\2gi\5\34\17\2hg\3\2\2\2hi\3"+
+		"\2\2\2ik\3\2\2\2jl\t\4\2\2kj\3\2\2\2kl\3\2\2\2l\17\3\2\2\2mn\7\31\2\2"+
+		"no\7,\2\2o\21\3\2\2\2pq\7\32\2\2q\23\3\2\2\2rs\b\13\1\2s{\7*\2\2t{\7,"+
+		"\2\2u{\7+\2\2vw\7\5\2\2wx\5\24\13\2xy\7\6\2\2y{\3\2\2\2zr\3\2\2\2zt\3"+
+		"\2\2\2zu\3\2\2\2zv\3\2\2\2{\u0084\3\2\2\2|}\f\b\2\2}~\t\5\2\2~\u0083\5"+
+		"\24\13\t\177\u0080\f\7\2\2\u0080\u0081\t\6\2\2\u0081\u0083\5\24\13\b\u0082"+
+		"|\3\2\2\2\u0082\177\3\2\2\2\u0083\u0086\3\2\2\2\u0084\u0082\3\2\2\2\u0084"+
+		"\u0085\3\2\2\2\u0085\25\3\2\2\2\u0086\u0084\3\2\2\2\u0087\u0088\5\24\13"+
+		"\2\u0088\u0089\7\4\2\2\u0089\u008a\7*\2\2\u008a\u008d\3\2\2\2\u008b\u008d"+
+		"\7*\2\2\u008c\u0087\3\2\2\2\u008c\u008b\3\2\2\2\u008d\27\3\2\2\2\u008e"+
+		"\u008f\t\7\2\2\u008f\u0090\7\5\2\2\u0090\u0091\5\24\13\2\u0091\u0094\7"+
+		"\6\2\2\u0092\u0093\7\4\2\2\u0093\u0095\7*\2\2\u0094\u0092\3\2\2\2\u0094"+
+		"\u0095\3\2\2\2\u0095\31\3\2\2\2\u0096\u0097\7\34\2\2\u0097\u0098\7*\2"+
+		"\2\u0098\33\3\2\2\2\u0099\u009e\7*\2\2\u009a\u009b\7\7\2\2\u009b\u009d"+
+		"\7*\2\2\u009c\u009a\3\2\2\2\u009d\u00a0\3\2\2\2\u009e\u009c\3\2\2\2\u009e"+
+		"\u009f\3\2\2\2\u009f\35\3\2\2\2\u00a0\u009e\3\2\2\2\25#,\63\66;@BKV_d"+
+		"hkz\u0082\u0084\u008c\u0094\u009e";
 	public static final ATN _ATN =
 		new ATNDeserializer().deserialize(_serializedATN.toCharArray());
 	static {
