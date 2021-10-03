@@ -56,6 +56,7 @@ import com.rchowell.sift.execution.physical.expressions.OrBinaryExpr
 import com.rchowell.sift.execution.physical.expressions.PredicateBinaryExpr
 import com.rchowell.sift.execution.physical.expressions.SubExpr
 import com.rchowell.sift.execution.physical.sifterators.Aggregation
+import com.rchowell.sift.execution.physical.sifterators.Limit
 import com.rchowell.sift.execution.physical.sifterators.Projection
 import com.rchowell.sift.execution.physical.sifterators.Scan
 import com.rchowell.sift.execution.physical.sifterators.Selection
@@ -106,7 +107,10 @@ class Planner {
             is LogicalSort -> TODO()
             is LogicalDistinct -> TODO()
             is LogicalJoin -> TODO()
-            is LogicalLimit -> TODO()
+            is LogicalLimit -> Limit(
+                input = plan(transform.inputs().first()),
+                limit = transform.n,
+            )
             else -> invalid("plan", transform)
         }
 

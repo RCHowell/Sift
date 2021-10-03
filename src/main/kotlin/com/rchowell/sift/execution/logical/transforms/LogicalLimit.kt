@@ -15,8 +15,8 @@ import com.rchowell.sift.types.Schema
  * @constructor Create empty Logical limit
  */
 class LogicalLimit(
-    private val input: LogicalTransform,
-    private val n: Int,
+    val input: LogicalTransform,
+    val n: Int,
 ) : LogicalTransform() {
 
     override val schema: Schema = input.schema

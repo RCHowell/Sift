@@ -33,17 +33,48 @@ class Batch(
         table.addRule()
 
         for (i in 0 until records) {
-            val vals = columns.map {
+            val values = columns.map {
                 when (val v = it[i]) {
                     is ByteArray -> v.toString(Charsets.UTF_8)
                     is Double -> "%.2f".format(v)
                     else -> v.toString()
                 }
             }
-            table.addRow(vals)
+            table.addRow(values)
             table.addRule()
         }
         return table.render()
+    }
+
+    // Sorting with Columnar data isn't fun. I should have some row abstraction.
+    // I'm going to try to create a heap which holds each row's current index
+    // Then I will construct the output columns using the heap's order
+
+    /**
+     * Creates a row comparator for this batch from the given fields.
+     * Consider testing/tuning
+     *
+     * @param fields
+     * @return
+     */
+    fun comparator(fields: List<String>): Comparator<Int> = Comparator { r1, r2 ->
+        fields.forEach {
+            val col = schema.fieldIndexes[it]!!
+            val v1 = columns[col][r1]
+            val v2 = columns[col][r2]
+            val v = when (v1) {
+                is ByteArray -> v1.toString(Charsets.UTF_8).compareTo((v2 as ByteArray).toString(Charsets.UTF_8))
+                is Double -> v1.compareTo(v2 as Double)
+                is Int -> {
+                    // sort true before false?
+                    val v = v1 xor (v2 as Int)
+                    if (v1 == 1) -v else v
+                }
+                else -> 0
+            }
+            if (v != 0) return@Comparator v
+        }
+        0
     }
 
     companion object {
