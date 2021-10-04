@@ -26,6 +26,7 @@ dependencies {
     implementation 'info.picocli:picocli-shell-jline3:4.6.1'
     implementation 'info.picocli:picocli:4.6.1'
     implementation 'org.fusesource.jansi:jansi:2.3.4'
+    implementation 'org.junit.jupiter:junit-jupiter:5.7.0'
 
     // Parser generator
     antlr 'org.antlr:antlr4:4.9.2'

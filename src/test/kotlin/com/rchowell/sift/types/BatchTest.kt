@@ -45,4 +45,20 @@ internal class BatchTest {
         assert(comp.compare(0, 2) > 0) // abc = abc, 3 > 1
         assert(comp.compare(1, 2) > 0) // xyz sorts after abc
     }
+
+    @Test
+    internal fun singleFieldSort() {
+        val sorted = batch.sort(listOf("a"))
+        println(sorted)
+    }
+
+    @Test
+    internal fun multiFieldSort() {
+        val sorted = batch.sort(listOf("a", "b"))
+        println(sorted)
+        val sorted2 = batch.sort(listOf("b", "a"))
+        println(sorted2)
+        val sorted3 = batch.sort(listOf("c", "b"))
+        println(sorted3)
+    }
 }

@@ -5,6 +5,7 @@ import org.apache.arrow.vector.BitVector
 import org.apache.arrow.vector.Float8Vector
 import org.apache.arrow.vector.ValueVector
 import org.apache.arrow.vector.VarCharVector
+import java.util.PriorityQueue
 
 /**
  * A Batch holds many records from one or more columns
@@ -48,7 +49,8 @@ class Batch(
 
     // Sorting with Columnar data isn't fun. I should have some row abstraction.
     // I'm going to try to create a heap which holds each row's current index
-    // Then I will construct the output columns using the heap's order
+    // Then I will construct the output columns using the heap's order.
+    // Should be O(n*log(n)) with another O(n) for writing the new results.
 
     /**
      * Creates a row comparator for this batch from the given fields.
@@ -75,6 +77,30 @@ class Batch(
             if (v != 0) return@Comparator v
         }
         0
+    }
+
+    fun sort(fields: List<String>): Batch {
+        val heap = PriorityQueue(records, comparator(fields))
+        for (i in 0 until records) {
+            heap.add(i)
+        }
+        val vectors = empty(schema, records)
+        // r2d2? There's probably an Arrow RecordSet shuffle or maybe there should be?
+        var r2 = 0 // (w)rite to
+        var d2 = heap.poll() // data to write
+        while (d2 != null) {
+            columns.forEachIndexed { i, column ->
+                when (column) {
+                    is StringColumn -> (vectors[i] as VarCharVector)[r2] = column[d2]
+                    is NumColumn -> (vectors[i] as Float8Vector)[r2] = column[d2]
+                    is BoolColumn -> (vectors[i] as BitVector)[r2] = column[d2]
+                }
+            }
+            r2 += 1
+            d2 = heap.poll()
+        }
+        vectors.valueCount(records)
+        return fromVectors(schema, vectors)
     }
 
     companion object {
