@@ -87,38 +87,38 @@ AND: '&&';
 OR: '||';
 
 // Aggregations
-MIN: 'MIN';
-MAX: 'MAX';
-SUM: 'SUM';
-AVG: 'AVG';
-COUNT: 'COUNT';
+MIN: 'MIN' | 'Min' | 'min';
+MAX: 'MAX' | 'Max' | 'max';
+SUM: 'SUM' | 'Sum' | 'sum';
+AVG: 'AVG' | 'Avg' | 'avg';
+COUNT: 'COUNT' | 'Count' | 'count';
 
 // Transforms
-SELECT: 'SELECT';
-PROJECT: 'PROJECT';
-GROUP: 'GROUP';
-SORT: 'SORT';
-LIMIT: 'LIMIT';
-DISTINCT: 'DISTINCT';
+SELECT: 'SELECT' | 'Select' | 'select';
+PROJECT: 'PROJECT' | 'Project' | 'project';
+GROUP: 'GROUP' | 'Group' | 'group';
+SORT: 'SORT' | 'Sort'| 'sort';
+LIMIT: 'LIMIT' | 'Limit' | 'limit';
+DISTINCT: 'DISTINCT' | 'Distinct' | 'distinct';
 
 // Keywords
-ON: 'ON';
-AS: 'AS';
-BY: 'BY';
-OUTER: 'OUTER';
-LEFT: 'LEFT';
-RIGHT: 'RIGHT';
-ASC: 'ASC';
-DESC: 'DESC';
-TRUE: 'TRUE';
-FALSE: 'FALSE';
+ON: 'ON' | 'on';
+AS: 'AS' | 'as';
+BY: 'BY' | 'by';
+OUTER: 'OUTER' | 'outer';
+LEFT: 'LEFT' | 'left';
+RIGHT: 'RIGHT' | 'right';
+ASC: 'ASC' | 'asc';
+DESC: 'DESC' | 'desc';
+TRUE: 'TRUE' | 'true';
+FALSE: 'FALSE' | 'false';
 
 // Bag Ops
-JOIN: 'JOIN';
-CROSS: 'X' | 'CROSS';
-UNION: 'U' | 'UNION';
-DIFF: '-' | 'DIFF';
-INTERSECT: '&' | 'INTERSECT';
+JOIN: 'JOIN' | 'join';
+CROSS: 'X' | 'CROSS' | 'cross';
+UNION: 'U' | 'UNION' | 'union';
+DIFF: '-' | 'DIFF' | 'diff';
+INTERSECT: '&' | 'INTERSECT' | 'intersect';
 
 ID : [a-zA-Z_\-]+;
 STRING: '"' [a-zA-Z]+[a-zA-Z0-9]* '"';
