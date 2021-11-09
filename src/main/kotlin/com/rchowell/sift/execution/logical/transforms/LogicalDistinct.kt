@@ -1,19 +1,24 @@
 package com.rchowell.sift.execution.logical.transforms
 
 import com.rchowell.sift.execution.logical.LogicalTransform
+import com.rchowell.sift.execution.logical.expressions.LogicalIdentifierExpr
 import com.rchowell.sift.types.Schema
 
 /**
- * Duplicate elimination extension of The Relation Algebra which converts a bag to a set.
- * // TODO consider other names such as UNIQUE
+ * Duplicate elimination extension which converts a bag to a set.
  */
-class LogicalDistinct(private val input: LogicalTransform) : LogicalTransform() {
+class LogicalDistinct(
+    private val input: LogicalTransform,
+    private val identifiers: List<LogicalIdentifierExpr>
+) : LogicalTransform() {
 
     override val schema: Schema = input.schema
 
     override fun inputs(): List<LogicalTransform> = listOf(input)
 
-    override fun toString(): String = "DISTINCT"
+    fun fields(): List<Int> = identifiers.map {
+        schema.fieldIndexes[it.identifier]!!
+    }
 
-    override fun pretty(): String = "DISTINCT"
+    override fun toString(): String = "DISTINCT (" + identifiers.joinToString { it.identifier } + ")"
 }

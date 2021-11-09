@@ -9,7 +9,6 @@ import com.rchowell.sift.types.Schema
 import com.rchowell.sift.types.Type
 
 fun main(args: Array<String>) {
-
     val path = "/Users/rch/Desktop/mlb_players.csv"
     val source = CsvSource(
         identifier = "mlb",
@@ -26,15 +25,11 @@ fun main(args: Array<String>) {
         path = path,
         header = true,
     )
-
-    // Initialize Shell Context
     val env = Environment(
         sources = listOf(source)
     )
     val context = Context(env)
-
     val name = System.getProperty("user.name")
-
     val shell = Shell(
         prompt = "$name-> ",
         root = SiftRootCommand(context),

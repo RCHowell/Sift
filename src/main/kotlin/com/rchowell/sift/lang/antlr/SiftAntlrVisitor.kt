@@ -82,7 +82,11 @@ class SiftAntlrVisitor(private val state: SiftVisitorBuildState) : SiftBaseVisit
 
     override fun visitDistinct(ctx: SiftParser.DistinctContext) {
         val input = state.transform()
-        state.push(LogicalDistinct(input))
+        val fields = when (val ids = ctx.ids()) {
+            null -> input.schema.fields.map { LogicalIdentifierExpr(it.identifier) }
+            else -> ids.ID().map { LogicalIdentifierExpr(it.text) }
+        }
+        state.push(LogicalDistinct(input, fields))
     }
 
     override fun visitSort(ctx: SiftParser.SortContext) {

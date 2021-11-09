@@ -16,14 +16,10 @@ import java.nio.file.Path
 import java.nio.file.Paths
 
 /**
- * Shell is the marriage of JLine (shell), Picocli, and Jansi
- *  with the goal of removing boilerplate from Java/Kotlin shell applications.
- *
- * This is comes from the JLine+shell example
  * https://github.com/remkop/picocli/tree/master/picocli-shell-jline3
  */
 class Shell(
-    private val prompt: String = ">",
+    private val prompt: String = "> ",
     private val rightPrompt: String? = null,
     private val root: RootCommand,
     builtins: Set<Builtins.Command> = setOf(

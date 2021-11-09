@@ -1,15 +1,8 @@
 package com.rchowell.sift.execution.physical.sifterators
 
-import org.apache.arrow.vector.BitVector
-import org.apache.arrow.vector.Float8Vector
-import org.apache.arrow.vector.ValueVector
-import org.apache.arrow.vector.VarCharVector
 import com.rchowell.sift.types.Batch
 import com.rchowell.sift.types.Batch.Companion.valueCount
-import com.rchowell.sift.types.BoolVectorColumn
-import com.rchowell.sift.types.Column
-import com.rchowell.sift.types.NumVectorColumn
-import com.rchowell.sift.types.StringVectorColumn
+import com.rchowell.sift.types.set
 import kotlin.math.min
 
 /**
@@ -44,27 +37,10 @@ class Limit(
             sent += 1
         }
         vectors.valueCount(values)
-        // Columns of the batch
-        val cols = mutableListOf<Column>()
-        vectors.forEach {
-            when (it) {
-                is Float8Vector -> cols.add(NumVectorColumn(it))
-                is BitVector -> cols.add(BoolVectorColumn(it))
-                is VarCharVector -> cols.add(StringVectorColumn(it))
-            }
-        }
-        return Batch(schema, cols)
+        return Batch.fromVectors(schema, vectors)
     }
 
     override fun close() {
         input.close()
-    }
-}
-
-private operator fun ValueVector.set(row: Int, value: Any?) {
-    when (this) {
-        is BitVector -> this[row] = value as Int
-        is Float8Vector -> this[row] = value as Double
-        is VarCharVector -> this[row] = value as ByteArray
     }
 }

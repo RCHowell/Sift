@@ -1,14 +1,14 @@
 package com.rchowell.sift.execution.physical.sifterators
 
-import org.apache.arrow.memory.RootAllocator
-import org.apache.arrow.vector.BitVector
-import org.junit.jupiter.api.Test
 import com.rchowell.sift.source.MemSource
 import com.rchowell.sift.types.Batch
 import com.rchowell.sift.types.BoolVectorColumn
 import com.rchowell.sift.types.Field
 import com.rchowell.sift.types.Schema
 import com.rchowell.sift.types.Type
+import org.apache.arrow.memory.RootAllocator
+import org.apache.arrow.vector.BitVector
+import org.junit.jupiter.api.Test
 
 internal class ScanTest {
 

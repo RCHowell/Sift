@@ -42,7 +42,7 @@ sort: SORT (ids)? order=(ASC|DESC)?;
 
 limit: LIMIT INT;
 
-distinct: DISTINCT;
+distinct: DISTINCT (ids)?;
 
 // ---------------------------
 //  Expressions and Functions

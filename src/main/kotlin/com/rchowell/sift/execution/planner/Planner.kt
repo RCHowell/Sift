@@ -56,6 +56,7 @@ import com.rchowell.sift.execution.physical.expressions.OrBinaryExpr
 import com.rchowell.sift.execution.physical.expressions.PredicateBinaryExpr
 import com.rchowell.sift.execution.physical.expressions.SubExpr
 import com.rchowell.sift.execution.physical.sifterators.Aggregation
+import com.rchowell.sift.execution.physical.sifterators.Distinct
 import com.rchowell.sift.execution.physical.sifterators.Limit
 import com.rchowell.sift.execution.physical.sifterators.Projection
 import com.rchowell.sift.execution.physical.sifterators.Scan
@@ -105,7 +106,12 @@ class Planner {
                 Selection(inPlan, predicate)
             }
             is LogicalSort -> TODO()
-            is LogicalDistinct -> TODO()
+            is LogicalDistinct -> {
+                val input = transform.inputs().first()
+                val inPlan = plan(transform.inputs().first())
+                val fieldIndexes = input.schema.fieldIndexes
+                Distinct(inPlan, transform.fields())
+            }
             is LogicalJoin -> TODO()
             is LogicalLimit -> Limit(
                 input = plan(transform.inputs().first()),

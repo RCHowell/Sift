@@ -124,8 +124,8 @@ class Batch(
             this.forEach { it.valueCount = values }
         }
 
-        fun fromVectors(schema: Schema, vecs: List<ValueVector>): Batch {
-            val columns = vecs.map {
+        fun fromVectors(schema: Schema, vectors: List<ValueVector>): Batch {
+            val columns = vectors.map {
                 when (it) {
                     is BitVector -> BoolVectorColumn(it)
                     is VarCharVector -> StringVectorColumn(it)
@@ -135,5 +135,13 @@ class Batch(
             }
             return Batch(schema, columns)
         }
+    }
+}
+
+operator fun ValueVector.set(row: Int, value: Any?) {
+    when (this) {
+        is BitVector -> this[row] = value as Int
+        is Float8Vector -> this[row] = value as Double
+        is VarCharVector -> this[row] = value as ByteArray
     }
 }

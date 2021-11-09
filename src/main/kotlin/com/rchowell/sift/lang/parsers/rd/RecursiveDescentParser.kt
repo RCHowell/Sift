@@ -100,7 +100,7 @@ class RecursiveDescentParser(val environment: Environment) : SiftParser {
             "GROUP" -> group(input)
             "SORT" -> sort(input)
             "LIMIT" -> limit(input)
-            "DISTINCT" -> LogicalDistinct(input)
+            "DISTINCT" -> LogicalDistinct(input, input.schema.fields.map { LogicalIdentifierExpr(it.identifier) })
             else -> throw InvalidSyntaxException("Unknown transformation $word")
         }
     }
