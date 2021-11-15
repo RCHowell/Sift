@@ -14,6 +14,7 @@ class SiftCompiler(private val env: Environment) {
     fun compile(query: String): LogicalTransform {
         val tokens = lex(query)
         val parser = SiftParser(tokens)
+        parser.addErrorListener(SiftErrorListener.INSTANCE)
         val tree = parser.query()
         val state = SiftVisitorBuildState(env)
         val visitor = SiftAntlrVisitor(state)

@@ -1,9 +1,5 @@
 package com.rchowell.sift.execution.physical.sifterators
 
-import org.apache.arrow.vector.BitVector
-import org.apache.arrow.vector.Float8Vector
-import org.apache.arrow.vector.ValueVector
-import org.apache.arrow.vector.VarCharVector
 import com.rchowell.sift.execution.physical.aggregations.Accumulator
 import com.rchowell.sift.execution.physical.aggregations.Key
 import com.rchowell.sift.types.Batch
@@ -13,6 +9,10 @@ import com.rchowell.sift.types.NumVectorColumn
 import com.rchowell.sift.types.Schema
 import com.rchowell.sift.types.StringVectorColumn
 import com.rchowell.sift.types.Type
+import org.apache.arrow.vector.BitVector
+import org.apache.arrow.vector.Float8Vector
+import org.apache.arrow.vector.ValueVector
+import org.apache.arrow.vector.VarCharVector
 
 /**
  * Aggregation Sifterator maintains an accumulator for each aggregation key and processes all input batches
@@ -34,17 +34,17 @@ class Aggregation(
     private var done = false
 
     /**
-     * DSCB book has Iterators doing full
-     * aggregation in the open() method
+     * DSCB has iterators doing full aggregation in the open() method
      */
     override fun open() {
         input.open()
         var batch = input.next()
         while (batch != null) {
+            val columns: List<Column> = aggregations.map { it.expr.eval(batch!!) }
             for (i in 0 until batch.records) {
                 val values = groups.map { batch!!.columns[it][i] }
                 val key = if (values.isEmpty()) Key.EMPTY else Key(values)
-                accumulate(key, batch, i)
+                accumulate(key, columns, i)
             }
             batch = input.next()
         }
@@ -113,15 +113,15 @@ class Aggregation(
         input.close()
     }
 
-    private fun accumulate(key: Key, batch: Batch, row: Int) {
+    private fun accumulate(key: Key, columns: List<Column>, row: Int) {
         var accums = accumulators[key]
         if (accums == null) {
             accums = aggregations.map { it.new() }
             accumulators[key] = accums
         }
-        accums.forEach {
-            val v = batch.columns[it.column][row]
-            it.add(v as Double)
+        for (col in accums.indices) {
+            val v = columns[col][row]
+            accums[col].add(v as Double)
         }
     }
 }

@@ -1,14 +1,15 @@
 package com.rchowell.sift.execution.physical.aggregations
 
+import com.rchowell.sift.execution.physical.expressions.Expression
+
 /**
  * All aggregations are implemented as accumulators.
- * As of now, all aggregations are numeric.
  *
  * @constructor Create empty Agg accumulator
  */
 sealed class Accumulator {
 
-    abstract val column: Int
+    abstract val expr: Expression
 
     /**
      * Create a new instance of this Accumulator.
@@ -27,11 +28,11 @@ sealed class Accumulator {
     abstract fun get(): Double
 }
 
-class SumAccumulator(override val column: Int) : Accumulator() {
+class SumAccumulator(override val expr: Expression) : Accumulator() {
 
     var value = 0.0
 
-    override fun new(): Accumulator = SumAccumulator(column)
+    override fun new(): Accumulator = SumAccumulator(expr)
 
     override fun add(v: Double) {
         value += v
@@ -40,11 +41,11 @@ class SumAccumulator(override val column: Int) : Accumulator() {
     override fun get(): Double = value
 }
 
-class MinAccumulator(override val column: Int) : Accumulator() {
+class MinAccumulator(override val expr: Expression) : Accumulator() {
 
     var value = Double.MAX_VALUE
 
-    override fun new(): Accumulator = MinAccumulator(column)
+    override fun new(): Accumulator = MinAccumulator(expr)
 
     override fun add(v: Double) {
         if (v < value) value = v
@@ -53,11 +54,11 @@ class MinAccumulator(override val column: Int) : Accumulator() {
     override fun get(): Double = value
 }
 
-class MaxAccumulator(override val column: Int) : Accumulator() {
+class MaxAccumulator(override val expr: Expression) : Accumulator() {
 
     var value = Double.MIN_VALUE
 
-    override fun new(): Accumulator = MaxAccumulator(column)
+    override fun new(): Accumulator = MaxAccumulator(expr)
 
     override fun add(v: Double) {
         if (v > value) value = v
@@ -66,11 +67,11 @@ class MaxAccumulator(override val column: Int) : Accumulator() {
     override fun get(): Double = value
 }
 
-class CountAccumulator(override val column: Int) : Accumulator() {
+class CountAccumulator(override val expr: Expression) : Accumulator() {
 
     var value = 0.0
 
-    override fun new(): Accumulator = CountAccumulator(column)
+    override fun new(): Accumulator = CountAccumulator(expr)
 
     override fun add(v: Double) {
         value += 1
@@ -79,12 +80,12 @@ class CountAccumulator(override val column: Int) : Accumulator() {
     override fun get(): Double = value
 }
 
-class AvgAccumulator(override val column: Int) : Accumulator() {
+class AvgAccumulator(override val expr: Expression) : Accumulator() {
 
     var numer = 0.0
     var denom = 0.0
 
-    override fun new(): Accumulator = AvgAccumulator(column)
+    override fun new(): Accumulator = AvgAccumulator(expr)
 
     override fun add(v: Double) {
         numer += v

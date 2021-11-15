@@ -48,12 +48,14 @@ distinct: DISTINCT (ids)?;
 //  Expressions and Functions
 // ---------------------------
 
-expr:   expr op=(LT|LTE|EQ|GT|GTE) expr     #comparisonExpr
+expr:   expr op=(LT|LTE|EQ|GT|GTE) expr     #boolExpr // unsure how which precedence to choose
     |   expr op=(AND|OR) expr               #boolExpr
+    |   expr op=(MULT|DIV|MOD) expr         #boolExpr
+    |   expr op=(PLUS|MINUS) expr           #boolExpr
     |   ID                                  #identExpr
     |   INT                                 #intLitExpr
     |   STRING                              #stringLitExpr
-    |   LP expr RP                          #quotedExpr;
+    |   LP expr RP                          #subExpr;
 
 func:   expr MAPS ID    #projMap
     |   ID              #projIdent
@@ -85,6 +87,11 @@ GTE: '>=';
 LTE: '<=';
 AND: '&&';
 OR: '||';
+PLUS: '+';
+MINUS: '-';
+MULT: '*';
+DIV: '/';
+MOD: '%';
 
 // Aggregations
 MIN: 'MIN' | 'Min' | 'min';
@@ -117,7 +124,7 @@ FALSE: 'FALSE' | 'false';
 JOIN: 'JOIN' | 'join';
 CROSS: 'X' | 'CROSS' | 'cross';
 UNION: 'U' | 'UNION' | 'union';
-DIFF: '-' | 'DIFF' | 'diff';
+DIFF: '\\' | 'DIFF' | 'diff';
 INTERSECT: '&' | 'INTERSECT' | 'intersect';
 
 ID : [a-zA-Z_\-]+;

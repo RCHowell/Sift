@@ -2,6 +2,7 @@ package com.rchowell.sift.lang.antlr
 
 import com.rchowell.sift.execution.logical.expressions.LogicalAggregateExpr
 import com.rchowell.sift.execution.logical.expressions.LogicalAndExpr
+import com.rchowell.sift.execution.logical.expressions.LogicalDivExpr
 import com.rchowell.sift.execution.logical.expressions.LogicalEqExpr
 import com.rchowell.sift.execution.logical.expressions.LogicalGtExpr
 import com.rchowell.sift.execution.logical.expressions.LogicalGteExpr
@@ -9,7 +10,10 @@ import com.rchowell.sift.execution.logical.expressions.LogicalIdentifierExpr
 import com.rchowell.sift.execution.logical.expressions.LogicalLiteralExpr
 import com.rchowell.sift.execution.logical.expressions.LogicalLtExpr
 import com.rchowell.sift.execution.logical.expressions.LogicalLteExpr
+import com.rchowell.sift.execution.logical.expressions.LogicalModExpr
+import com.rchowell.sift.execution.logical.expressions.LogicalMulExpr
 import com.rchowell.sift.execution.logical.expressions.LogicalOrExpr
+import com.rchowell.sift.execution.logical.expressions.LogicalSubExpr
 import com.rchowell.sift.execution.logical.transforms.LogicalAggregation
 import com.rchowell.sift.execution.logical.transforms.LogicalCross
 import com.rchowell.sift.execution.logical.transforms.LogicalDiff
@@ -136,28 +140,26 @@ class SiftAntlrVisitor(private val state: SiftVisitorBuildState) : SiftBaseVisit
         state.push(expr)
     }
 
-    override fun visitComparisonExpr(ctx: SiftParser.ComparisonExprContext) {
+    override fun visitBoolExpr(ctx: SiftParser.BoolExprContext) {
         visit(ctx.expr(0)) // lhs
         visit(ctx.expr(1)) // rhs
         val rhs = state.expr()
         val lhs = state.expr()
+        // seems silly to have individual logical binary expression nodes
+        // TODO use single logical binary expression with type enum
         when (ctx.op.type) {
             SiftLexer.LT -> state.push(LogicalLtExpr(lhs, rhs))
             SiftLexer.LTE -> state.push(LogicalLteExpr(lhs, rhs))
             SiftLexer.EQ -> state.push(LogicalEqExpr(lhs, rhs))
             SiftLexer.GT -> state.push(LogicalGtExpr(lhs, rhs))
             SiftLexer.GTE -> state.push(LogicalGteExpr(lhs, rhs))
-        }
-    }
-
-    override fun visitBoolExpr(ctx: SiftParser.BoolExprContext) {
-        visit(ctx.expr(0)) // lhs
-        visit(ctx.expr(1)) // rhs
-        val rhs = state.expr()
-        val lhs = state.expr()
-        when (ctx.op.type) {
             SiftLexer.AND -> state.push(LogicalAndExpr(lhs, rhs))
             SiftLexer.OR -> state.push(LogicalOrExpr(lhs, rhs))
+            SiftLexer.PLUS -> state.push(LogicalAndExpr(lhs, rhs))
+            SiftLexer.MINUS -> state.push(LogicalSubExpr(lhs, rhs))
+            SiftLexer.MULT -> state.push(LogicalMulExpr(lhs, rhs))
+            SiftLexer.DIV -> state.push(LogicalDivExpr(lhs, rhs))
+            SiftLexer.MOD -> state.push(LogicalModExpr(lhs, rhs))
         }
     }
 

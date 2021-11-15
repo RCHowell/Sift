@@ -1,7 +1,7 @@
 package com.rchowell.sift.execution
 
-import org.junit.jupiter.api.Test
 import com.rchowell.sift.shell.data.pets
+import org.junit.jupiter.api.Test
 
 internal class ExecutorTest {
 
@@ -14,8 +14,8 @@ internal class ExecutorTest {
         Executor.sift(
             env,
             """
-           'Pets'
-             |> GROUP MAX(Weight) -> Thiccest BY Gender, Type
+           Pets
+             |> group MAX(Weight) by Gender, Type
             """.trimIndent()
         )
     }

@@ -110,12 +110,12 @@ public interface SiftVisitor<T> extends ParseTreeVisitor<T> {
 	 */
 	T visitStringLitExpr(SiftParser.StringLitExprContext ctx);
 	/**
-	 * Visit a parse tree produced by the {@code comparisonExpr}
+	 * Visit a parse tree produced by the {@code subExpr}
 	 * labeled alternative in {@link SiftParser#expr}.
 	 * @param ctx the parse tree
 	 * @return the visitor result
 	 */
-	T visitComparisonExpr(SiftParser.ComparisonExprContext ctx);
+	T visitSubExpr(SiftParser.SubExprContext ctx);
 	/**
 	 * Visit a parse tree produced by the {@code boolExpr}
 	 * labeled alternative in {@link SiftParser#expr}.
@@ -123,13 +123,6 @@ public interface SiftVisitor<T> extends ParseTreeVisitor<T> {
 	 * @return the visitor result
 	 */
 	T visitBoolExpr(SiftParser.BoolExprContext ctx);
-	/**
-	 * Visit a parse tree produced by the {@code quotedExpr}
-	 * labeled alternative in {@link SiftParser#expr}.
-	 * @param ctx the parse tree
-	 * @return the visitor result
-	 */
-	T visitQuotedExpr(SiftParser.QuotedExprContext ctx);
 	/**
 	 * Visit a parse tree produced by the {@code projMap}
 	 * labeled alternative in {@link SiftParser#func}.

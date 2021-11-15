@@ -1,11 +1,11 @@
 package com.rchowell.sift.execution.physical.sifterators
 
-import org.junit.jupiter.api.Test
 import com.rchowell.sift.execution.physical.aggregations.AvgAccumulator
 import com.rchowell.sift.execution.physical.aggregations.CountAccumulator
 import com.rchowell.sift.execution.physical.aggregations.MaxAccumulator
 import com.rchowell.sift.execution.physical.aggregations.MinAccumulator
 import com.rchowell.sift.execution.physical.aggregations.SumAccumulator
+import com.rchowell.sift.execution.physical.expressions.ColumnExpr
 import com.rchowell.sift.source.MemSource
 import com.rchowell.sift.types.Batch
 import com.rchowell.sift.types.Column
@@ -13,6 +13,7 @@ import com.rchowell.sift.types.Field
 import com.rchowell.sift.types.NumVectorColumn
 import com.rchowell.sift.types.Schema
 import com.rchowell.sift.types.Type
+import org.junit.jupiter.api.Test
 
 class AggregationTest {
 
@@ -29,11 +30,11 @@ class AggregationTest {
         val aggregation = Aggregation(
             input = Scan(source, listOf("x")),
             aggregations = listOf(
-                SumAccumulator(0),
-                MinAccumulator(0),
-                MaxAccumulator(0),
-                CountAccumulator(0),
-                AvgAccumulator(0),
+                SumAccumulator(ColumnExpr(0)),
+                MinAccumulator(ColumnExpr(0)),
+                MaxAccumulator(ColumnExpr(0)),
+                CountAccumulator(ColumnExpr(0)),
+                AvgAccumulator(ColumnExpr(0)),
             ),
             groups = listOf(),
             schema = Schema(

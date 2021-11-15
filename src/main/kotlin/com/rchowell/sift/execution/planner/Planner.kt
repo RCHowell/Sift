@@ -75,14 +75,14 @@ class Planner {
             is LogicalAggregation -> {
                 val input = transform.inputs().first()
                 val inPlan = plan(input)
-                val aggregations = transform.aggregations.map { (identity, agg) ->
-                    val column = col(input.schema, agg.input as LogicalIdentifierExpr)
+                val aggregations = transform.aggregations.values.map { agg ->
+                    val expr = expression(agg.input, input.schema)
                     when (agg) {
-                        is LogicalMinExpr -> MinAccumulator(column)
-                        is LogicalMaxExpr -> MaxAccumulator(column)
-                        is LogicalSumExpr -> SumAccumulator(column)
-                        is LogicalCountExpr -> CountAccumulator(column)
-                        is LogicalAvgExpr -> AvgAccumulator(column)
+                        is LogicalMinExpr -> MinAccumulator(expr)
+                        is LogicalMaxExpr -> MaxAccumulator(expr)
+                        is LogicalSumExpr -> SumAccumulator(expr)
+                        is LogicalAvgExpr -> AvgAccumulator(expr)
+                        is LogicalCountExpr -> CountAccumulator(expr)
                     }
                 }
                 val groups = transform.groups.map { id -> col(input.schema, id) }
@@ -91,12 +91,12 @@ class Planner {
             is LogicalProjection -> {
                 val input = transform.inputs().first()
                 val inPlan = plan(transform.inputs().first())
-                val projs = mutableMapOf<Int, Expression>()
+                val projections = mutableMapOf<Int, Expression>()
                 transform.projections.forEach { (identity, expr) ->
                     val column = col(transform.schema, identity)
-                    projs[column] = expression(expr, input.schema)
+                    projections[column] = expression(expr, input.schema)
                 }
-                Projection(inPlan, projs, transform.schema)
+                Projection(inPlan, projections, transform.schema)
             }
             is LogicalScan -> Scan(transform.source, transform.identifiers)
             is LogicalSelection -> {
@@ -105,18 +105,18 @@ class Planner {
                 val predicate = predicate(transform.expr, input.schema)
                 Selection(inPlan, predicate)
             }
-            is LogicalSort -> TODO()
             is LogicalDistinct -> {
                 val input = transform.inputs().first()
                 val inPlan = plan(transform.inputs().first())
                 val fieldIndexes = input.schema.fieldIndexes
                 Distinct(inPlan, transform.fields())
             }
-            is LogicalJoin -> TODO()
             is LogicalLimit -> Limit(
                 input = plan(transform.inputs().first()),
                 limit = transform.n,
             )
+            is LogicalSort -> TODO()
+            is LogicalJoin -> TODO()
             else -> invalid("plan", transform)
         }
 
