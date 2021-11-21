@@ -3,11 +3,13 @@ package com.rchowell.sift.shell.kosh
 import org.fusesource.jansi.AnsiConsole
 import org.jline.console.impl.Builtins
 import org.jline.console.impl.SystemRegistryImpl
+import org.jline.reader.Completer
 import org.jline.reader.EndOfFileException
+import org.jline.reader.Highlighter
 import org.jline.reader.LineReader
 import org.jline.reader.LineReaderBuilder
-import org.jline.reader.MaskingCallback
 import org.jline.reader.UserInterruptException
+import org.jline.reader.impl.DefaultHighlighter
 import org.jline.reader.impl.DefaultParser
 import org.jline.terminal.TerminalBuilder
 import picocli.CommandLine
@@ -20,8 +22,10 @@ import java.nio.file.Paths
  */
 class Shell(
     private val prompt: String = "> ",
-    private val rightPrompt: String? = null,
     private val root: RootCommand,
+    private val runner: Runner,
+    private val highlighter: Highlighter? = null,
+    private val completer: Completer? = null,
     builtins: Set<Builtins.Command> = setOf(
         Builtins.Command.COLORS,
         Builtins.Command.HISTORY,
@@ -43,7 +47,6 @@ class Shell(
         AnsiConsole.systemInstall()
         try {
 
-            // Create a CommandRegistry for the shell from our Picocli commands
             val commandFactory = PicocliCommands.PicocliCommandsFactory()
             // TODO use own factory to override the command grouping name which is the class name
             val commandsRegistry = PicocliCommands(CommandLine(root, commandFactory))
@@ -59,6 +62,7 @@ class Shell(
                     .terminal(terminal)
                     .completer(commands.completer())
                     .parser(parser)
+                    .highlighter(highlighter ?: DefaultHighlighter())
                     .variable(LineReader.LIST_MAX, 50)
                     .build()
                 builtins.setLineReader(reader)
@@ -75,8 +79,13 @@ class Shell(
                 while (true) {
                     try {
                         commands.cleanUp()
-                        line = reader.readLine(prompt, rightPrompt, null as MaskingCallback?, null)
-                        commands.execute(line)
+                        line = reader.readLine(prompt)
+                        val command = line.split(" ").first()
+                        if (commands.commandNames().contains(command)) {
+                            commands.execute(line)
+                        } else {
+                            runner.run(line)
+                        }
                     } catch (e: UserInterruptException) {
                         // Ignore
                     } catch (e: EndOfFileException) {

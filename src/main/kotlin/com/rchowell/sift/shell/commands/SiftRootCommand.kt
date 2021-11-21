@@ -13,7 +13,6 @@ import picocli.shell.jline3.PicocliCommands.ClearScreen
     subcommands = [
         ClearScreen::class,
         HelpCommand::class,
-        SiftCommand::class,
         UseCommand::class,
         ListCommand::class,
         DebugGroup::class,

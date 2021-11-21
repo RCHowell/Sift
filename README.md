@@ -8,7 +8,7 @@ I built this as an exercise while studying [Database Systems: The Complete Book]
 - Projection
 - Limit
 - Grouping/Aggregation
-- Distinct (TODO)
+- Distinct
 - Sort (TODO)
 - Join / Union / Difference / Intersection (TODO)
 

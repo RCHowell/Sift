@@ -1,7 +1,7 @@
 package com.rchowell.sift.execution
 
 import com.rchowell.sift.execution.planner.Planner
-import com.rchowell.sift.lang.antlr.SiftCompiler
+import com.rchowell.sift.language.antlr.SiftCompiler
 
 class Executor {
 

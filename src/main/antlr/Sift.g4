@@ -1,8 +1,10 @@
 grammar Sift;
 
 @header {
-   package com.rchowell.sift.lang.antlr;
+   package com.rchowell.sift.language.antlr;
 }
+
+// https://github.com/trinodb/trino/blob/master/core/trino-parser/src/main/antlr4/io/trino/sql/parser/SqlBase.g4
 
 query: relation (PIPE transform)*;
 
@@ -13,7 +15,7 @@ query: relation (PIPE transform)*;
 // TODO identifiers in scans
 
 relation
-    :   ID                                                                      #relId
+    :   ID_QUOTED                                                               #relId
     |   LP query RP                                                             #relSubquery
     |   relation (alias)? (OUTER|LEFT|RIGHT)? JOIN relation (alias)? (ON expr)  #relJoin
     |   relation op=(UNION|CROSS|DIFF|INTERSECT) relation                       #relBagOp
@@ -52,6 +54,7 @@ expr:   expr op=(LT|LTE|EQ|GT|GTE) expr     #boolExpr // unsure how which preced
     |   expr op=(AND|OR) expr               #boolExpr
     |   expr op=(MULT|DIV|MOD) expr         #boolExpr
     |   expr op=(PLUS|MINUS) expr           #boolExpr
+    |   ID LP expr (COMMA expr)* RP         #funcExpr
     |   ID                                  #identExpr
     |   INT                                 #intLitExpr
     |   STRING                              #stringLitExpr
@@ -128,6 +131,11 @@ DIFF: '\\' | 'DIFF' | 'diff';
 INTERSECT: '&' | 'INTERSECT' | 'intersect';
 
 ID : [a-zA-Z_\-]+;
+ID_QUOTED: '`' ( ~'`' | '``' )* '`';
+
 STRING: '"' [a-zA-Z]+[a-zA-Z0-9]* '"';
 INT : [0-9]+;
 WS : [ \t\n\r]+ -> skip;
+
+// Seen in Trino to catch lexing errors
+UNRECOGNIZED: . ;

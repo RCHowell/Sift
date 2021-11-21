@@ -55,7 +55,7 @@ compileTestKotlin {
 generateGrammarSource {
     maxHeapSize = "64m"
     arguments += ["-visitor", "-long-messages", "-no-listener"]
-    outputDirectory = file("src/main/java/com/rchowell/sift/lang/antlr")
+    outputDirectory = file("src/main/java/com/rchowell/sift/language/antlr")
 }
 
 application {

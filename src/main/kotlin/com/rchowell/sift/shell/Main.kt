@@ -9,7 +9,6 @@ import com.rchowell.sift.types.Schema
 import com.rchowell.sift.types.Type
 
 fun main(args: Array<String>) {
-    val path = "/Users/rch/Desktop/mlb_players.csv"
     val source = CsvSource(
         identifier = "mlb",
         schema = Schema(
@@ -22,7 +21,7 @@ fun main(args: Array<String>) {
                 Field("Age", Type.Num),
             )
         ),
-        path = path,
+        path = "/Users/rch/Desktop/mlb_players.csv",
         header = true,
     )
     val env = Environment(
@@ -33,6 +32,8 @@ fun main(args: Array<String>) {
     val shell = Shell(
         prompt = "$name-> ",
         root = SiftRootCommand(context),
+        highlighter = SiftHighlighter(),
+        runner = SiftRunner(env),
     )
     shell.run()
 }
