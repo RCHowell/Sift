@@ -14,7 +14,7 @@ internal class ExecutorTest {
         Executor.sift(
             env,
             """
-           Pets
+           `Pets`
              |> group MAX(Weight) by Gender, Type
             """.trimIndent()
         )

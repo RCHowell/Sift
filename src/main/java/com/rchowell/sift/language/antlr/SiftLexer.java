@@ -306,7 +306,7 @@ public class SiftLexer extends Lexer {
 		"\2\u020ef\3\2\2\2$\2\u009a\u00a5\u00b0\u00bb\u00cc\u00e0\u00f7\u0108\u0116"+
 		"\u0127\u0141\u0147\u014d\u0153\u015f\u0169\u0175\u017d\u0187\u0191\u019d"+
 		"\u01a7\u01b4\u01c1\u01cc\u01e1\u01e6\u01ec\u01ee\u01f7\u01fc\u0204\u0209"+
-		"\3\b\2\2";
+		"\3\2\3\2";
 	public static final ATN _ATN =
 		new ATNDeserializer().deserialize(_serializedATN.toCharArray());
 	static {

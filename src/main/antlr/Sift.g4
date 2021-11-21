@@ -135,7 +135,7 @@ ID_QUOTED: '`' ( ~'`' | '``' )* '`';
 
 STRING: '"' [a-zA-Z]+[a-zA-Z0-9]* '"';
 INT : [0-9]+;
-WS : [ \t\n\r]+ -> skip;
+WS : [ \t\n\r]+ -> channel(HIDDEN);
 
 // Seen in Trino to catch lexing errors
 UNRECOGNIZED: . ;

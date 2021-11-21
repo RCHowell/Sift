@@ -34,7 +34,7 @@ class SiftAntlrTest {
         )
         val env = Environment(listOf(source))
         val query = """
-            Test
+            `Test`
             |> SELECT a > 100 && b = "foo"
             |> DISTINCT
             |> PROJECT a, b, c > 50 -> Old
@@ -49,7 +49,7 @@ class SiftAntlrTest {
     @Test
     fun cross() {
         val query = """
-            (Dogs X Cats) |> SELECT Age > 2
+            (`Dogs` X `Cats`) |> SELECT Age > 2
         """.trimIndent()
         compiler.describe(query, verbose = true)
     }
@@ -57,7 +57,7 @@ class SiftAntlrTest {
     @Test
     fun union() {
         val query = """
-            (Dogs U Cats) |> SELECT Age > 2
+            (`Dogs` U `Cats`) |> SELECT Age > 2
         """.trimIndent()
         compiler.describe(query, verbose = true)
     }
@@ -65,7 +65,7 @@ class SiftAntlrTest {
     @Test
     fun diff() {
         val query = """
-            (Dogs - Cats) |> SELECT Age > 2
+            (`Dogs` - `Cats`) |> SELECT Age > 2
         """.trimIndent()
         compiler.describe(query, verbose = true)
     }

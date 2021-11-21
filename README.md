@@ -22,6 +22,12 @@ Limitations in the language come from my inability to dedicate time to the parse
 
 A query is formed with a relation production followed by transformations. All type data is provided by the **Schema** of a data **Source** which is registered to the query execution environment. The full BNF is at the bottom.
 
+### Shell Example
+
+![](https://i.imgur.com/1RGvkLm.png)
+
+![](https://i.imgur.com/s2yIvwl.png)
+
 ### Relation Productions
 
 Let *R(A, B, C)* and *S(B, C, D)* be two relations. Here are some example relation productions, including subqueries.

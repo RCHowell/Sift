@@ -52,7 +52,6 @@ class SiftHighlighter : Highlighter {
                 it.type == SiftLexer.EOF -> {}
                 else -> builder.append(it.text)
             }
-            builder.append(" ")
         }
         return builder.toAttributedString()
     }

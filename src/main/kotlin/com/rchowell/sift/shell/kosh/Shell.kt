@@ -1,5 +1,6 @@
 package com.rchowell.sift.shell.kosh
 
+import com.rchowell.sift.shell.SiftLineParser
 import org.fusesource.jansi.AnsiConsole
 import org.jline.console.impl.Builtins
 import org.jline.console.impl.SystemRegistryImpl
@@ -10,7 +11,6 @@ import org.jline.reader.LineReader
 import org.jline.reader.LineReaderBuilder
 import org.jline.reader.UserInterruptException
 import org.jline.reader.impl.DefaultHighlighter
-import org.jline.reader.impl.DefaultParser
 import org.jline.terminal.TerminalBuilder
 import picocli.CommandLine
 import picocli.shell.jline3.PicocliCommands
@@ -38,7 +38,7 @@ class Shell(
 
     private val builtins = Builtins(builtins, workDir, null, null)
 
-    private val parser = DefaultParser()
+    private val parser = SiftLineParser()
 
     /**
      * Starts the shell and waits for commands
@@ -53,9 +53,12 @@ class Shell(
 
             TerminalBuilder.builder().build().use { terminal ->
 
+
                 // Add the builtin and user commands to the composite registry
                 val commands = SystemRegistryImpl(parser, terminal, { workDir }, null)
                 commands.setCommandRegistries(builtins, commandsRegistry)
+
+                parser.commands = commands.commandNames()
 
                 // Worth making configurable?
                 val reader: LineReader = LineReaderBuilder.builder()
