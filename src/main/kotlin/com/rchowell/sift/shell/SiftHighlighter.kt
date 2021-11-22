@@ -1,8 +1,8 @@
 package com.rchowell.sift.shell
 
-import com.rchowell.sift.language.antlr.SiftCompiler
-import com.rchowell.sift.language.antlr.SiftLexer
-import com.rchowell.sift.language.antlr.SiftParser
+import com.rchowell.sift.language.v0.antlr.SiftCompiler
+import com.rchowell.sift.language.v0.antlr.SiftLexer
+import com.rchowell.sift.language.v0.antlr.SiftParser
 import org.antlr.v4.runtime.CommonTokenStream
 import org.jline.reader.Highlighter
 import org.jline.reader.LineReader

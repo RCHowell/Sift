@@ -1,7 +1,7 @@
 grammar Sift;
 
 @header {
-   package com.rchowell.sift.language.antlr;
+   package com.rchowell.sift.language.v0.antlr;
 }
 
 // https://github.com/trinodb/trino/blob/master/core/trino-parser/src/main/antlr4/io/trino/sql/parser/SqlBase.g4
@@ -54,10 +54,10 @@ expr:   expr op=(LT|LTE|EQ|GT|GTE) expr     #boolExpr // unsure how which preced
     |   expr op=(AND|OR) expr               #boolExpr
     |   expr op=(MULT|DIV|MOD) expr         #boolExpr
     |   expr op=(PLUS|MINUS) expr           #boolExpr
-    |   ID LP expr (COMMA expr)* RP         #funcExpr
-    |   ID                                  #identExpr
     |   INT                                 #intLitExpr
     |   STRING                              #stringLitExpr
+    |   ID LP expr (COMMA expr)* RP         #funcExpr
+    |   ID                                  #identExpr
     |   LP expr RP                          #subExpr;
 
 func:   expr MAPS ID    #projMap
@@ -130,12 +130,12 @@ UNION: 'U' | 'UNION' | 'union';
 DIFF: '\\' | 'DIFF' | 'diff';
 INTERSECT: '&' | 'INTERSECT' | 'intersect';
 
-ID : [a-zA-Z_\-]+;
-ID_QUOTED: '`' ( ~'`' | '``' )* '`';
-
-STRING: '"' [a-zA-Z]+[a-zA-Z0-9]* '"';
+STRING: '"' (~'"')* '"';
 INT : [0-9]+;
 WS : [ \t\n\r]+ -> channel(HIDDEN);
+
+ID : [a-zA-Z_\-]+;
+ID_QUOTED: '`' ( ~'`' | '``' )* '`';
 
 // Seen in Trino to catch lexing errors
 UNRECOGNIZED: . ;

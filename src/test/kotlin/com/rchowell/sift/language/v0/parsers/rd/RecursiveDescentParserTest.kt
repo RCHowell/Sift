@@ -1,18 +1,16 @@
-package com.rchowell.sift.execution.planner
+package com.rchowell.sift.language.v0.parsers.rd
 
-import org.junit.jupiter.api.Test
 import com.rchowell.sift.execution.Environment
 import com.rchowell.sift.language.v0.lexers.DirectCodedLexer
-import com.rchowell.sift.language.v0.parsers.rd.RecursiveDescentParser
 import com.rchowell.sift.source.EmptySource
 import com.rchowell.sift.types.Field
 import com.rchowell.sift.types.Schema
 import com.rchowell.sift.types.Type
 
-internal class PlannerTest {
+internal class RecursiveDescentParserTest {
 
-    @Test
-    fun plan() {
+    @org.junit.jupiter.api.Test
+    fun simple() {
         val src = EmptySource(
             "Families",
             Schema(
@@ -26,15 +24,17 @@ internal class PlannerTest {
         )
         val env = Environment()
         env.registerSource(src)
-
         val lexer = DirectCodedLexer()
         val parser = RecursiveDescentParser(env)
         val query = """
-          'Families' |> SELECT gender = 'Male' |> PROJECT age / 10 -> decades
+          'Families'
+            |> SELECT (gender = 'Male') && (age > 3)
+            |> PROJECT age, height / 12 -> feet, height % 12 -> inches
+            |> GROUP MAX(age) -> OldestAtHeight BY feet
+            |> LIMIT 3
         """.trimIndent()
         val tokens = lexer.tokenize(query)
         val plan = parser.parse(tokens)
-        val physicalPlan = Planner.plan(plan)
-        println(physicalPlan)
+        println(plan.pretty())
     }
 }

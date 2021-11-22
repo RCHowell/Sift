@@ -1,6 +1,6 @@
 package com.rchowell.sift.shell.commands
 
-import com.rchowell.sift.language.antlr.SiftCompiler
+import com.rchowell.sift.language.v0.antlr.SiftCompiler
 import picocli.CommandLine.Command
 import picocli.CommandLine.Parameters
 import picocli.CommandLine.ParentCommand

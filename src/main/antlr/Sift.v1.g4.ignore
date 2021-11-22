@@ -1,0 +1,133 @@
+// Sift V1
+grammar Sift;
+
+@header {
+   package com.rchowell.sift.language.v1.antlr;
+}
+
+WS : [ \t\n\r]+ -> channel(HIDDEN);
+
+query: relation (PIPE transform)*;
+
+relation
+    : SCAN '(' identifier ')'
+    ;
+
+transform
+    :   select
+    |   project
+    |   group
+    |   sort
+    |   limit
+    |   distinct
+    ;
+
+select: SELECT '(' expression ')';
+
+project: PROJECT '(' projection (',' projection)* ')';
+
+projection
+    : expression '->' identifier  #projectionAliased
+    | expression                  #projectionAnon
+    | identifier            #projectionIdentity
+    ;
+
+group: GROUP '(' aggregation (',' aggregation)* ')' (BY '(' identifierList ')' )?;
+
+aggregation
+    : expression '->' identifier  #aggregationAliased
+    | expression                  #aggregationAnon
+    ;
+
+sort: SORT '(' identifierList (',' order=(ASC|DESC))? ')';
+
+limit: LIMIT '(' INT_VALUE ')';
+
+distinct: DISTINCT '(' identifierList? ')';
+
+identifier
+    : ID_UNQUOTED   #unquotedIdentifier
+    | ID_BACKQUOTED #backquotedIdentifier
+    ;
+
+identifierList: identifier (',' identifier)*;
+
+// ------ Expression ----------
+
+expression: expr;
+
+expr
+    : valExpr predicate[$valExpr.ctx]? #valueExpr
+    | '!' expr                         #notExpr
+    | expr AND expr                    #boolExpr
+    | expr OR expr                     #boolExpr
+    ;
+
+predicate[ParserRuleContext value]
+    : (LTE|LT|EQ|NEQ|GT|GTE) right=valExpr   #compExpr
+    | IN '(' valExpr (',' valExpr)* ')'      #inList
+    ;
+
+valExpr
+    : litExpr                               #litValExpr
+    | identifier                            #refValExpr
+    | '(' expr ')'                          #subValExpr
+    | ID_UNQUOTED '(' expr (',' expr)* ')'  #funValExpr
+    ;
+
+litExpr
+    : INT_VALUE     #litInt
+    | DOUBLE_VALUE  #litDouble
+    | BOOL_VALUE    #litBool
+    | STRING_VALUE  #litString
+    ;
+
+// ----------------------------
+
+// Ops
+PIPE: '|>';
+EQ: '=';
+NEQ: '!=';
+GT: '>';
+LT: '<';
+GTE: '>=';
+LTE: '<=';
+AND: '&&';
+OR: '||';
+PLUS: '+';
+MINUS: '-';
+MULT: '*';
+DIV: '/';
+MOD: '%';
+
+// Keywords
+BY: 'by';
+ASC: 'asc';
+DESC: 'desc';
+TRUE: 'true';
+FALSE: 'false';
+IN: 'in';
+
+// Transforms
+SCAN: 'scan';
+SELECT: 'select';
+PROJECT: 'project';
+GROUP: 'group';
+SORT: 'sort';
+LIMIT: 'limit';
+DISTINCT: 'distinct';
+
+// Identifieirs
+ID_UNQUOTED: LETTER (LETTER | '_')*;
+ID_BACKQUOTED: '`' ( ~'`' | '``' )* '`';
+
+// Literals
+STRING_VALUE: '\'' ( ~'\'' | '\'\'' )* '\'';
+INT_VALUE: DIGIT+;
+DOUBLE_VALUE: DIGIT+ '.' DIGIT*;
+BOOL_VALUE: TRUE | FALSE;
+
+fragment DIGIT: [0-9];
+fragment LETTER: [A-Za-z];
+
+UNRECOGNIZED: . ;
