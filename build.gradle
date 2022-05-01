@@ -28,6 +28,7 @@ dependencies {
     implementation 'info.picocli:picocli:4.6.2'
     implementation 'org.fusesource.jansi:jansi:2.4.0'
     implementation 'org.junit.jupiter:junit-jupiter:5.8.1'
+    implementation 'com.google.inject:guice:5.0.1'
 
     // Parser generator
     antlr 'org.antlr:antlr4:4.9.3'

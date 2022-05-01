@@ -1,5 +1,6 @@
 package com.rchowell.sift.shell
 
+import com.google.inject.Guice
 import com.rchowell.sift.execution.Environment
 import com.rchowell.sift.shell.commands.SiftRootCommand
 import com.rchowell.sift.shell.kosh.Shell
@@ -28,10 +29,10 @@ fun main(args: Array<String>) {
         sources = listOf(source)
     )
     val context = Context(env)
-    val name = System.getProperty("user.name")
+    val injector = Guice.createInjector(ShellModule(context))
     val shell = Shell(
-        prompt = "$name-> ",
-        root = SiftRootCommand(context),
+        prompt = "-> ",
+        root = SiftRootCommand(context, injector),
         highlighter = SiftHighlighter(),
         runner = SiftRunner(env),
     )

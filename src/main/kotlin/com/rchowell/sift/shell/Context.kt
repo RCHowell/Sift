@@ -12,6 +12,8 @@ class Context(
 
     var source: Source? = null
 
+    var value: String? = null
+
     /**
      * Sets the context's [Source]
      */

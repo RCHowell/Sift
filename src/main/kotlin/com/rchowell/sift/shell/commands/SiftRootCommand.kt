@@ -1,5 +1,6 @@
 package com.rchowell.sift.shell.commands
 
+import com.google.inject.Injector
 import com.rchowell.sift.shell.Context
 import com.rchowell.sift.shell.kosh.RootCommand
 import picocli.CommandLine.Command
@@ -13,9 +14,12 @@ import picocli.shell.jline3.PicocliCommands.ClearScreen
     subcommands = [
         ClearScreen::class,
         HelpCommand::class,
-        UseCommand::class,
         ListCommand::class,
         DebugGroup::class,
+        SetCommand.Command::class
     ]
 )
-class SiftRootCommand(val context: Context) : RootCommand()
+class SiftRootCommand(
+    val context: Context,
+    val injector: Injector,
+) : RootCommand()

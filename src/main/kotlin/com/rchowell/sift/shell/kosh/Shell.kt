@@ -53,7 +53,6 @@ class Shell(
 
             TerminalBuilder.builder().build().use { terminal ->
 
-
                 // Add the builtin and user commands to the composite registry
                 val commands = SystemRegistryImpl(parser, terminal, { workDir }, null)
                 commands.setCommandRegistries(builtins, commandsRegistry)
